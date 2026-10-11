@@ -5,7 +5,7 @@ This guide assumes no developer experience. It takes an afternoon. You'll need a
 ## 1. Get the code
 
 ```
-git clone <this repository's address> my-directory
+git clone https://github.com/J2matlock/community-resource-directory.git my-directory
 cd my-directory
 npm install
 ```
