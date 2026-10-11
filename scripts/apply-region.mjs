@@ -56,4 +56,16 @@ for (const dir of ['public', 'public/admin']) {
     if (s !== before) { writeFileSync(path, s); changed++; }
   }
 }
+// The installable-app settings (name shown under the home-screen icon).
+{
+  const path = 'public/manifest.webmanifest';
+  const before = readFileSync(path, 'utf8');
+  const m = JSON.parse(before);
+  m.name = REGION.siteName;
+  m.short_name = REGION.shortName || REGION.siteName.slice(0, 12);
+  const c = REGION.counties;
+  m.description = `Free directory of local help in ${c.length > 1 ? `${c.slice(0, -1).join(', ')} and ${c[c.length - 1]}` : c[0]} Counties.`;
+  const after = JSON.stringify(m, null, 2) + '\n';
+  if (after !== before) { writeFileSync(path, after); changed++; }
+}
 console.log(`Region settings applied to ${changed} page(s).`);

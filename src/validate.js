@@ -354,3 +354,22 @@ export function validateSuggestion(input) {
   v.county = county;
   return { value: Object.keys(errors).length ? null : v, errors };
 }
+
+// ---------- Site notice (owner only) ----------
+// Short plain text shown under the crisis bar on every public page. Rule 1:
+// the same checks as public fields, so no client details end up public.
+export function validateNotice(input) {
+  const errors = {};
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return { value: null, errors: { _form: 'Expected the notice fields.' } };
+  const message = cleanText(input.message, 280);
+  if (message === null) errors.message = 'Please keep the notice under 280 characters.';
+  else if (message.includes('\n')) errors.message = 'Please keep the notice to one line.';
+  else if (message && CLIENT_INFO.some((c) => c.re.test(message))) errors.message = 'Please don\'t include personal details about clients.';
+  const level = input.level ?? 'info';
+  if (!['info', 'urgent'].includes(level)) errors.level = 'Please choose from the list.';
+  const endsOn = input.ends_on ?? '';
+  if (typeof endsOn !== 'string' || (endsOn && !/^\d{4}-\d{2}-\d{2}$/.test(endsOn))) errors.ends_on = 'Please use a date like 2026-12-31.';
+  const value = { message: message ?? '', level, ends_on: endsOn };
+  return { value: Object.keys(errors).length ? null : value, errors };
+}
+

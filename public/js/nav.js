@@ -7,3 +7,9 @@
     row.scrollLeft = cur.offsetLeft - (row.clientWidth - cur.offsetWidth) / 2;
   }
 })();
+
+// Save a copy of the public directory on this device, so it opens and searches
+// with a weak or no signal (see /sw.js; never the admin panel).
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
+  navigator.serviceWorker.register('/sw.js').catch(function () { /* optional; the site works without it */ });
+}

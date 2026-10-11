@@ -1,0 +1,225 @@
+/* Printable flyer (public/flyer.html): one US Letter page, portrait.
+   Uses the site palette but stays readable on a black-and-white printer:
+   every colour is dark on light, and shapes rely on borders, not fills.
+   Loaded after site.css. */
+
+@page { size: letter portrait; margin: 0.35in; }
+
+.flyer {
+  --f-pine: #2b5a3a;
+  --f-deep: #1d3f29;
+  --f-sage: #dde6d0;
+  --f-band: #e8ecdd;
+  --f-paper: #f7f3ea;
+  --f-clay: #9c4724;
+  --f-brick: #8c1c13;
+  --f-ink: #24211c;
+  --f-cut: #5c5444;
+}
+
+/* ---------- On screen: toolbar and the sheet ---------- */
+
+.flyer-toolbar {
+  max-width: calc(8.5in + 2rem);
+  margin: 1rem auto 0;
+  padding: 0 1rem;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+.flyer-toolbar-note { margin: 0; }
+.flyer-toolbar-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; }
+.flyer-back { display: inline-block; padding: 0.6rem 0; }
+
+main.flyer-main { max-width: calc(8.5in + 2rem); padding: 1rem 1rem 2.5rem; }
+
+.flyer {
+  display: flex; flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0.35in;
+  background: #fff;
+  color: var(--f-ink);
+  border: 1px solid var(--line, #ddd3c1);
+  border-radius: 4px;
+  box-shadow: var(--shadow);
+  font-size: 12pt;
+  line-height: 1.3;
+}
+.flyer > * { flex: none; }
+.flyer h2 { font-family: var(--serif); color: var(--f-deep); margin: 0 0 0.08in; line-height: 1.15; }
+.flyer a { color: inherit; text-decoration: none; }
+.flyer a:hover { text-decoration: underline; }
+
+/* ---------- Header band: name, counties, hills and pines ---------- */
+
+.flyer-head {
+  position: relative; overflow: hidden;
+  padding: 0.14in 0.3in 0.54in;
+  background: var(--f-band);
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+}
+.flyer-hills { position: absolute; left: 0; bottom: 0; width: 100%; height: 0.6in; }
+.flyer .flyer-name {
+  position: relative;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 46pt; line-height: 1.05; letter-spacing: -0.01em;
+  color: var(--f-deep);
+}
+.flyer-tagline { position: relative; margin: 0.04in 0 0; font-size: 17pt; font-weight: 600; color: var(--f-ink); }
+
+/* ---------- What you can find, and the big QR code ---------- */
+
+.flyer-body {
+  display: grid; grid-template-columns: 1fr 2.8in; gap: 0.25in;
+  align-items: center;
+  padding: 0.16in 0.1in 0.08in;
+}
+.flyer-find h2 { font-size: 19pt; }
+.flyer-list { list-style: none; margin: 0; padding: 0; font-size: 14.5pt; line-height: 1.2; }
+.flyer-list li { position: relative; margin: 0 0 0.035in; padding-left: 0.32in; }
+.flyer-list li::before {
+  /* a check mark drawn with borders, so it prints on any printer */
+  content: ""; position: absolute; left: 0.07in; top: 0.02em;
+  width: 0.09in; height: 0.19in;
+  border: solid var(--f-pine); border-width: 0 3.5pt 3.5pt 0;
+  transform: rotate(45deg);
+}
+.flyer-free {
+  display: inline-block;
+  margin: 0.06in 0 0;
+  padding: 0.03in 0.18in;
+  border: 2.5pt solid var(--f-pine); border-radius: 999px;
+  font-size: 15pt; font-weight: 800; color: var(--f-deep);
+}
+
+.flyer-scan {
+  padding: 0.1in 0.1in 0.04in;
+  border: 2.5pt solid var(--f-pine); border-radius: 14px;
+  text-align: center;
+}
+.flyer-scan h2 { font-size: 13pt; margin-bottom: 0; }
+.flyer-qr svg { display: block; width: 2.45in; height: 2.45in; max-width: 100%; margin: 0 auto; }
+
+/* ---------- The address in large type ---------- */
+
+.flyer-address {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0 0.15in;
+  margin: 0.04in 0 0;
+  padding: 0.03in 0.1in 0.04in;
+  border-top: 1.5pt solid var(--f-sage);
+  text-align: center;
+  font-size: 14pt;
+}
+.flyer-address-lead { color: var(--f-ink); }
+.flyer-url {
+  font-size: 31pt; font-weight: 800; line-height: 1.1; letter-spacing: -0.01em;
+  color: var(--f-deep);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Crisis box ---------- */
+
+.flyer-crisis {
+  margin-top: 0.06in;
+  padding: 0.08in 0.2in 0.1in;
+  border: 3pt solid var(--f-brick); border-radius: 12px;
+}
+.flyer .flyer-crisis h2 { font-family: inherit; font-size: 14pt; font-weight: 800; color: var(--f-brick); }
+.flyer-crisis ul {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.04in 0.3in;
+}
+.flyer-crisis a { display: flex; align-items: baseline; gap: 0.12in; min-height: 44px; }
+.flyer-crisis strong { flex: none; font-size: 19pt; color: var(--f-brick); }
+.flyer-crisis li:nth-child(n+3) strong { font-size: 16pt; }
+.flyer-crisis span { font-size: 11pt; line-height: 1.2; }
+
+/* ---------- Tear-off strips ---------- */
+
+.flyer-tear { margin-top: auto; padding-top: 0.1in; }
+.flyer .flyer-tear h2 {
+  font-family: inherit; font-size: 10.5pt; font-weight: 600; color: var(--f-cut);
+  text-align: center; margin: 0 0 0.04in;
+}
+.flyer-tear h2::before { content: "\2702\FE0E  "; content: "\2702\FE0E  " / ""; } /* scissors, decorative */
+.strips {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(8, 1fr);
+  border-top: 1.5pt dashed var(--f-cut);
+}
+.strips li {
+  display: flex; flex-direction: column; align-items: center; gap: 0.06in;
+  height: 2.4in; overflow: hidden;
+  padding: 0.08in 0.03in 0;
+  border-left: 1.5pt dashed var(--f-cut);
+}
+.strips li:first-child { border-left: 0; }
+.strip-qr svg { display: block; width: 0.78in; height: 0.78in; }
+.strip-text {
+  writing-mode: vertical-rl; transform: rotate(180deg);
+  white-space: nowrap; font-size: 10pt; line-height: 1.2; color: var(--f-ink);
+}
+.strip-text strong { display: block; font-size: 10.5pt; color: var(--f-deep); }
+
+/* ---------- Phones and narrow windows (screen only) ---------- */
+
+@media screen and (max-width: 52rem) {
+  main.flyer-main { padding: 0.75rem 0.5rem 2rem; }
+  .flyer { padding: 0.75rem; font-size: 1rem; }
+  .flyer-head { padding: 1rem 0.75rem 4.5rem; }
+  .flyer-hills { height: 4.5rem; }
+  .flyer .flyer-name { font-size: clamp(2rem, 10vw, 3.5rem); }
+  .flyer-tagline { font-size: 1.15rem; }
+  .flyer-body { grid-template-columns: 1fr; padding: 1rem 0.25rem 0.5rem; gap: 1.25rem; }
+  .flyer-find h2 { font-size: 1.4rem; }
+  .flyer-list { font-size: 1.1rem; }
+  .flyer-list li { padding-left: 2rem; }
+  .flyer-free { font-size: 1.15rem; }
+  .flyer-qr svg { width: min(2.6in, 70vw); height: auto; aspect-ratio: 1; }
+  .flyer-scan h2 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+  .flyer-address { font-size: 1rem; }
+  .flyer-url { font-size: clamp(1.2rem, 6.4vw, 2.4rem); }
+  .flyer-crisis { padding: 0.75rem; }
+  .flyer-crisis ul { grid-template-columns: 1fr; }
+  .flyer-crisis strong, .flyer-crisis li:nth-child(n+3) strong { font-size: 1.2rem; }
+  .flyer-crisis span { font-size: 1rem; }
+  .flyer-tear { margin-top: 1.25rem; }
+  .flyer .flyer-tear h2 { font-size: 0.95rem; }
+  .strips { grid-template-columns: repeat(4, 1fr); }
+  .strips li { height: 14rem; border-bottom: 1.5pt dashed var(--f-cut); }
+  .strips li:nth-child(4n+1) { border-left: 0; }
+  .strip-qr svg { width: min(0.8in, 18vw); height: auto; aspect-ratio: 1; }
+  .strip-text { font-size: 0.75rem; }
+  .strip-text strong { font-size: 0.8rem; }
+}
+
+/* ---------- Print: exactly one Letter page ---------- */
+
+@media print {
+  /* The web-only bars: crisis bar (the flyer has its own box), any dated
+     site notice, and the print toolbar. */
+  .crisis, .site-notice, .flyer-toolbar, .skip-link { display: none !important; }
+  main.flyer-main { max-width: none; margin: 0; padding: 0; }
+  .flyer {
+    width: 7.8in; height: 10.28in; max-width: none;
+    margin: 0; padding: 0;
+    border: 0; border-radius: 0;
+    overflow: hidden;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  /* site.css prints everything black on white; put the flyer's few colours
+     back. All are dark enough to read when printed in grey. */
+  .flyer .flyer-head { background: var(--f-band) !important; }
+  .flyer .flyer-name,
+  .flyer h2,
+  .flyer .flyer-free,
+  .flyer .flyer-url,
+  .flyer .strip-text strong { color: var(--f-deep) !important; }
+  .flyer .flyer-crisis h2,
+  .flyer .flyer-crisis strong { color: var(--f-brick) !important; }
+  .flyer .flyer-tear h2 { color: var(--f-cut) !important; }
+  .flyer .flyer-crisis a { min-height: 0; }
+}

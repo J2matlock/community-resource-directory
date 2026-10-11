@@ -9,6 +9,8 @@ import {
   exportSheets, todayLocal, listRequests, markRequestHandled,
 } from '../db/admin.js';
 import { buildXlsx } from '../xlsx.js';
+import { getNotice, saveNotice } from '../db/notice.js';
+import { validateNotice } from '../validate.js';
 
 const LIST_KINDS = ['categories', 'plans'];
 
@@ -75,6 +77,17 @@ export async function handleAdminApi(request, env, url, admin) {
       const { results } = await db.prepare('SELECT id, county, barriers, reporter, comment, created_at FROM barrier_reports ORDER BY id DESC LIMIT 500').all();
       const parse = (t) => { try { const a = JSON.parse(t || '[]'); return Array.isArray(a) ? a : []; } catch { return []; } };
       return json({ reports: results.map((r) => ({ ...r, barriers: parse(r.barriers) })) });
+    }
+
+    if (parts[0] === 'notice' && parts.length === 1) {
+      if (method === 'GET') return json({ notice: await getNotice(db) });
+      if (method === 'PUT') {
+        const { body, error } = await readJson(request);
+        if (error) return error;
+        const { value, errors } = validateNotice(body);
+        if (!value) return json({ error: 'Please check the notice.', errors }, 422);
+        return json({ notice: await saveNotice(db, value) });
+      }
     }
 
     if (parts[0] === 'suggestions' && parts.length === 1 && method === 'GET') {

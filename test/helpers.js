@@ -64,6 +64,7 @@ export async function resetDb() {
     db.prepare('DELETE FROM barrier_rate'),
     db.prepare('DELETE FROM help_suggestions'),
     db.prepare('DELETE FROM suggestion_rate'),
+    db.prepare("UPDATE site_notice SET message = '', level = 'info', ends_on = ''"),
     db.prepare('DELETE FROM listings'),
     db.prepare('DELETE FROM categories'),
     db.prepare('DELETE FROM medicaid_plans'),

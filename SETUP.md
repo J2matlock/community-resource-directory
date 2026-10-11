@@ -27,7 +27,12 @@ Then run:
 npm run apply-region
 ```
 
-This updates every page. Also edit `public/about.html` in your own words, and the `<meta name="description">` lines at the top of each page in `public/`.
+This updates every page and the home-screen app name. Also change these by hand:
+
+- `public/about.html`: in your own words, including "Who gets listed" (your inclusion rules).
+- The `<meta name="description">` lines at the top of each page in `public/`.
+- `public/flyer.html`: the tagline, the list of what people can find, and the crisis numbers in the red box. The QR codes update themselves.
+- `public/og-image.png` (the picture shown when someone shares a link, 1200×630) and `public/icons/` (home-screen icons, 192 and 512 pixels): they show this site's name and tree.
 
 ## 3. Try it on your computer
 
@@ -81,6 +86,9 @@ npm run deploy
 While `SITE_PUBLIC` is `"false"`, only you can see the site. When you're ready, set it to `"true"`, deploy again, and check every address while logged out (`npm run live-check -- https://your-domain.org --launched`). Turn off `workers_dev` once your domain works.
 
 ## Keeping it healthy
+
+- Run `npm run link-check -- --base https://your-domain.org` once a month: it lists listing websites and source links that no longer work.
+- The admin panel's **Site notice** puts a short message under the crisis bar on every page (for example a Code Blue night), and **Due for re-check** prints a call sheet for verification calls.
 
 - Every listing shows when it was last checked; the admin "Due for re-check" view lists anything older than 11 months.
 - A backup is emailed to you every Monday; use "Export to Excel" before big changes.

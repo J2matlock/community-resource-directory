@@ -18,7 +18,11 @@ function isTestSecret(secret) {
 // `action` names the form (set as data-action on its widget), so a pass
 // earned on one form can't be spent on another.
 export async function verifyTurnstile(env, token, ip, hostname, action) {
-  if (!env.TURNSTILE_SECRET_KEY || typeof token !== 'string' || !token || token.length > 2048) return false;
+  if (!env.TURNSTILE_SECRET_KEY) {
+    console.error('Turnstile refused: TURNSTILE_SECRET_KEY is not set (run wrangler secret put TURNSTILE_SECRET_KEY).');
+    return false;
+  }
+  if (typeof token !== 'string' || !token || token.length > 2048) return false;
   const body = new FormData();
   body.append('secret', env.TURNSTILE_SECRET_KEY);
   body.append('response', token);
@@ -26,9 +30,18 @@ export async function verifyTurnstile(env, token, ip, hostname, action) {
   try {
     const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body });
     const out = await res.json();
-    if (out.success !== true) return false;
-    return isTestSecret(env.TURNSTILE_SECRET_KEY) || (out.hostname === hostname && out.action === action);
-  } catch {
+    // Logs only Cloudflare's error codes and whether the address and form
+    // matched: never the token, the IP address or anything typed (rule 1).
+    if (out.success !== true) {
+      console.error('Turnstile refused:', JSON.stringify(out['error-codes'] ?? []));
+      return false;
+    }
+    if (isTestSecret(env.TURNSTILE_SECRET_KEY)) return true;
+    const ok = out.hostname === hostname && out.action === action;
+    if (!ok) console.error('Turnstile mismatch:', JSON.stringify({ hostname_ok: out.hostname === hostname, action_expected: action, action_got: String(out.action ?? '').slice(0, 32) }));
+    return ok;
+  } catch (err) {
+    console.error('Turnstile check failed:', err?.name);
     return false;
   }
 }

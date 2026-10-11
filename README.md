@@ -9,7 +9,10 @@ It's built to be cheap and safe to run: one Cloudflare Worker and a D1 database,
 **For the public (no login, no tracking):**
 - Search that forgives typos, category buttons with counts, and filters for county, cost, age and insurance accepted (including New York's "Straight" fee-for-service Medicaid).
 - Listing cards with tap-to-call, maps, hours and who qualifies, a "copy" and "text" button, and a link for each listing.
-- A printable one-page handout builder.
+- A printable one-page handout builder, with a QR code for each listing, and a "Share list" link for several listings at once.
+- Works offline and installs to a phone's home screen: the public directory is saved on the device (never the admin panel).
+- Link previews and a sitemap, so shared links show each listing's name and search engines can find every listing.
+- A one-page printable flyer with a QR code and tear-off strips.
 - A red crisis bar on every page, with phone-friendly buttons.
 - A form for programs to request a listing or a correction (spam-checked, rate-limited).
 - **Learn:** plain-language answers about benefits, each with a source.
@@ -19,7 +22,9 @@ It's built to be cheap and safe to run: one Cloudflare Worker and a D1 database,
 **For the one owner (admin panel behind Cloudflare Access):**
 - Add, edit, retire and restore listings, with full change history.
 - Private notes and internal-only listings that never reach the public.
-- "Due for re-check" view, requests inbox, anonymous barrier reports, Excel export and a weekly emailed backup.
+- "Due for re-check" view with a printable call sheet, requests inbox, anonymous barrier reports, Excel export and a weekly emailed backup.
+- A site notice (e.g. "Code Blue shelter open tonight") shown under the crisis bar on every page, with an optional end date.
+- A monthly broken-link check (`npm run link-check`).
 
 ## Privacy and safety rules built into the code
 
@@ -28,7 +33,7 @@ It's built to be cheap and safe to run: one Cloudflare Worker and a D1 database,
 3. Only the owner can edit. Every admin request is checked in the Worker against Cloudflare Access (signature, issuer, audience, email), not just at the edge.
 4. The public data comes from its own query that selects only public columns.
 5. Everything typed into public forms is treated as untrusted: checked, size-limited, stored and emailed as plain text.
-6. No analytics, ads or third-party scripts (besides Cloudflare's Turnstile spam check).
+6. No analytics, ads or third-party scripts (besides Cloudflare's Turnstile spam check). Even the QR code generator and the typo-tolerant search are written for this project.
 
 Each rule has automated tests (`npm test`).
 

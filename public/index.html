@@ -8,6 +8,7 @@
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/site.css">
   <script defer src="/js/nav.js"></script>
+  <script defer src="/js/qr.js"></script>
   <script defer src="/js/directory.js"></script>
 </head>
 <body data-site-name="Southern ADK Help" data-domain="southernadkhelp.org" data-fallback="call 211 or search 211neny.org">
@@ -96,26 +97,28 @@
         <button type="button" id="clear-filters" class="secondary">Clear search and filters</button>
       </details>
 
-      <p class="suggest-top"><a href="/suggest">Don't see the help you need? Tell us</a></p>
+      <p class="suggest-top"><a class="suggest-button" href="/suggest"><span>Don't see the help you need? <strong>Tell us</strong></span></a></p>
     </div>
 
     <p id="back-link" class="back-link" hidden><a href="/">← All resources</a></p>
 
     <p id="result-status" class="result-status" role="status" aria-live="polite" tabindex="-1">Loading resources… If nothing appears, <span data-region="fallbackText">call 211 or search 211neny.org</span>.</p>
+    <p id="offline-note" class="offline-note" role="status" hidden></p>
     <p id="plan-note" class="note" hidden></p>
 
     <ol id="results" class="results" aria-labelledby="page-title"></ol>
 
     <aside class="fallback" aria-label="More help">
       <p><strong>Can't find it?</strong> <span data-region="fallbackLinks">Call <a href="tel:211">211</a> or search <a href="https://www.211neny.org/">211neny.org</a></span>.</p>
-      <p class="suggest-bottom"><a class="request-button" href="/suggest">Don't see the help you need? <strong>Tell us anonymously</strong></a></p>
+      <p class="suggest-bottom"><a class="suggest-button" href="/suggest"><span>Don't see the help you need? <strong>Tell us anonymously</strong></span></a></p>
     </aside>
 
     <p id="handout-live" class="visually-hidden" aria-live="polite"></p>
     <div id="handout-bar" class="handout-bar" hidden>
       <p id="handout-count"></p>
-      <p class="handout-hint">About 8 fit on one page.</p>
+      <p class="handout-hint">About 5 fit on one page.</p>
       <button type="button" id="handout-print">Print handout</button>
+      <button type="button" id="handout-share" class="secondary">Share list</button>
       <button type="button" id="handout-clear" class="secondary">Clear</button>
     </div>
   </main>

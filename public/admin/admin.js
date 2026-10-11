@@ -50,13 +50,28 @@ function toast(message) {
   toast.timer = setTimeout(() => t.classList.remove('show'), 3500);
 }
 
+// Runs a button's action. If it fails (expired login, no signal), the button
+// comes back and the reason shows next to it and is read out.
+async function runAction(button, fn) {
+  button.disabled = true;
+  const old = button.parentNode?.querySelector(':scope > .action-error');
+  old?.remove();
+  try {
+    await fn();
+  } catch (err) {
+    button.disabled = false;
+    button.after(el('p', { class: 'action-error', role: 'alert' }, err.message || 'That did not work. Please try again.'));
+  }
+}
+
 function show(...nodes) {
   main.replaceChildren(...nodes.flat().filter(Boolean));
   main.focus();
 }
 
 function showError(err) {
-  show(el('h1', {}, 'Something went wrong'), el('p', {}, err.message), el('p', {}, el('button', { type: 'button', onclick: () => location.reload() }, 'Reload')));
+  show(el('div', { class: 'error-page', role: 'alert' }, el('h1', {}, 'Something went wrong'), el('p', {}, err.message),
+    el('p', {}, el('button', { type: 'button', onclick: () => location.reload() }, 'Reload'))));
 }
 
 function formatDate(iso) {
@@ -77,6 +92,27 @@ function badges(l) {
     l.status === 'Temporarily closed' ? el('span', { class: 'badge closed' }, 'Temporarily closed') : null,
     l.status === 'Seasonal' ? el('span', { class: 'badge seasonal' }, 'Seasonal') : null,
   ];
+}
+
+// Display only: when a listing was last checked and whether a re-check is due
+// (same rule as the "Due for re-check" view: over 11 months, or a re-check
+// date that has passed). Words carry the meaning; colour only supports it.
+function verifiedState(l) {
+  const today = new Date().toISOString().slice(0, 10);
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - 11);
+  if (l.review_by && l.review_by <= today) return el('span', { class: 'state state-due' }, `Re-check due (${formatDate(l.review_by)})`);
+  if (!l.last_verified) return el('span', { class: 'state state-never' }, 'Not verified yet');
+  if (l.last_verified <= cutoff.toISOString().slice(0, 10)) return el('span', { class: 'state state-due' }, `Re-check due · verified ${formatDate(l.last_verified)}`);
+  return el('span', { class: 'state state-ok' }, `Verified ${formatDate(l.last_verified)}`);
+}
+
+function emptyState(title, text) {
+  return el('div', { class: 'empty' }, el('p', { class: 'empty-title' }, title), text ? el('p', {}, text) : null);
+}
+
+function pageHead(title, ...extra) {
+  return el('div', { class: 'page-head' }, el('h1', {}, title), ...extra);
 }
 
 function setNav(name) {
@@ -114,14 +150,20 @@ async function viewListings() {
       return [l.name, l.organization, l.category, l.town, l.tags.join(' '), l.phone, l.private_notes].join(' ').toLowerCase().includes(q);
     });
     count.textContent = `${shown.length} of ${listingCache.length} listings`;
-    results.replaceChildren(...shown.map((l) => el('li', {},
-      el('span', { class: 'name' }, el('a', { href: `#/edit/${l.id}` }, l.name)),
-      el('span', { class: 'info' }, badges(l), [l.category, l.town].filter(Boolean).join(' · ')),
-      el('span', { class: 'info' }, l.last_verified ? `Verified ${formatDate(l.last_verified)}` : 'Not yet verified'),
+    results.replaceChildren(...shown.map((l) => el('li', { class: `item${l.retired ? ' is-retired' : ''}${l.visibility === 'Internal' ? ' is-internal' : ''}` },
+      el('div', { class: 'item-main' },
+        el('a', { class: 'item-name', href: `#/edit/${l.id}` }, l.name),
+        el('p', { class: 'item-meta' }, [l.category, l.town].filter(Boolean).join(' · '))),
+      el('div', { class: 'item-side' },
+        el('span', { class: 'item-badges' }, badges(l)),
+        verifiedState(l)),
     )));
+    if (!shown.length) {
+      results.append(el('li', { class: 'item-empty' }, emptyState('No listings match', 'Try fewer or different words, or change the filters above.')));
+    }
   }
 
-  const search = el('input', { type: 'search', id: 'list-search', value: listFilters.q, oninput: (e) => { listFilters.q = e.target.value; render(); } });
+  const search = el('input', { type: 'search', id: 'list-search', 'aria-describedby': 'list-search-hint', value: listFilters.q, oninput: (e) => { listFilters.q = e.target.value; render(); } });
   const vis = el('select', { id: 'list-vis', onchange: (e) => { listFilters.visibility = e.target.value; render(); } },
     el('option', { value: '' }, 'Public and Internal'), el('option', { value: 'Public' }, 'Public only'), el('option', { value: 'Internal' }, 'Internal only'));
   vis.value = listFilters.visibility;
@@ -130,10 +172,10 @@ async function viewListings() {
   cat.value = listFilters.category;
 
   show(
-    el('h1', {}, 'Listings'),
-    el('p', {}, el('a', { href: '#/new', class: 'button' }, '+ Add a listing')),
-    el('div', { class: 'toolbar' },
-      el('div', { class: 'field' }, el('label', { for: 'list-search' }, 'Search'), search),
+    pageHead('Listings', el('a', { href: '#/new', class: 'button' }, '+ Add a listing')),
+    el('div', { class: 'toolbar filter-panel' },
+      el('div', { class: 'field field-search' }, el('label', { for: 'list-search' }, 'Search'),
+        el('span', { class: 'hint', id: 'list-search-hint' }, 'Name, town, category, search words, phone or private notes.'), search),
       el('div', { class: 'field' }, el('label', { for: 'list-vis' }, 'Visibility'), vis),
       el('div', { class: 'field' }, el('label', { for: 'list-cat' }, 'Category'), cat),
       el('label', { class: 'check' }, el('input', { type: 'checkbox', checked: listFilters.retired, onchange: (e) => { listFilters.retired = e.target.checked; render(); } }), 'Show retired'),
@@ -154,7 +196,7 @@ function textField(name, label, type, hint, value, opts = {}) {
   const id = `f-${name}`;
   const input = type === 'textarea'
     ? el('textarea', { id, name, rows: opts.rows ?? 4, 'aria-describedby': `${id}-hint ${id}-err` })
-    : el('input', { id, name, type, 'aria-describedby': `${id}-hint ${id}-err`, autocomplete: 'off' });
+    : el('input', { id, name, type, 'aria-describedby': `${id}-hint ${id}-err`, autocomplete: 'off', 'aria-required': opts.required ? 'true' : null });
   input.value = value ?? '';
   return el('div', { class: `field${opts.private ? ' private' : ''}`, 'data-field': name },
     el('label', { for: id }, label),
@@ -166,8 +208,9 @@ function textField(name, label, type, hint, value, opts = {}) {
 
 function checkGroup(name, legend, options, selected, hint) {
   const id = `f-${name}`;
-  return el('fieldset', { 'data-field': name, 'aria-describedby': `${id}-err` },
-    el('legend', {}, legend, hint ? el('span', { class: 'hint' }, hint) : null),
+  return el('fieldset', { 'data-field': name, 'aria-describedby': hint ? `${id}-hint ${id}-err` : `${id}-err` },
+    el('legend', {}, legend),
+    hint ? el('p', { class: 'hint group-hint', id: `${id}-hint` }, hint) : null,
     el('div', { class: 'checks' }, ...options.map((o) => el('label', {},
       el('input', { type: 'checkbox', name, value: o, checked: selected.includes(o) }), o))),
     el('p', { class: 'error-text', id: `${id}-err`, hidden: true }),
@@ -176,7 +219,7 @@ function checkGroup(name, legend, options, selected, hint) {
 
 function selectField(name, label, options, value, hint) {
   const id = `f-${name}`;
-  const sel = el('select', { id, name, 'aria-describedby': `${id}-hint ${id}-err` },
+  const sel = el('select', { id, name, 'aria-describedby': `${id}-hint ${id}-err`, 'aria-required': name === 'category' ? 'true' : null },
     ...options.map((o) => el('option', { value: o }, o || 'Choose a category…')));
   sel.value = value;
   return el('div', { class: 'field', 'data-field': name },
@@ -206,6 +249,7 @@ function readForm(form) {
 function clearErrors(form) {
   for (const f of form.querySelectorAll('[data-field]')) {
     f.classList.remove('invalid');
+    for (const c of f.querySelectorAll('[aria-invalid]')) c.removeAttribute('aria-invalid');
     const err = f.querySelector('.error-text');
     if (err) { err.hidden = true; err.textContent = ''; }
   }
@@ -219,6 +263,7 @@ function showProblems(form, { errors = {}, warnings = [], error }, onSaveAnyway)
     const wrap = form.querySelector(`[data-field="${field}"]`);
     if (wrap) {
       wrap.classList.add('invalid');
+      for (const c of wrap.querySelectorAll('input, select, textarea')) c.setAttribute('aria-invalid', 'true');
       const err = wrap.querySelector('.error-text');
       err.textContent = msg;
       err.hidden = false;
@@ -238,6 +283,79 @@ function showProblems(form, { errors = {}, warnings = [], error }, onSaveAnyway)
   box.focus();
 }
 
+// ---------- Change history ----------
+// Changes made in the same save are grouped into one card: when, who, then
+// each field's Before and After. For longer text the words that changed are
+// marked (struck through = removed, highlighted = added). Text only, no HTML.
+const FIELD_LABELS = {
+  name: 'Name', organization: 'Parent organization', category: 'Category', tags: 'Search words', phone: 'Phone',
+  fax: 'Fax', email: 'Email', website: 'Website', address: 'Office address', town: 'Town', serves_counties: 'Counties served',
+  hours: 'Hours', eligibility: 'Who can get help', age_groups: 'Age groups', cost: 'Cost', medicaid_plans: 'Insurance accepted',
+  medicaid_notes: 'Insurance notes', description: 'Description (public)', private_notes: 'Private notes', status: 'Status',
+  review_by: 'Re-check by', visibility: 'Visibility', last_verified: 'Last verified', retired: 'Retired',
+};
+
+function whoChanged(by) {
+  if (!by) return '';
+  if (by.includes('@')) return 'by you';
+  return `by ${by.replace(/\s+\d{4}-\d{2}-\d{2}$/, '')}`;
+}
+
+// Word-level differences (longest common subsequence). Returns
+// [{ text, kind: 'same' | 'del' | 'ins' }]; null if the texts are too long.
+function wordDiff(a, b) {
+  const x = a.split(/(\s+)/), y = b.split(/(\s+)/);
+  if (x.length * y.length > 400000) return null;
+  const n = x.length, m = y.length, L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+  for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = x[i] === y[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+  const out = [];
+  const push = (text, kind) => { const last = out[out.length - 1]; if (last && last.kind === kind) last.text += text; else out.push({ text, kind }); };
+  let i = 0, j = 0;
+  while (i < n && j < m) {
+    if (x[i] === y[j]) { push(x[i], 'same'); i++; j++; } else if (L[i + 1][j] >= L[i][j + 1]) { push(x[i], 'del'); i++; } else { push(y[j], 'ins'); j++; }
+  }
+  while (i < n) push(x[i++], 'del');
+  while (j < m) push(y[j++], 'ins');
+  // Mostly rewritten: marking nearly every word helps no one, so show plain text.
+  const words = (k) => out.filter((o) => o.kind === k).reduce((t, o) => t + o.text.split(/\s+/).filter(Boolean).length, 0);
+  if (words('same') < Math.max(words('del'), words('ins')) * 0.6) return null;
+  return out;
+}
+
+function diffSide(parts, side) {
+  const p = el('p', { class: 'change-text' });
+  for (const part of parts) {
+    if (part.kind === 'same') p.append(part.text);
+    else if (part.kind === side) p.append(el(side, {}, el('span', { class: 'visually-hidden' }, side === 'del' ? ' [removed: ' : ' [added: '), part.text, el('span', { class: 'visually-hidden' }, '] ')));
+  }
+  return p;
+}
+
+function changeRow(h) {
+  const label = FIELD_LABELS[h.field] || h.field.replace(/_/g, ' ');
+  if (h.field === 'created') return el('li', { class: 'change' }, el('p', { class: 'change-field' }, 'Listing created'), el('p', { class: 'change-text' }, h.new_value || ''));
+  const before = h.old_value ?? '', after = h.new_value ?? '';
+  const long = before.length > 60 && after.length > 60;
+  const parts = long ? wordDiff(before, after) : null;
+  const col = (title, text, side) => el('div', { class: `change-col ${side}` },
+    el('p', { class: 'change-label' }, title),
+    parts ? diffSide(parts, side === 'before' ? 'del' : 'ins') : el('p', { class: 'change-text' }, text || '(empty)'));
+  return el('li', { class: 'change' }, el('p', { class: 'change-field' }, label),
+    el('div', { class: 'change-cols' }, col('Before', before, 'before'), col('After', after, 'after')));
+}
+
+function historyList(history) {
+  const groups = [];
+  for (const h of history) {
+    const g = groups[groups.length - 1];
+    if (g && g.at === h.changed_at && g.by === h.changed_by) g.rows.push(h);
+    else groups.push({ at: h.changed_at, by: h.changed_by, rows: [h] });
+  }
+  return el('ol', { class: 'history-list' }, groups.map((g) => el('li', { class: 'history-save' },
+    el('h3', {}, `${formatDateTime(g.at)} `, el('span', { class: 'who' }, whoChanged(g.by))),
+    el('ul', { class: 'changes' }, g.rows.map(changeRow)))));
+}
+
 async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = false } = {}) {
   setNav('listings');
   let listing = null;
@@ -255,42 +373,55 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
   };
   document.title = `${id ? `Edit: ${l.name}` : 'Add a listing'}: Directory admin`;
 
-  const form = el('form', { novalidate: true, 'aria-label': id ? 'Edit listing' : 'Add listing' },
-    textField('name', 'Name', 'text', 'Organization or program name. Required.', l.name),
-    textField('organization', 'Parent organization', 'text', 'Groups programs from the same agency, e.g. "Open Door Mission".', l.organization),
-    selectField('category', 'Category', l.category ? lists.categories : ['', ...lists.categories], l.category, 'Add or rename categories under "Categories & plans".'),
-    textField('tags', 'Search words', 'text', 'Separate with commas, e.g. food pantry, groceries.', l.tags.join(', ')),
-    el('div', { class: 'grid2' },
-      textField('phone', 'Phone', 'tel', 'General line only, e.g. (518) 555-1234 x12. Staff direct lines go in private notes.', l.phone),
-      textField('fax', 'Fax', 'tel', '', l.fax)),
-    el('div', { class: 'grid2' },
-      textField('email', 'Email', 'email', 'General address only. A staff member\'s email goes in private notes.', l.email),
-      textField('website', 'Website', 'url', 'e.g. https://example.org', l.website)),
-    textField('address', 'Office address', 'text', 'Street, town, NY ZIP. Leave blank if there is no public address.', l.address),
-    el('div', { class: 'field', 'data-field': 'confirm_office_address' },
-      el('div', { class: 'checks' }, el('label', {}, el('input', { type: 'checkbox', name: 'confirm_office_address' }),
-        'This is an office address, not a shelter')),
-      el('span', { class: 'hint' }, 'Needed for domestic violence programs. Never store where a shelter is.')),
-    textField('town', 'Town', 'text', 'Filled in from the address if left blank.', l.town),
-    checkGroup('serves_counties', 'Counties served', COUNTIES, l.serves_counties, 'Regional = shows for every county.'),
-    textField('hours', 'Hours', 'text', 'e.g. Monday–Friday, 9 AM–4 PM', l.hours),
-    textField('eligibility', 'Who can get help', 'textarea', 'e.g. "60+ or have a disability"', l.eligibility, { rows: 2 }),
-    checkGroup('age_groups', 'Age groups', AGE_GROUPS, l.age_groups, 'Leave all unticked if open to all ages.'),
-    checkGroup('cost', 'Cost', COSTS, l.cost),
-    checkGroup('medicaid_plans', 'Insurance accepted', lists.plans, l.medicaid_plans, 'Tick only plans you have confirmed. Add plans under "Categories & plans".'),
-    textField('medicaid_notes', 'Insurance notes', 'text', 'e.g. "Does not take UnitedHealthcare Medicaid"', l.medicaid_notes),
-    textField('description', 'Description (public)', 'textarea', 'Plain summary anyone can understand.', l.description, { rows: 5 }),
-    textField('private_notes', 'Private notes', 'textarea', 'Staff names, direct lines, scripts, intake tips. Never shown publicly. Never put client information here.', l.private_notes, { rows: 5, private: true }),
-    el('div', { class: 'grid2' },
-      selectField('status', 'Status', STATUSES, l.status),
-      textField('review_by', 'Re-check by', 'date', 'Optional date to check this listing again.', l.review_by)),
-    el('fieldset', { 'data-field': 'visibility' },
-      el('legend', {}, 'Visibility'),
-      el('div', { class: 'checks' },
-        el('label', {}, el('input', { type: 'radio', name: 'visibility', value: 'Public', checked: l.visibility === 'Public' }), 'Public'),
-        el('label', {}, el('input', { type: 'radio', name: 'visibility', value: 'Internal', checked: l.visibility === 'Internal' }), 'Internal (only you see the whole listing)')),
-      el('p', { class: 'error-text', id: 'f-visibility-err', hidden: true })),
-    textField('last_verified', 'Last verified', 'date', 'Use "Verified today" below to set this to today.', l.last_verified),
+  // Sections are for reading only; every field keeps its own label, name and id.
+  const section = (key, title, intro, ...children) => el('section', { class: `form-section section-${key}`, 'aria-labelledby': `sec-${key}` },
+    el('h2', { id: `sec-${key}` }, title),
+    intro ? el('p', { class: 'section-intro' }, intro) : null,
+    ...children);
+
+  const form = el('form', { class: 'listing-form', novalidate: true, 'aria-label': id ? 'Edit listing' : 'Add listing' },
+    section('basics', 'Basics', null,
+      textField('name', 'Name (required)', 'text', 'Organization or program name.', l.name, { required: true }),
+      textField('organization', 'Parent organization', 'text', 'Groups programs from the same agency, e.g. "Open Door Mission".', l.organization),
+      selectField('category', 'Category (required)', l.category ? lists.categories : ['', ...lists.categories], l.category, 'Add or rename categories under "Categories & plans".'),
+      textField('tags', 'Search words', 'text', 'Separate with commas, e.g. food pantry, groceries.', l.tags.join(', '))),
+    section('contact', 'Contact, address and hours', 'General lines and addresses only. Staff names, direct lines and personal emails go in Private notes.',
+      el('div', { class: 'grid2' },
+        textField('phone', 'Phone', 'tel', 'General line only, e.g. (518) 555-1234 x12.', l.phone),
+        textField('fax', 'Fax', 'tel', '', l.fax)),
+      el('div', { class: 'grid2' },
+        textField('email', 'Email', 'email', 'General address only.', l.email),
+        textField('website', 'Website', 'url', 'e.g. https://example.org', l.website)),
+      textField('address', 'Office address', 'text', 'Street, town, NY ZIP. Leave blank if there is no public address.', l.address),
+      el('div', { class: 'field field-confirm', 'data-field': 'confirm_office_address' },
+        el('div', { class: 'checks' }, el('label', {}, el('input', { type: 'checkbox', name: 'confirm_office_address', 'aria-describedby': 'f-confirm-hint' }),
+          'This is an office address, not a shelter')),
+        el('span', { class: 'hint', id: 'f-confirm-hint' }, 'Needed for domestic violence programs. Never store where a shelter is.')),
+      el('div', { class: 'grid2' },
+        textField('town', 'Town', 'text', 'Filled in from the address if left blank.', l.town),
+        textField('hours', 'Hours', 'text', 'e.g. Monday–Friday, 9 AM–4 PM', l.hours))),
+    section('who', 'Who it serves and cost', null,
+      checkGroup('serves_counties', 'Counties served', COUNTIES, l.serves_counties, 'Regional = shows for every county.'),
+      textField('eligibility', 'Who can get help', 'textarea', 'e.g. "60+ or have a disability"', l.eligibility, { rows: 2 }),
+      checkGroup('age_groups', 'Age groups', AGE_GROUPS, l.age_groups, 'Leave all unticked if open to all ages.'),
+      checkGroup('cost', 'Cost', COSTS, l.cost),
+      checkGroup('medicaid_plans', 'Insurance accepted', lists.plans, l.medicaid_plans, 'Tick only plans you have confirmed. Add plans under "Categories & plans".'),
+      textField('medicaid_notes', 'Insurance notes', 'text', 'e.g. "Does not take UnitedHealthcare Medicaid"', l.medicaid_notes)),
+    section('description', 'Public description', null,
+      textField('description', 'Description (public)', 'textarea', 'Plain summary anyone can understand.', l.description, { rows: 5 })),
+    section('private', 'Private: only you see this', 'Never shown on the public site. Never put client information here.',
+      textField('private_notes', 'Private notes', 'textarea', 'Staff names, direct lines, scripts, intake tips.', l.private_notes, { rows: 5, private: true })),
+    section('status', 'Status and checks', null,
+      el('fieldset', { class: 'visibility', 'data-field': 'visibility', 'aria-describedby': 'f-visibility-err' },
+        el('legend', {}, 'Visibility'),
+        el('div', { class: 'checks' },
+          el('label', { class: 'vis-public' }, el('input', { type: 'radio', name: 'visibility', value: 'Public', checked: l.visibility === 'Public' }), 'Public'),
+          el('label', { class: 'vis-internal' }, el('input', { type: 'radio', name: 'visibility', value: 'Internal', checked: l.visibility === 'Internal' }), 'Internal (only you see the whole listing)')),
+        el('p', { class: 'error-text', id: 'f-visibility-err', hidden: true })),
+      el('div', { class: 'grid2' },
+        selectField('status', 'Status', STATUSES, l.status),
+        textField('review_by', 'Re-check by', 'date', 'Optional date to check this listing again.', l.review_by)),
+      textField('last_verified', 'Last verified', 'date', listing ? 'Or press "Verified today" in the bar at the bottom.' : 'The date you last confirmed the details.', l.last_verified)),
   );
 
   form.addEventListener('input', () => { dirty = true; });
@@ -317,30 +448,46 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
 
   form.addEventListener('submit', (e) => { e.preventDefault(); save(false); });
 
+  // Pinned bar at the bottom of the form: Save and Verified today only.
+  // Retire sits in its own box below the form so it can't be pressed by mistake.
   const actions = el('div', { class: 'actions-bar' },
-    el('button', { type: 'submit' }, id ? 'Save changes' : 'Add listing'),
-    listing ? el('button', { type: 'button', class: 'secondary', onclick: async () => {
-      if (dirty) { toast('Save or undo your changes first.'); return; }
-      await api(`/listings/${encodeURIComponent(listing.id)}/verify`, { method: 'POST' });
-      toast('Marked as verified today.');
-      await viewEdit(listing.id);
-    } }, 'Verified today') : null,
-    listing ? el('button', { type: 'button', class: listing.retired ? 'secondary' : 'danger', onclick: async () => {
-      if (dirty) { toast('Save or undo your changes first.'); return; }
-      await api(`/listings/${encodeURIComponent(listing.id)}/${listing.retired ? 'restore' : 'retire'}`, { method: 'POST' });
-      toast(listing.retired ? 'Restored. It shows on the public site again.' : 'Retired. It no longer shows on the public site.');
-      await viewEdit(listing.id);
-    } }, listing.retired ? 'Restore' : 'Retire') : null,
-    el('a', { href: '#/listings', class: 'button secondary' }, 'Back to list'),
+    el('div', { class: 'actions-inner' },
+      el('button', { type: 'submit', class: 'save' }, id ? 'Save changes' : 'Add listing'),
+      listing ? el('button', { type: 'button', class: 'secondary', onclick: (e) => {
+        if (dirty) { toast('Save or undo your changes first.'); return; }
+        runAction(e.currentTarget, async () => {
+          await api(`/listings/${encodeURIComponent(listing.id)}/verify`, { method: 'POST' });
+          toast('Marked as verified today.');
+          await viewEdit(listing.id);
+        });
+      } }, 'Verified today') : null,
+      el('p', { class: 'actions-note' }, id ? 'Changes go live as soon as you save.' : 'New listings go live when saved as Public.')),
   );
   form.append(actions);
 
+  const retireZone = listing ? el('section', { class: `retire-zone${listing.retired ? ' is-retired' : ''}`, 'aria-labelledby': 'sec-retire' },
+    el('h2', { id: 'sec-retire' }, listing.retired ? 'Restore this listing' : 'Retire this listing'),
+    el('p', {}, listing.retired
+      ? 'This listing is retired: hidden from the public site but kept with its history. Restore puts it back.'
+      : 'Retiring hides it from the public site. It is kept with its history and you can restore it any time from "Retired".'),
+    el('button', { type: 'button', class: listing.retired ? 'secondary' : 'danger', onclick: (e) => {
+      if (dirty) { toast('Save or undo your changes first.'); return; }
+      runAction(e.currentTarget, async () => {
+        await api(`/listings/${encodeURIComponent(listing.id)}/${listing.retired ? 'restore' : 'retire'}`, { method: 'POST' });
+        toast(listing.retired ? 'Restored. It shows on the public site again.' : 'Retired. It no longer shows on the public site.');
+        await viewEdit(listing.id);
+      });
+    } }, listing.retired ? 'Restore' : 'Retire')) : null;
+
   const head = [
+    el('p', { class: 'back-link' }, el('a', { href: '#/listings' }, 'All listings')),
     el('h1', {}, id ? l.name : 'Add a listing'),
-    listing ? el('p', { class: 'meta-line' }, badges(listing),
-      listing.visibility === 'Public' && !listing.retired ? el('a', { href: `/listing/${listing.id}` }, 'View on public site') : 'Not shown on the public site',
-      ` · Link name: ${listing.id}`) : null,
-    fromRequest ? el('div', { class: 'summary warn' },
+    listing ? el('div', { class: 'edit-meta' },
+      el('p', { class: 'edit-badges' }, badges(listing), verifiedState(listing)),
+      el('p', { class: 'meta-line' },
+        listing.visibility === 'Public' && !listing.retired ? el('a', { href: `/listing/${listing.id}` }, 'View on public site') : 'Not shown on the public site',
+        ` · Link name: ${listing.id}`)) : null,
+    fromRequest ? el('div', { class: 'callout' },
       el('p', {}, `Pre-filled from provider request #${fromRequest}. Choose a category and check everything, then save. The request will be marked handled.`),
       el('p', {}, okToPublish
         ? 'The provider said it is OK to publish. The listing starts as Internal; switch it to Public once you have confirmed the details.'
@@ -348,16 +495,12 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
   ];
 
   const historySection = listing ? [
-    el('h2', {}, 'Change history'),
-    history.length ? el('div', { class: 'table-wrap' }, el('table', { class: 'history' },
-      el('thead', {}, el('tr', {}, el('th', { scope: 'col' }, 'When'), el('th', { scope: 'col' }, 'Field'), el('th', { scope: 'col' }, 'Before'), el('th', { scope: 'col' }, 'After'))),
-      el('tbody', {}, history.map((h) => el('tr', {},
-        el('td', {}, formatDateTime(h.changed_at)), el('td', {}, h.field.replace(/_/g, ' ')),
-        el('td', {}, h.old_value), el('td', {}, h.new_value)))))) : el('p', {}, 'No changes yet.'),
+    el('h2', { class: 'history-heading' }, 'Change history'),
+    history.length ? historyList(history) : emptyState('No changes yet', 'Each save will show here with what changed.'),
   ] : [];
 
   dirty = false;
-  show(...head, form, ...historySection);
+  show(...head, form, retireZone, ...historySection);
 }
 
 // ---------- Due for re-check ----------
@@ -372,23 +515,69 @@ async function viewRecheck() {
     return `Last verified ${formatDate(l.last_verified)}`;
   };
   const list = el('ul', { class: 'items' }, listings.map((l) => {
-    const li = el('li', {},
-      el('span', { class: 'name' }, el('a', { href: `#/edit/${l.id}` }, l.name)),
-      el('span', { class: 'info' }, badges(l), reason(l), l.phone ? ` · ${l.phone}` : ''),
-      el('button', { type: 'button', class: 'secondary', onclick: async (e) => {
-        e.target.disabled = true;
-        await api(`/listings/${encodeURIComponent(l.id)}/verify`, { method: 'POST' });
-        li.remove();
-        toast(`${l.name}: verified today.`);
-      } }, 'Verified today'));
+    const li = el('li', { class: `item${l.visibility === 'Internal' ? ' is-internal' : ''}` },
+      el('div', { class: 'item-main' },
+        el('a', { class: 'item-name', href: `#/edit/${l.id}` }, l.name),
+        el('p', { class: 'item-meta' }, el('span', { class: `state ${(l.review_by && l.review_by <= today) || l.last_verified ? 'state-due' : 'state-never'}` }, reason(l)),
+          l.phone ? ' · ' : '', l.phone ? el('a', { class: 'item-phone', href: `tel:${l.phone.replace(/[^\d+]/g, '').replace(/^(\d{10}).*/, '$1')}` }, l.phone) : '')),
+      el('div', { class: 'item-side' },
+        el('span', { class: 'item-badges' }, badges(l)),
+        el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
+          await api(`/listings/${encodeURIComponent(l.id)}/verify`, { method: 'POST' });
+          li.remove();
+          toast(`${l.name}: verified today.`);
+        }) }, 'Verified today', el('span', { class: 'visually-hidden' }, `: ${l.name}`))));
     return li;
   }));
   show(
-    el('h1', {}, 'Due for re-check'),
-    el('p', {}, `${listings.length} listings were never verified, were last verified over 11 months ago, or have a re-check date that has passed. Call or email them, then press "Verified today" or edit the listing.`),
-    list,
+    pageHead('Due for re-check'),
+    el('p', { class: 'lede' }, `${listings.length} listings were never verified, were last verified over 11 months ago, or have a re-check date that has passed. Call or email them, then press "Verified today" or edit the listing.`),
+    listings.length ? callSheetPanel(listings, reason) : null,
+    listings.length ? list : emptyState('All caught up', 'Every listing has been checked in the last 11 months.'),
   );
 }
+
+// ---------- Printable call sheet ----------
+// A paper list for a batch of verification calls: who to call, what the site
+// says now, and boxes to tick. Work through it, then press "Verified today" or
+// edit each listing. Private notes are left off unless you ask for them.
+function callSheetPanel(listings, reason) {
+  const cats = [...new Set(listings.map((l) => l.category).filter(Boolean))].sort();
+  const cat = el('select', { id: 'cs-cat' }, el('option', { value: '' }, 'All categories'), ...cats.map((c) => el('option', { value: c }, c)));
+  const count = el('select', { id: 'cs-count' }, ...[10, 20, 40].map((n) => el('option', { value: String(n) }, `${n} listings`)), el('option', { value: '0' }, 'All'));
+  const priv = el('input', { type: 'checkbox', id: 'cs-private' });
+  return el('section', { class: 'call-sheet-panel', 'aria-labelledby': 'cs-h' },
+    el('h2', { id: 'cs-h' }, 'Print a call sheet'),
+    el('p', { class: 'section-intro' }, 'Pick a batch to call this week, for example 10 at a time. The sheet lists each number and what the site says now, with boxes to tick.'),
+    el('div', { class: 'toolbar' },
+      el('div', { class: 'field' }, el('label', { for: 'cs-cat' }, 'Category'), cat),
+      el('div', { class: 'field' }, el('label', { for: 'cs-count' }, 'How many'), count),
+      el('div', { class: 'checks' }, el('label', {}, priv, 'Include my private notes'))),
+    el('p', {}, el('button', { type: 'button', onclick: () => {
+      let chosen = listings.filter((l) => !cat.value || l.category === cat.value);
+      if (count.value !== '0') chosen = chosen.slice(0, Number(count.value));
+      printCallSheet(chosen, reason, priv.checked);
+    } }, 'Print call sheet')));
+}
+
+function printCallSheet(chosen, reason, withPrivate) {
+  const sheet = document.getElementById('call-sheet') || document.body.appendChild(el('section', { id: 'call-sheet', class: 'call-sheet', 'aria-hidden': 'true' }));
+  const row = (label, value) => (value ? el('p', {}, el('strong', {}, `${label}: `), value) : null);
+  sheet.replaceChildren(
+    el('h1', {}, 'Verification calls'),
+    el('p', { class: 'cs-sub' }, `Printed ${formatDate(new Date().toISOString().slice(0, 10))} · ${chosen.length} listings. Ask: are the phone, hours, address, who can get help, cost and insurance still right?`),
+    el('ol', {}, chosen.map((l) => el('li', {},
+      el('div', { class: 'cs-head' }, el('h2', {}, l.name), el('span', { class: 'cs-phone' }, l.phone || 'No phone listed')),
+      el('p', { class: 'cs-meta' }, [l.category, l.town, reason(l)].filter(Boolean).join(' · ')),
+      row('Hours', l.hours), row('Address', l.address), row('Who can get help', l.eligibility),
+      row('Insurance', [l.medicaid_plans.join(', '), l.medicaid_notes].filter(Boolean).join('. ')),
+      row('Website', l.website), withPrivate ? row('Private notes', l.private_notes) : null,
+      el('p', { class: 'cs-boxes' }, '☐ Still right   ☐ Changed (note below)   ☐ No answer / left message   ☐ Closed'),
+      el('p', { class: 'cs-notes' }, 'Notes: ')))));
+  document.body.classList.add('print-call-sheet');
+  window.print();
+}
+window.addEventListener('afterprint', () => document.body.classList.remove('print-call-sheet'));
 
 // ---------- Retired (archive) ----------
 async function viewRetired() {
@@ -397,21 +586,22 @@ async function viewRetired() {
   const { listings } = await api('/listings');
   const retired = listings.filter((l) => l.retired);
   const list = el('ul', { class: 'items' }, retired.map((l) => {
-    const li = el('li', {},
-      el('span', { class: 'name' }, el('a', { href: `#/edit/${l.id}` }, l.name)),
-      el('span', { class: 'info' }, [l.category, l.town].filter(Boolean).join(' · ')),
-      el('button', { type: 'button', class: 'secondary', onclick: async (e) => {
-        e.target.disabled = true;
-        await api(`/listings/${encodeURIComponent(l.id)}/restore`, { method: 'POST' });
-        li.remove();
-        toast(`${l.name}: restored to the public directory.`);
-      } }, 'Restore'));
+    const li = el('li', { class: 'item is-retired' },
+      el('div', { class: 'item-main' },
+        el('a', { class: 'item-name', href: `#/edit/${l.id}` }, l.name),
+        el('p', { class: 'item-meta' }, [l.category, l.town].filter(Boolean).join(' · '))),
+      el('div', { class: 'item-side' },
+        el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
+          await api(`/listings/${encodeURIComponent(l.id)}/restore`, { method: 'POST' });
+          li.remove();
+          toast(`${l.name}: restored to the public directory.`);
+        }) }, 'Restore', el('span', { class: 'visually-hidden' }, `: ${l.name}`))));
     return li;
   }));
   show(
-    el('h1', {}, 'Retired listings'),
-    el('p', {}, `${retired.length} retired (archived) listings. They are hidden from the public site but kept here with their history. Open one to see or edit it, or press Restore to put it back.`),
-    list,
+    pageHead('Retired listings'),
+    el('p', { class: 'lede' }, `${retired.length} retired (archived) listings. They are hidden from the public site but kept here with their history. Open one to see or edit it, or press Restore to put it back.`),
+    retired.length ? list : emptyState('Nothing retired', 'Listings you retire will wait here, ready to restore.'),
   );
 }
 
@@ -428,32 +618,100 @@ async function viewBarriers() {
   const counts = {};
   for (const r of reports) for (const b of r.barriers) counts[b] = (counts[b] || 0) + 1;
   const top = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  if (!reports.length) {
+    show(pageHead('Barrier reports'), emptyState('No reports yet', 'Anonymous reports from the Community needs page will show here.'));
+    return;
+  }
   show(
-    el('h1', {}, 'Barrier reports'),
-    el('p', {}, `${reports.length} anonymous reports. Comments are only visible here. The public page shows totals only, and hides any number under 5.`),
+    pageHead('Barrier reports'),
+    el('p', { class: 'lede' }, `${reports.length} anonymous reports. Comments are only visible here. The public page shows totals only, and hides any number under 5.`),
     el('h2', {}, 'All reports by barrier (exact counts, admin only)'),
-    el('ul', { class: 'items' }, top.map(([b, n]) => el('li', {}, el('span', { class: 'name' }, labels[b] || b), el('span', { class: 'info' }, String(n))))),
+    el('ul', { class: 'tally' }, top.map(([b, n]) => el('li', {}, el('span', { class: 'tally-label' }, labels[b] || b), el('span', { class: 'tally-count' }, String(n))))),
     el('h2', {}, 'Latest reports'),
-    el('ul', { class: 'items' }, reports.map((r) => el('li', {},
-      el('span', { class: 'name' }, `${formatDateTime(r.created_at)} · ${r.county}${r.reporter ? ` · ${r.reporter}` : ''}`),
-      el('span', { class: 'info' }, r.barriers.map((b) => labels[b] || b).join('; ')),
-      r.comment ? el('span', { class: 'info' }, `Comment: ${r.comment}`) : null))),
+    el('ul', { class: 'note-list' }, reports.map((r) => el('li', { class: 'note-card' },
+      el('p', { class: 'note-meta' }, `${formatDateTime(r.created_at)} · ${r.county}${r.reporter ? ` · ${r.reporter}` : ''}`),
+      el('ul', { class: 'chips', 'aria-label': 'Barriers' }, r.barriers.map((b) => el('li', {}, labels[b] || b))),
+      r.comment ? el('p', { class: 'note-text' }, el('span', { class: 'note-label' }, 'Comment: '), r.comment) : null))),
   );
 }
 
 // ---------- "Don't see the help you need?" messages (anonymous) ----------
+// ---------- Site notice ----------
+// One short message under the crisis bar on every public page, e.g. "Code Blue
+// shelter open tonight". Optional last day; after it the notice hides itself.
+async function viewNotice() {
+  setNav('notice');
+  document.title = 'Site notice: Directory admin';
+  const { notice } = await api('/notice');
+  const message = el('textarea', { id: 'n-message', rows: 3, maxlength: 280, 'aria-describedby': 'n-message-hint n-message-err' });
+  message.value = notice.message;
+  const count = el('span', { class: 'hint', id: 'n-count', 'aria-live': 'polite' });
+  const updateCount = () => { count.textContent = `${message.value.length} of 280 characters`; };
+  message.addEventListener('input', updateCount); updateCount();
+  const endsOn = el('input', { type: 'date', id: 'n-ends', value: notice.ends_on, 'aria-describedby': 'n-ends-hint n-ends-err' });
+  const level = (v, text) => el('label', {}, el('input', { type: 'radio', name: 'n-level', value: v, checked: (notice.level || 'info') === v }), text);
+  const msgErr = el('p', { class: 'error-text', id: 'n-message-err', hidden: true });
+  const endErr = el('p', { class: 'error-text', id: 'n-ends-err', hidden: true });
+  const status = el('p', { class: 'notice-status' });
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+  const showStatus = (n) => {
+    status.textContent = !n.message ? 'No notice is showing on the public site.'
+      : n.ends_on && n.ends_on < today ? `Not showing: its last day (${formatDate(n.ends_on)}) has passed.`
+        : `Showing on every public page${n.ends_on ? ` through ${formatDate(n.ends_on)}` : ' until you clear it'}.`;
+  };
+  showStatus(notice);
+  async function save(values, button) {
+    msgErr.hidden = true; endErr.hidden = true; message.removeAttribute('aria-invalid'); endsOn.removeAttribute('aria-invalid');
+    await runAction(button, async () => {
+      try {
+        const r = await api('/notice', { method: 'PUT', body: values });
+        message.value = r.notice.message; endsOn.value = r.notice.ends_on; updateCount(); showStatus(r.notice);
+        toast(r.notice.message ? 'Notice saved. It shows on the public site now.' : 'Notice cleared.');
+        button.disabled = false;
+      } catch (err) {
+        const e = err.data?.errors || {};
+        if (e.message) { msgErr.textContent = e.message; msgErr.hidden = false; message.setAttribute('aria-invalid', 'true'); message.focus(); }
+        if (e.ends_on) { endErr.textContent = e.ends_on; endErr.hidden = false; endsOn.setAttribute('aria-invalid', 'true'); }
+        if (e.message || e.ends_on) { button.disabled = false; return; }
+        throw err;
+      }
+    });
+  }
+  const form = el('form', { class: 'notice-form', novalidate: true, onsubmit: (e) => {
+    e.preventDefault();
+    save({ message: message.value, ends_on: endsOn.value, level: form.querySelector('[name="n-level"]:checked')?.value || 'info' }, form.querySelector('button[type="submit"]'));
+  } },
+    el('div', { class: 'field' }, el('label', { for: 'n-message' }, 'Notice text'),
+      el('span', { class: 'hint', id: 'n-message-hint' }, 'One short line, e.g. "Code Blue: the Glens Falls warming center is open tonight from 7 PM." Plain text; no client information.'),
+      message, count, msgErr),
+    el('fieldset', { class: 'field' }, el('legend', {}, 'How it looks'),
+      el('div', { class: 'checks' }, level('info', 'Notice (yellow)'), level('urgent', 'Important (red)'))),
+    el('div', { class: 'field' }, el('label', { for: 'n-ends' }, 'Last day to show it (optional)'),
+      el('span', { class: 'hint', id: 'n-ends-hint' }, 'After this day the notice hides itself. Leave blank to show it until you clear it.'),
+      endsOn, endErr),
+    el('div', { class: 'row' },
+      el('button', { type: 'submit' }, 'Save notice'),
+      el('button', { type: 'button', class: 'secondary', onclick: (e) => save({ message: '', ends_on: '', level: 'info' }, e.currentTarget) }, 'Clear notice')));
+  show(
+    pageHead('Site notice'),
+    el('p', { class: 'lede' }, 'A short message shown under the red crisis bar on every public page. Use it for things like Code Blue nights, a closed office, or when HEAP opens.'),
+    status,
+    form,
+  );
+}
+
 async function viewSuggestions() {
   setNav('suggestions');
   document.title = 'Help suggestions: Directory admin';
   const { suggestions } = await api('/suggestions');
   show(
-    el('h1', {}, 'Help suggestions'),
-    el('p', {}, `${suggestions.length} anonymous messages from "Don't see the help you need?". Only you see these. Ideas for new categories or listings.`),
+    pageHead('Help suggestions'),
+    el('p', { class: 'lede' }, `${suggestions.length} anonymous messages from "Don't see the help you need?". Only you see these. Ideas for new categories or listings.`),
     suggestions.length
-      ? el('ul', { class: 'items' }, suggestions.map((r) => el('li', {},
-        el('span', { class: 'name' }, `${formatDateTime(r.created_at)}${r.county ? ` · ${r.county}` : ''}`),
-        el('span', { class: 'info' }, r.looking_for))))
-      : el('p', {}, 'No messages yet.'),
+      ? el('ul', { class: 'note-list' }, suggestions.map((r) => el('li', { class: 'note-card' },
+        el('p', { class: 'note-meta' }, `${formatDateTime(r.created_at)}${r.county ? ` · ${r.county}` : ''}`),
+        el('p', { class: 'note-text' }, r.looking_for))))
+      : emptyState('No messages yet', 'Messages from "Don\'t see the help you need?" will show here.'),
   );
 }
 
@@ -469,40 +727,45 @@ async function viewLists() {
       const input = el('input', { type: 'text', value: item.name, 'aria-label': `New name for ${item.name}` });
       return el('li', {},
         el('span', { class: 'grow' }, input),
-        el('span', { class: 'info' }, `${item.used} listing${item.used === 1 ? '' : 's'}`),
-        el('button', { type: 'button', class: 'secondary', onclick: async () => {
-          try {
-            const r = await api(`/lists/${kind}/${encodeURIComponent(item.name)}`, { method: 'PUT', body: { name: input.value } });
-            draw(r.items); await loadLists(); toast('Renamed. Listings using it were updated.');
-          } catch (err) { toast(err.message); }
-        } }, 'Rename'),
-        el('button', { type: 'button', class: 'danger', disabled: item.used > 0, title: item.used ? 'In use; rename instead, or change those listings first.' : null, onclick: async () => {
-          try {
+        el('span', { class: 'used' }, `${item.used} listing${item.used === 1 ? '' : 's'}`),
+        el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
+          const r = await api(`/lists/${kind}/${encodeURIComponent(item.name)}`, { method: 'PUT', body: { name: input.value } });
+          draw(r.items); await loadLists(); toast('Renamed. Listings using it were updated.');
+        }) }, 'Rename', el('span', { class: 'visually-hidden' }, `: ${item.name}`)),
+        el('button', { type: 'button', class: 'danger', onclick: (e) => {
+          if (item.used > 0) {
+            e.currentTarget.parentNode.querySelector(':scope > .action-error')?.remove();
+            e.currentTarget.after(el('p', { class: 'action-error', role: 'alert' }, `In use by ${item.used} listing${item.used === 1 ? '' : 's'}. Rename it instead, or change those listings first.`));
+            return;
+          }
+          runAction(e.currentTarget, async () => {
             const r = await api(`/lists/${kind}/${encodeURIComponent(item.name)}`, { method: 'DELETE' });
             draw(r.items); await loadLists(); toast('Removed.');
-          } catch (err) { toast(err.message); }
-        } }, 'Remove'));
+          });
+        } }, 'Remove', el('span', { class: 'visually-hidden' }, `: ${item.name}`)));
     }));
     draw(items);
-    const addInput = el('input', { type: 'text', id: `add-${kind}` });
-    return [
-      el('h2', {}, title),
-      el('p', { class: 'hint' }, help),
+    const addInput = el('input', { type: 'text', id: `add-${kind}`, 'aria-describedby': `add-${kind}-err` });
+    return [el('section', { class: 'list-section', 'aria-labelledby': `h-${kind}` },
+      el('h2', { id: `h-${kind}` }, title),
+      el('p', { class: 'section-intro' }, help),
       ul,
-      el('form', { class: 'toolbar', onsubmit: async (e) => {
+      el('form', { class: 'toolbar add-row', onsubmit: async (e) => {
         e.preventDefault();
+        const err = e.currentTarget.parentNode.querySelector(`#add-${kind}-err`);
         try {
           const r = await api(`/lists/${kind}`, { method: 'POST', body: { name: addInput.value } });
-          addInput.value = ''; draw(r.items); await loadLists(); toast('Added.');
-        } catch (err) { toast(err.message); }
+          addInput.value = ''; addInput.removeAttribute('aria-invalid'); err.hidden = true; err.textContent = '';
+          draw(r.items); await loadLists(); toast('Added.');
+        } catch (x) { addInput.setAttribute('aria-invalid', 'true'); err.textContent = x.message; err.hidden = false; addInput.focus(); }
       } },
       el('div', { class: 'field' }, el('label', { for: `add-${kind}` }, `Add a ${kind === 'plans' ? 'plan' : 'category'}`), addInput),
       el('button', { type: 'submit' }, 'Add')),
-    ];
+      el('p', { class: 'error-text', id: `add-${kind}-err`, role: 'alert', hidden: true }))];
   }
 
   show(
-    el('h1', {}, 'Categories & insurance plans'),
+    pageHead('Categories & insurance plans'),
     ...section('categories', 'Categories', c.items, 'Renaming updates every listing in that category. A category in use can\'t be removed.'),
     ...section('plans', 'Insurance plans', p.items, 'Renaming updates every listing that lists that plan.'),
   );
@@ -553,7 +816,7 @@ async function viewRequests() {
   try {
     data = await api('/requests');
   } catch (err) {
-    if (err.status === 404) { show(el('h1', {}, 'Requests'), el('p', {}, 'The provider request form is not set up yet (Phase 5).')); return; }
+    if (err.status === 404) { show(pageHead('Requests'), emptyState('Not set up yet', 'The provider request form is not set up yet (Phase 5).')); return; }
     throw err;
   }
   const { requests } = data;
@@ -562,37 +825,44 @@ async function viewRequests() {
 
   const card = (r) => {
     const note = el('input', { type: 'text', id: `note-${r.id}`, placeholder: 'e.g. Declined: outside our area' });
-    return el('article', { class: 'request', 'aria-labelledby': `req-${r.id}` },
-      el('h2', { id: `req-${r.id}` }, `#${r.id}: ${r.fields.request_type === 'correction' ? 'Correction to ' : ''}${r.fields.organization || '(no name)'}`),
-      el('p', { class: 'meta-line' }, `Received ${formatDateTime(r.created_at)}`, r.email_sent ? '' : ' · Email was not sent; this copy is the only record',
+    const isCorrection = r.fields.request_type === 'correction';
+    const isNew = r.status === 'New';
+    return el('article', { class: `request ${isCorrection ? 'is-correction' : 'is-new-listing'}${isNew ? '' : ' is-handled'}`, 'aria-labelledby': `req-kind-${r.id} req-${r.id}` },
+      el('div', { class: 'request-top' },
+        el('span', { class: `req-kind ${isCorrection ? 'correction' : 'new-listing'}`, id: `req-kind-${r.id}` }, isCorrection ? 'Correction to a listing' : 'New listing request'),
+        el('span', { class: 'req-id' }, `Request #${r.id}`),
+        isNew ? null : el('span', { class: 'req-handled' }, 'Handled')),
+      el('h2', { id: `req-${r.id}` }, r.fields.organization || '(no name)'),
+      el('p', { class: 'meta-line' }, `Received ${formatDateTime(r.created_at)}`,
         r.status !== 'New' ? ` · Handled ${formatDateTime(r.handled_at)}${r.handled_note ? `: ${r.handled_note}` : ''}` : ''),
+      r.email_sent ? null : el('p', { class: 'inline-warn' }, 'Email was not sent; this copy is the only record.'),
       el('dl', {}, REQUEST_LABELS.flatMap(([k, label]) => {
         const v = requestValue(r.fields, k);
         return v ? [el('dt', {}, label), el('dd', {}, v)] : [];
       })),
-      r.status === 'New' ? el('div', {},
-        r.fields.request_type === 'correction'
-          ? el('p', { class: 'hint' }, 'Correction request: find the listing in Listings, call or email to confirm, edit it, then mark this handled.')
+      isNew ? el('div', { class: 'request-actions' },
+        isCorrection
+          ? el('p', { class: 'next-step' }, 'Next: find the listing in Listings, call or email to confirm, edit it, then mark this handled.')
           : el('div', { class: 'row' },
             el('button', { type: 'button', onclick: () => {
               sessionStorage.setItem('prefill', JSON.stringify({ requestId: r.id, okToPublish: r.fields.ok_to_publish === true, listing: listingFromRequest(r) }));
               location.hash = '#/new?from-request';
-            } }, 'Create listing from this')),
-        el('div', { class: 'toolbar' },
+            } }, 'Create listing from this', el('span', { class: 'visually-hidden' }, `: ${r.fields.organization || 'request'}`))),
+        el('div', { class: 'toolbar handled-row' },
           el('div', { class: 'field' }, el('label', { for: `note-${r.id}` }, 'Short reason (optional)'), note),
-          el('button', { type: 'button', class: 'secondary', onclick: async () => {
+          el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
             await api(`/requests/${encodeURIComponent(r.id)}/handled`, { method: 'POST', body: { note: note.value } });
             toast('Marked handled.');
             viewRequests();
-          } }, 'Mark handled'))) : null,
+          }) }, 'Mark handled', el('span', { class: 'visually-hidden' }, `: ${r.fields.organization || 'request'}`)))) : null,
     );
   };
 
   show(
-    el('h1', {}, 'Provider requests'),
-    el('p', {}, `${open.length} new. Call or email the provider to confirm details before creating a listing.`),
-    ...open.map(card),
-    handled.length ? el('details', {}, el('summary', {}, `Handled (${handled.length})`), ...handled.map(card)) : null,
+    pageHead('Provider requests'),
+    open.length ? el('p', { class: 'lede' }, `${open.length} new. Call or email the provider to confirm details before creating a listing.`) : null,
+    open.length ? open.map(card) : emptyState('No new requests', 'When a provider fills in the request form, it shows here and in your email.'),
+    handled.length ? el('details', { class: 'handled' }, el('summary', {}, `Handled (${handled.length})`), ...handled.map(card)) : null,
   );
 }
 
@@ -620,6 +890,7 @@ async function route() {
     else if (hash === '#/retired') await viewRetired();
     else if (hash === '#/barriers') await viewBarriers();
     else if (hash === '#/suggestions') await viewSuggestions();
+    else if (hash === '#/notice') await viewNotice();
     else await viewListings();
   } catch (err) {
     showError(err);

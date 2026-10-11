@@ -4,6 +4,7 @@
 
 export const REGION = {
   siteName: 'Southern ADK Help',
+  shortName: 'ADK Help', // under the home-screen icon (12 characters or fewer)
   domain: 'southernadkhelp.org',
   tagline: 'Free and low-cost help in Warren, Washington and Saratoga Counties, NY',
 

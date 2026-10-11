@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Printable flyer: Southern ADK Help</title>
+  <meta name="description" content="A free one-page flyer to print and post in waiting rooms, libraries, food pantries and offices, with a QR code to the directory and tear-off strips.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <link rel="stylesheet" href="/css/flyer.css">
+  <script defer src="/js/qr.js"></script>
+  <script defer src="/js/flyer.js"></script>
+</head>
+<body data-site-name="Southern ADK Help" data-domain="southernadkhelp.org" data-fallback="call 211 or search 211neny.org">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <aside class="crisis" aria-label="Crisis help">
+    <div class="crisis-group">
+      <p class="crisis-title">In crisis?</p>
+      <ul class="crisis-list three">
+        <li><a href="tel:988"><strong>988</strong> Call</a></li>
+        <li><a href="sms:988"><strong>988</strong> Text</a></li>
+        <li class="wide-only"><a href="https://988lifeline.org/chat/"><strong>988</strong> Chat online</a></li>
+        <li><a href="tel:911"><strong>911</strong> Emergency</a></li>
+        <li class="wide-only crisis-note">Can't call from this computer? Dial 911 from any phone.</li>
+      </ul>
+    </div>
+    <div class="crisis-group">
+      <p class="crisis-title">Domestic violence, 24 hours:</p>
+      <ul class="crisis-list two">
+        <li><a href="tel:+15187939496"><span class="visually-hidden">Domestic violence hotline, </span><strong>(518) 793-9496</strong> Warren &amp; Washington</a></li>
+        <li><a href="tel:+15185848188"><span class="visually-hidden">Domestic violence hotline, </span><strong>(518) 584-8188</strong> Saratoga</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <main id="main" class="flyer-main" tabindex="-1">
+    <div class="flyer-toolbar">
+      <p class="flyer-toolbar-note"><strong>Print this flyer:</strong> use your browser's Print, US Letter.</p>
+      <div class="flyer-toolbar-actions">
+        <button type="button" id="print-flyer" hidden>Print this flyer</button>
+        <a class="flyer-back" href="/">Back to <span data-region="siteName">Southern ADK Help</span></a>
+      </div>
+    </div>
+
+    <article class="flyer" aria-labelledby="flyer-name">
+
+      <header class="flyer-head">
+        <svg class="flyer-hills" viewBox="0 0 780 60" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+          <defs>
+            <clipPath id="pine-right"><rect x="12" width="12" height="24"/></clipPath>
+            <symbol id="pine" viewBox="0 0 24 24">
+              <rect x="10.6" y="17" width="2.8" height="6" rx="0.6" fill="#5c4630"/>
+              <path fill="#2b5a3a" d="M12 .8Q13.87 4.5 15.4 7.2Q12 6.1 8.6 7.2Q10.13 4.5 12 .8ZM12 3.8Q14.86 8 17.2 11.2Q12 9.8 6.8 11.2Q9.14 8 12 3.8ZM12 7.2Q15.85 11.8 19 15.4Q12 13.7 5 15.4Q8.15 11.8 12 7.2ZM12 10.8Q16.84 15.7 20.8 19.6Q12 17.6 3.2 19.6Q7.16 15.7 12 10.8Z"/>
+              <path fill="#1d3f29" clip-path="url(#pine-right)" d="M12 .8Q13.87 4.5 15.4 7.2Q12 6.1 8.6 7.2Q10.13 4.5 12 .8ZM12 3.8Q14.86 8 17.2 11.2Q12 9.8 6.8 11.2Q9.14 8 12 3.8ZM12 7.2Q15.85 11.8 19 15.4Q12 13.7 5 15.4Q8.15 11.8 12 7.2ZM12 10.8Q16.84 15.7 20.8 19.6Q12 17.6 3.2 19.6Q7.16 15.7 12 10.8Z"/>
+            </symbol>
+          </defs>
+          <path fill="#cbd6c6" d="M0 60V24C70 14 140 10 220 16S360 34 450 28 620 12 700 14 760 20 780 22V60Z"/>
+          <path fill="#a3b794" d="M0 60V36C60 30 130 26 210 31S350 46 440 40 600 26 690 30 760 35 780 37V60Z"/>
+          <use href="#pine" x="16" y="13" width="22" height="22"/>
+          <use href="#pine" x="34" y="6" width="28" height="28"/>
+          <use href="#pine" x="704" y="5" width="26" height="26"/>
+          <use href="#pine" x="726" y="12" width="20" height="20"/>
+          <use href="#pine" x="744" y="9" width="24" height="24"/>
+          <path fill="#62805a" d="M0 60V48C90 43 180 40 280 45S470 54 560 50 700 42 780 46V60Z"/>
+          <use href="#pine" x="340" y="24" width="22" height="22"/>
+          <use href="#pine" x="512" y="32" width="18" height="18"/>
+          <rect fill="#2b5a3a" y="57" width="780" height="3"/>
+        </svg>
+        <h1 id="flyer-name" class="flyer-name" data-region="siteName">Southern ADK Help</h1>
+        <p class="flyer-tagline">Free help in Warren, Washington and Saratoga Counties</p>
+      </header>
+
+      <div class="flyer-body">
+        <section class="flyer-find" aria-labelledby="find-heading">
+          <h2 id="find-heading">Find local help for:</h2>
+          <ul class="flyer-list">
+            <li>Food</li>
+            <li>Rent and utility help</li>
+            <li>Dentists and eye doctors that take Medicaid</li>
+            <li>Mental health</li>
+            <li>Housing</li>
+            <li>Rides and transportation</li>
+            <li>Legal help</li>
+            <li>Senior services</li>
+          </ul>
+          <p class="flyer-free">No login. No ads. Free.</p>
+        </section>
+
+        <section class="flyer-scan" aria-labelledby="scan-heading">
+          <h2 id="scan-heading">Scan with your phone's camera</h2>
+          <div class="flyer-qr" data-qr="main"></div>
+        </section>
+      </div>
+
+      <p class="flyer-address"><span class="flyer-address-lead">No smartphone? On any computer, go to</span> <span class="flyer-url">southernadkhelp.org</span></p>
+
+      <section class="flyer-crisis" aria-labelledby="crisis-heading">
+        <h2 id="crisis-heading">Need help right now? Free, 24 hours a day:</h2>
+        <ul>
+          <li><a href="tel:988"><strong>988</strong> <span>Call or text: mental health crisis</span></a></li>
+          <li><a href="tel:911"><strong>911</strong> <span>Emergency</span></a></li>
+          <li><a href="tel:+15187939496"><strong>(518) 793-9496</strong> <span>Domestic violence, Warren &amp; Washington</span></a></li>
+          <li><a href="tel:+15185848188"><strong>(518) 584-8188</strong> <span>Domestic violence, Saratoga</span></a></li>
+        </ul>
+      </section>
+
+      <section class="flyer-tear" aria-labelledby="tear-heading">
+        <h2 id="tear-heading">Take one <span class="visually-hidden">(tear-off strips with the website address)</span></h2>
+        <ul class="strips" aria-hidden="true">
+          <li><span class="strip-qr" data-qr="strip"></span><span class="strip-text"><strong>Southern ADK Help</strong> southernadkhelp.org</span></li>
+          <li><span class="strip-qr" data-qr="strip"></span><span class="strip-text"><strong>Southern ADK Help</strong> southernadkhelp.org</span></li>
+          <li><span class="strip-qr" data-qr="strip"></span><span class="strip-text"><strong>Southern ADK Help</strong> southernadkhelp.org</span></li>
+          <li><span class="strip-qr" data-qr="strip"></span><span class="strip-text"><strong>Southern ADK Help</strong> southernadkhelp.org</span></li>
+          <li><span class="strip-qr" data-qr="strip"></span><span class="strip-text"><strong>Southern ADK Help</strong> southernadkhelp.org</span></li>
+          <li><span class="strip-qr" data-qr="strip"></span><span class="strip-text"><strong>Southern ADK Help</strong> southernadkhelp.org</span></li>
+          <li><span class="strip-qr" data-qr="strip"></span><span class="strip-text"><strong>Southern ADK Help</strong> southernadkhelp.org</span></li>
+          <li><span class="strip-qr" data-qr="strip"></span><span class="strip-text"><strong>Southern ADK Help</strong> southernadkhelp.org</span></li>
+        </ul>
+      </section>
+
+    </article>
+  </main>
+</body>
+</html>

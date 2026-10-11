@@ -10,6 +10,8 @@
   var search = document.getElementById('learn-search');
   var count = document.getElementById('learn-count');
   var entries = [];
+  var sections = [];
+  var note = null;
 
   function el(tag, attrs) {
     var node = document.createElement(tag);
@@ -47,14 +49,28 @@
         }
         var details = el('details', { class: 'qa', id: e.id }, el('summary', {}, e.q), body);
         wrap.appendChild(details);
-        entries.push({ node: details, section: wrap, text: [e.q, (e.a || []).join(' '), e.keywords || ''].join(' ').toLowerCase() });
+        entries.push({ node: details, section: wrap, order: entries.length, q: (e.q || '').toLowerCase(), kw: String(e.keywords || '').toLowerCase(), text: [e.q, (e.a || []).join(' '), e.keywords || ''].join(' ').toLowerCase() });
       });
+      sections.push({ node: wrap, order: sections.length });
       list.appendChild(wrap);
     });
     toc.appendChild(tocList);
-    if (data.updated) list.appendChild(el('p', { class: 'note' }, 'Last reviewed: ' + data.updated + '. Rules and amounts change; check the linked source.'));
+    if (data.updated) { note = el('p', { class: 'note' }, 'Last reviewed: ' + data.updated + '. Rules and amounts change; check the linked source.'); list.appendChild(note); }
     openFromHash();
     filter();
+  }
+
+  // While searching, sort answers (and their sections) by how well they match;
+  // with no search, put everything back in its usual order.
+  function reorder(byScore) {
+    var key = function (a, b) { return byScore ? (b.score - a.score) || (a.order - b.order) : a.order - b.order; };
+    sections.forEach(function (s) {
+      var mine = entries.filter(function (e) { return e.section === s.node; }).sort(key);
+      s.score = mine.reduce(function (m, e) { return e.node.hidden ? m : Math.max(m, e.score); }, 0);
+      mine.forEach(function (e) { s.node.appendChild(e.node); });
+    });
+    sections.slice().sort(key).forEach(function (s) { list.appendChild(s.node); });
+    if (note) list.appendChild(note);
   }
 
   function openFromHash() {
@@ -62,6 +78,7 @@
     if (!id) return;
     var target = document.getElementById(id);
     if (target && target.tagName === 'DETAILS') {
+      if (target.hidden) { search.value = ''; filter(); }
       target.open = true;
       var summary = target.querySelector('summary');
       target.scrollIntoView();
@@ -77,7 +94,11 @@
       e.node.hidden = !match;
       if (match) shown++;
       if (words.length) e.node.open = match;
+      // Best matches first: words in the question count most, then search words.
+      e.score = 0;
+      words.forEach(function (w) { e.score += (e.q.indexOf(w) !== -1 ? 4 : 0) + (e.kw.indexOf(w) !== -1 ? 2 : 0) + 1; });
     });
+    reorder(words.length > 0);
     Array.prototype.forEach.call(list.querySelectorAll('.learn-section'), function (s) {
       s.hidden = !s.querySelector('details.qa:not([hidden])');
     });

@@ -50,3 +50,19 @@ function parsePublicRow(row) {
 }
 
 export { PUBLIC_COLUMNS };
+
+// One public listing by id, for the listing page's title and link preview.
+// Same public columns and the same filter as the directory (rule 4).
+export async function getPublicListing(db, id) {
+  const row = await db.prepare(`SELECT ${PUBLIC_COLUMNS.join(', ')} FROM listings
+    WHERE id = ? AND visibility = 'Public' AND retired = 0`).bind(id).first();
+  return row ? parsePublicRow(row) : null;
+}
+
+// Ids of every public listing, for the sitemap.
+export async function getPublicListingIds(db) {
+  const { results } = await db.prepare(`SELECT id FROM listings
+    WHERE visibility = 'Public' AND retired = 0 ORDER BY id`).all();
+  return results.map((r) => r.id);
+}
+

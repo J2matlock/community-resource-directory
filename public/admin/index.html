@@ -13,10 +13,10 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="admin-header">
     <div class="bar">
-      <p class="brand">Directory admin</p>
+      <p class="brand"><span data-region="siteName">Southern ADK Help</span> <span class="brand-tag">Admin</span></p>
       <p class="who" id="who"></p>
     </div>
-    <nav aria-label="Admin">
+    <nav class="admin-nav" aria-label="Admin">
       <ul class="nav">
         <li><a href="#/listings" data-nav="listings">Listings</a></li>
         <li><a href="#/recheck" data-nav="recheck">Due for re-check</a></li>
@@ -24,9 +24,12 @@
         <li><a href="#/retired" data-nav="retired">Retired</a></li>
         <li><a href="#/barriers" data-nav="barriers">Barrier reports</a></li>
         <li><a href="#/suggestions" data-nav="suggestions">Help suggestions</a></li>
+        <li><a href="#/notice" data-nav="notice">Site notice</a></li>
         <li><a href="#/lists" data-nav="lists">Categories &amp; plans</a></li>
-        <li><a href="/api/admin/export">Export to Excel</a></li>
-        <li><a href="/">Public site</a></li>
+      </ul>
+      <ul class="nav-util">
+        <li><a href="/api/admin/export" class="util-export">Export to Excel</a></li>
+        <li><a href="/" class="util-public">Public site</a></li>
       </ul>
     </nav>
   </header>

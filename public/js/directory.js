@@ -100,6 +100,15 @@
     return lines.join('\n');
   }
 
+  // ---------- offline copy ----------
+  function showOfflineNote(savedAt) {
+    var d = savedAt ? new Date(savedAt) : null;
+    var when = d && !isNaN(d) ? d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'earlier';
+    var note = $('offline-note');
+    note.textContent = 'You are offline. Showing the copy saved on this device on ' + when + '. Calls and texts still work; details may have changed.';
+    note.hidden = false;
+  }
+
   // ---------- URL state ----------
   function readUrl() {
     var p = new URLSearchParams(location.search);
@@ -112,6 +121,12 @@
     var qs = p.toString();
     var url = '/' + (qs ? '?' + qs : '');
     if (location.pathname + location.search !== url) history.replaceState(null, '', url);
+  }
+
+  // A shared list: /?list=id1,id2 shows just those listings, in that order.
+  function sharedListIds() {
+    var raw = new URLSearchParams(location.search).get('list') || '';
+    return raw.split(',').filter(function (id) { return /^[a-z0-9-]{1,80}$/.test(id); }).slice(0, 30);
   }
 
   function singleListingId() {
@@ -344,6 +359,24 @@
       return;
     }
 
+    var shared = sharedListIds();
+    if (shared.length) {
+      var byId = {};
+      data.listings.forEach(function (x) { byId[x.id] = x; });
+      var picked = shared.map(function (id) { return byId[id]; }).filter(Boolean);
+      $('finder').hidden = true;
+      $('back-link').hidden = false;
+      $('plan-note').hidden = true;
+      $('page-title').textContent = 'Shared list';
+      document.title = 'Shared list: ' + SITE_NAME;
+      $('result-status').textContent = picked.length
+        ? 'Someone shared ' + picked.length + (picked.length === 1 ? ' resource' : ' resources') + ' with you.'
+          + (picked.length < shared.length ? ' Some on the list are no longer listed.' : '')
+        : 'These resources are no longer listed. Search all resources, or call 211.';
+      setChildren(list, picked.map(function (x) { return el('li', {}, card(x, false)); }));
+      return;
+    }
+
     $('finder').hidden = false;
     $('back-link').hidden = true;
     var items = results();
@@ -432,7 +465,38 @@
     var n = data ? data.listings.filter(function (l) { return handout.has(l.id); }).length : 0;
     $('handout-bar').hidden = n === 0;
     $('handout-count').textContent = n + ' on your handout';
-    $('handout-print').textContent = 'Print handout (' + n + ')';
+    // Short labels on phones keep the pinned bar to one short row.
+    $('handout-print').textContent = (narrow.matches ? 'Print (' : 'Print handout (') + n + ')';
+    $('handout-share').textContent = narrow.matches ? 'Share' : 'Share list';
+  }
+
+  // A small QR code (print only, so hidden from screen readers). Made by
+  // /js/qr.js on this page; if that didn't load, the handout simply has none.
+  function qrCode(url, cls) {
+    if (!window.QR) return null;
+    try {
+      var svg = window.QR.svg(url, { label: '' });
+      svg.setAttribute('class', cls);
+      return svg;
+    } catch (e) { return null; }
+  }
+
+  // One link to everything on the handout: the phone's share menu where there
+  // is one, otherwise the link is copied.
+  function shareHandout() {
+    var chosen = data.listings.filter(function (l) { return handout.has(l.id); });
+    if (!chosen.length) return;
+    var url = location.origin + '/?list=' + chosen.map(function (l) { return l.id; }).join(',');
+    var text = 'Resources from ' + SITE_NAME + ':\n' + chosen.map(function (l) { return '- ' + l.name + (l.phone ? ' ' + l.phone : ''); }).join('\n');
+    if (navigator.share) {
+      navigator.share({ title: 'Resources from ' + SITE_NAME, text: text, url: url }).catch(function () { /* closed */ });
+    } else {
+      copy(text + '\n' + url, 'handout-live', 'Link to your list copied. Paste it into a text or email.');
+      var btn = $('handout-share');
+      btn.textContent = 'Link copied \u2713';
+      clearTimeout(shareHandout.timer);
+      shareHandout.timer = setTimeout(renderHandoutBar, 4000);
+    }
   }
 
   function printHandout() {
@@ -444,6 +508,7 @@
       el('p', { class: 'sub' }, 'From ' + SITE_NAME + (SITE.domain ? ', ' + SITE.domain : '') + '. Printed ' + today + '.'),
       el('ol', {}, chosen.map(function (l) {
         return el('li', {},
+          qrCode(location.origin + '/listing/' + l.id, 'hq'),
           el('h2', {}, l.name, l.status !== 'Active' ? ' (' + l.status + ')' : ''),
           l.phone ? el('p', {}, 'Phone: ' + l.phone) : null,
           l.address ? el('p', {}, 'Address: ' + l.address) : null,
@@ -451,6 +516,8 @@
           l.eligibility ? el('p', {}, 'Who can get help: ' + l.eligibility) : null,
           l.website ? el('p', {}, websiteLabel(l.website)) : null);
       })),
+      el('div', { class: 'foot-qr' }, qrCode(location.origin + '/', 'hq-site'),
+        el('p', {}, 'Scan for these and more: ' + (SITE.domain || location.host))),
       el('p', { class: 'foot' }, 'Can\'t find it? ' + HELP_LINE.charAt(0).toUpperCase() + HELP_LINE.slice(1) + '. A listing is not an endorsement; call ahead to confirm. In crisis: call or text 988, or call 911.'),
     ]);
     document.body.classList.add('print-handout');
@@ -490,6 +557,7 @@
       $('search').focus();
     });
     $('handout-print').addEventListener('click', printHandout);
+    $('handout-share').addEventListener('click', shareHandout);
     $('handout-clear').addEventListener('click', function () {
       handout = new Set();
       saveHandout();
@@ -509,6 +577,7 @@
     fetch('/api/listings', { headers: { Accept: 'application/json' } })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
+        if (res.headers.get('X-From-Offline-Copy')) showOfflineNote(res.headers.get('X-Saved-At'));
         return res.json();
       })
       .then(function (json) {

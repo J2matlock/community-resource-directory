@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-10",
+ "updated": "2026-10-11",
  "sections": [
   {
    "title": "Getting started",
@@ -61,6 +61,93 @@
    ]
   },
   {
+   "title": "Applying for help",
+   "entries": [
+    {
+     "id": "income-limits-fpl",
+     "q": "What do \"income limit\" and \"Federal Poverty Level\" mean?",
+     "a": [
+      "An income limit is the most money your household can have coming in and still qualify for a program. Many programs set their limit as a percent of the Federal Poverty Level (FPL). The FPL is an income amount the federal government sets each year.",
+      "In 2026, 100% of the FPL is $15,960 a year for one person, $21,640 for two, $27,320 for three and $33,000 for four. Add $5,680 for each extra person. \"200% of poverty\" means double that amount. For example, 200% for a family of four is $66,000 a year, or $5,500 a month.",
+      "Gross income is your total income before taxes or anything else is taken out. Net income is what is left after the deductions a program allows. For example, SNAP (food stamps) checks gross income first, then net income after subtracting things like part of your earnings, child care, high rent and utility costs, and some medical bills for members who are 60 or older or disabled.",
+      "Who counts as your \"household\" depends on the program. For SNAP, it is the people who live together and buy and make meals together. Spouses and most children under 22 who live with you always count, even if they eat separately. For health coverage through NY State of Health, your household is usually you, your spouse and the people you claim as dependents on your taxes.",
+      "Each program has its own rules, so being a little over a chart does not always mean you are not eligible. The only sure way to know is to apply. Not sure where to start? Call 211."
+     ],
+     "keywords": "income limit federal poverty level FPL poverty guidelines poverty line povery 200% 138% 130% percent of poverty gross income net income household size who counts income chart",
+     "sources": [
+      {
+       "label": "HealthCare.gov: Federal Poverty Level (FPL), 2025 and 2026 amounts",
+       "url": "https://www.healthcare.gov/glossary/federal-poverty-level-fpl/"
+      },
+      {
+       "label": "USDA: SNAP Eligibility (household, gross and net income)",
+       "url": "https://www.fna.usda.gov/snap/recipient/eligibility"
+      },
+      {
+       "label": "HealthCare.gov: Who to include in your household",
+       "url": "https://www.healthcare.gov/income-and-household-information/household-size/"
+      }
+     ]
+    },
+    {
+     "id": "papers-to-apply",
+     "q": "What papers should I bring when I apply for benefits?",
+     "a": [
+      "Bring what you have, but do not wait to apply just because something is missing. For SNAP, the office must accept your application as long as it has your name, address and signature. If you qualify, benefits count from the day you applied.",
+      "Most offices ask for: a photo ID; Social Security numbers for each person applying (or proof you applied for one); proof of where you live, like a lease, rent receipt or mail; proof of income, like pay stubs from the last 4 weeks or a benefit award letter; your rent or mortgage bill and your heat, utility and phone bills; and bank statements. Also bring child care receipts, medical bills (for anyone 60 or older or disabled), and a doctor's statement if someone is disabled, unable to work or pregnant.",
+      "If you are not a U.S. citizen, bring your immigration papers. You can apply for your children or other eligible family members even if you are not applying for yourself. For SNAP, the office is not allowed to ask for immigration papers from people who are not applying.",
+      "If you are missing a paper, tell the worker. Other kinds of proof often work, like a statement from your landlord or employer. You will get a written notice listing anything still needed and the due date. When renewing SNAP, you get at least 10 days. Send copies, not originals. If your county uses the NYDocSubmit phone app, you can upload papers with it.",
+      "Warren County DSS posts a full checklist online (warrencountyny.gov/socserv/bring). Washington and Saratoga County DSS can tell you what they need when you call."
+     ],
+     "keywords": "documents papers paperwork proof what to bring checklist ID pay stubs lease rent receipt utility bill bank statement verification immigration papers green card NYDocSubmit upload missing documents",
+     "sources": [
+      {
+       "label": "Warren County DSS: What to Bring",
+       "url": "https://www.warrencountyny.gov/socserv/bring"
+      },
+      {
+       "label": "NY OTDA: SNAP Frequently Asked Questions",
+       "url": "https://otda.ny.gov/programs/snap/qanda.asp"
+      },
+      {
+       "label": "NY OTDA: SNAP Recertification FAQ (proof you may need)",
+       "url": "https://otda.ny.gov/programs/snap/recertification-faqs.asp"
+      }
+     ]
+    },
+    {
+     "id": "who-does-what-agencies",
+     "q": "What's the difference between DSS, OTDA, NY State of Health and Social Security?",
+     "a": [
+      "Your county Department of Social Services (DSS) is where most people apply for and manage SNAP, cash assistance (Temporary Assistance), emergency help, HEAP and child care help. DSS also handles some Medicaid: people on SSI, people who need long-term care at home, the spend-down program, and some people with disabilities.",
+      "Local DSS offices: Warren County DSS, 1340 State Route 9, Lake George, 518-761-6300. Washington County DSS, Municipal Center, Building B, 383 Broadway, Fort Edward, 518-746-2300. Saratoga County DSS, 152 West High Street, Ballston Spa, 518-884-4140.",
+      "The Office of Temporary and Disability Assistance (OTDA) is the state agency that oversees DSS. You usually do not visit OTDA. It runs myBenefits.ny.gov, the OTDA Hotline (1-800-342-3009), fair hearings when you disagree with DSS, and the state child support program. It also helps decide Social Security disability claims for New Yorkers.",
+      "NY State of Health is the state's official health plan marketplace. Most people under 65 apply there for Medicaid, the Essential Plan, Child Health Plus or a private plan. Many people 65 and older or on Medicare who do not need long-term care now get Medicaid through it too. Call 1-855-355-5777. If you start in the wrong place, staff will help you get to the right one.",
+      "Social Security is a federal agency, separate from the state and county. It handles Social Security retirement, SSDI, SSI and Medicare sign-up. Call 1-800-772-1213 or find your nearest office at ssa.gov/locator. Not sure who to call? Dial 211."
+     ],
+     "keywords": "DSS social services department county welfare office OTDA NY State of Health NYSOH marketplace Social Security office SSA who to call which agency Lake George Fort Edward Ballston Spa",
+     "sources": [
+      {
+       "label": "NY OTDA: Local Departments of Social Services (addresses)",
+       "url": "https://otda.ny.gov/workingfamilies/dss.asp"
+      },
+      {
+       "label": "NY OTDA: About OTDA",
+       "url": "https://otda.ny.gov/about/"
+      },
+      {
+       "label": "NY Department of Health: How to Apply for Medicaid (NY State of Health or DSS)",
+       "url": "https://www.health.ny.gov/health_care/medicaid/how_do_i_apply.htm"
+      },
+      {
+       "label": "Social Security Administration",
+       "url": "https://www.ssa.gov/"
+      }
+     ]
+    }
+   ]
+  },
+  {
    "title": "Medicaid",
    "entries": [
     {
@@ -68,8 +155,8 @@
      "q": "What is Medicaid, and how do I apply in New York?",
      "a": [
       "Medicaid is public health coverage for certain people with low income, including children, families, pregnant people, older adults, and people with disabilities. It pays for a wide range of care. Some services have small co-pays; the state says these can be waived if you cannot afford them.",
-      "Most adults 19 to 64 without Medicare, children, pregnant people, and parents or caretaker relatives apply through NY State of Health online or by calling (855) 355-5777.",
-      "Some people apply through their county Department of Social Services instead. This includes people who get SSI, people who are blind or disabled and do not fit the groups above, people who need long-term care at home, and people using the spend-down (excess income) program.",
+      "Most people apply through NY State of Health, online or by calling (855) 355-5777. This includes adults 19 to 64 without Medicare, children, pregnant people, and parents or caretaker relatives. New York is also moving more people there: people who have both Medicare and Medicaid, people 65 and older who are not asking for long-term care, and people applying for a Medicare Savings Program.",
+      "Some people still apply through their county Department of Social Services (DSS). This includes people who get SSI, people who are blind or disabled and do not fit the groups above, people who need long-term care at home (such as personal care or CDPAP), and people using the spend-down (excess income) program. If you start in the wrong place, staff will help you get to the right one.",
       "Questions? Call the New York State Medicaid Helpline at (800) 541-2831."
      ],
      "keywords": "Medicaid, apply, application, NY State of Health, DSS, county social services, MAGI, non-MAGI, DOH-4220, health insurance",
@@ -329,6 +416,264 @@
      "related_categories": [
       "Home Care",
       "Disability Services"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Health insurance words and medical bills",
+   "entries": [
+    {
+     "id": "insurance-words",
+     "q": "What do insurance words like premium, deductible, copay and coinsurance mean?",
+     "a": [
+      "A premium is what you pay each month to have insurance, even if you never see a doctor. A deductible is the amount you pay for covered care each year before your plan starts to pay its share.",
+      "A copay (copayment) is a set dollar amount you pay for a visit or a prescription, like $25. Coinsurance is a percent of the bill you pay after you meet your deductible. For example, with 20% coinsurance you pay $20 of a $100 visit, and the plan pays $80.",
+      "The out-of-pocket maximum is the most you have to pay for covered care in a plan year. After you reach it, the plan pays the full cost of covered care for the rest of the year. Your monthly premiums do not count toward it.",
+      "A network is the group of doctors, hospitals and other providers your plan has a contract with. In-network care costs you less. Out-of-network care usually costs more, and some plans do not pay for it at all except in an emergency (see the question on surprise bills).",
+      "Prior authorization means your plan must approve a service or medicine before it will pay. A referral is a written order from your main doctor to see a specialist; many plans require one. Before a big test or a specialist visit, call the number on your insurance card and ask: Is this provider in my network? Do I need a referral or prior authorization?"
+     ],
+     "keywords": "premium deductable deductible copay co-pay copayment coinsurance co-insurance out of pocket maximum max oop in network out of network prior auth preauthorization pre-authorization referral insurance terms glossary what does it mean",
+     "sources": [
+      {
+       "label": "HealthCare.gov: Glossary of health coverage terms",
+       "url": "https://www.healthcare.gov/glossary/"
+      },
+      {
+       "label": "HealthCare.gov: Coinsurance",
+       "url": "https://www.healthcare.gov/glossary/co-insurance/"
+      },
+      {
+       "label": "HealthCare.gov: Out-of-pocket maximum/limit",
+       "url": "https://www.healthcare.gov/glossary/out-of-pocket-maximum-limit/"
+      },
+      {
+       "label": "HealthCare.gov: Referral",
+       "url": "https://www.healthcare.gov/glossary/referral/"
+      }
+     ]
+    },
+    {
+     "id": "medicaid-renewal",
+     "q": "How do I keep my Medicaid? What happens at renewal?",
+     "a": [
+      "Medicaid does not continue forever on its own. You must renew it (also called recertifying) to keep it. Most people renew once a year. Starting in 2027, most adults ages 19 to 64 will renew every 6 months instead. If you apply before January 1, 2027, or renew before March 1, 2027, you get 12 months first (see the question on Medicaid changes).",
+      "If you signed up through NY State of Health, the state first tries to renew you on its own, using information it already has. You may not need to do anything. If it needs more, it will send you a notice asking you to log in to your NY State of Health account and send information. To find your renewal date, log in at nystateofhealth.ny.gov and click the \"Plans\" tab.",
+      "If your Medicaid is handled by your county Department of Social Services (DSS), for example if you get SSI, are on spend-down, or get long-term care at home, your county handles your renewal. Watch your mail and call your county DSS with questions. More people with Medicare and people 65 and older are being moved to NY State of Health.",
+      "Open every letter, text and email from NY State of Health, your county or your health plan, and answer by the date it gives. The state sends a warning at least 15 days before coverage ends. Keep your address, phone and email up to date so notices reach you.",
+      "If your Medicaid ends because you did not send in information, you have 90 days to send it and be reviewed without starting a new application. If you think Medicaid was ended by mistake, you can ask for a fair hearing (see that question). For help, call NY State of Health at 1-855-355-5777 (TTY 1-800-662-1220), call the Medicaid Helpline at 1-800-541-2831, or meet with a free enrollment assistor."
+     ],
+     "keywords": "medicaid renewal renew recertification recert recertify redetermination lost medicaid coverage ended closed letter notice keep medicaid 90 days reapply nystateofhealth",
+     "sources": [
+      {
+       "label": "NY State of Health: Changes to Medicaid Coverage (renewals)",
+       "url": "https://info.nystateofhealth.ny.gov/stay-covered"
+      },
+      {
+       "label": "NYS Department of Health: How do I apply for Medicaid?",
+       "url": "https://www.health.ny.gov/health_care/medicaid/how_do_i_apply.htm"
+      }
+     ]
+    },
+    {
+     "id": "hospital-financial-assistance",
+     "q": "I can't pay my hospital bill. Can I get help?",
+     "a": [
+      "Yes. Every New York hospital licensed by the Department of Health must offer financial assistance (sometimes called charity care). All of them must use the same form, the NYS Uniform Hospital Financial Assistance Application. Ask the hospital's billing or financial aid office for it.",
+      "You may qualify if you have no insurance, if your insurance benefits have run out, or if you have insurance but paid more than 10% of your income on medical costs in the last 12 months. People with household income up to 400% of the federal poverty level are eligible. Below 200%, the hospital must waive all charges; between 200% and 400%, it must give a large discount. Only income counts, not your house, car or savings. Immigration status does not matter.",
+      "You can apply at any time, even after the bill goes to collections. You do not have to pay while your application is being decided. Payment plans can't be more than 5% of your monthly income, and interest is capped at 2%. A hospital can't refuse needed care because of an unpaid bill, and it can't sue patients under 400% of the poverty level. This law covers hospital bills, not separate bills from doctors who are not hospital employees.",
+      "New York also protects people with medical debt. Hospitals and health care providers can't put a lien on your main home or garnish your wages for medical debt, and medical debt is not allowed on your credit report. Be careful: if you pay a medical bill with a regular credit card, it is no longer medical debt and you lose these protections. A provider can't require you to keep a credit card on file before you get needed care.",
+      "For free help applying or appealing a denial, call Community Health Advocates at 1-888-614-5400. To report a hospital or provider breaking these rules, call the Attorney General's helpline at 1-800-771-7755 or email HFAL@health.ny.gov."
+     ],
+     "keywords": "hospital bill cant pay can't afford charity care financial aid financial assistance uniform application sliding scale medical debt collections lien garnish garnishment credit report sued lawsuit payment plan glens falls hospital saratoga hospital",
+     "sources": [
+      {
+       "label": "NYS Department of Health: Patient's Financial Aid Law",
+       "url": "https://www.health.ny.gov/facilities/hospital/financial_assist/"
+      },
+      {
+       "label": "NYS Department of Health: 2025 letter to hospitals on financial assistance (PDF)",
+       "url": "https://www.health.ny.gov/facilities/hospital/financial_assist/docs/25-04_hospital_financial_assistance.pdf"
+      },
+      {
+       "label": "NYS Department of Health: Uniform Hospital Financial Assistance Application (PDF)",
+       "url": "https://www.health.ny.gov/facilities/hospital/financial_assist/docs/dal_24-01.pdf"
+      },
+      {
+       "label": "NY Attorney General: Medical debt",
+       "url": "https://ag.ny.gov/resources/individuals/health-care-insurance/Reporting-medical-debt"
+      }
+     ]
+    },
+    {
+     "id": "surprise-bills",
+     "q": "I got a surprise bill from a doctor or hospital outside my network. What can I do?",
+     "a": [
+      "A surprise bill is a bill from an out-of-network provider that you did not choose, often after emergency care or a hospital stay. Both federal law (the No Surprises Act) and New York law protect you.",
+      "For emergency care, and for care from an out-of-network doctor at an in-network hospital or surgery center, you usually only have to pay what you would pay in-network: your normal copay, coinsurance or deductible. Air ambulance bills are also protected under federal law. Billing you for more than that (called balance billing) is not allowed.",
+      "In New York, it can also be a surprise bill if your in-network doctor sent you to an out-of-network provider or lab and you did not sign a paper saying you knew they were out-of-network. For this kind of bill, you must send a Surprise Medical Bill Certification Form to your health plan and the provider. The form is on the NY Department of Financial Services (DFS) website.",
+      "If you have no insurance or are paying for care yourself, providers must give you a Good Faith Estimate of the cost before scheduled care. If your bill is at least $400 more than the estimate, you can dispute it, within 120 days of getting the bill.",
+      "What to do: don't ignore the bill, but don't pay the extra amount yet. Call your health plan and the provider and say you believe it is a surprise bill. For help, call DFS at 1-800-342-3736 or the federal No Surprises Help Desk at 1-800-985-3059 (open 7 days a week)."
+     ],
+     "keywords": "surprise bill surprise billing balance bill out of network bill emergency room bill ambulance bill no surprises act good faith estimate dispute DFS anesthesia lab bill",
+     "sources": [
+      {
+       "label": "NY Department of Financial Services: Surprise medical bills",
+       "url": "https://www.dfs.ny.gov/consumers/health_insurance/surprise_medical_bills"
+      },
+      {
+       "label": "CMS: Medical bill rights (No Surprises Act)",
+       "url": "https://www.cms.gov/initiatives/your-patient-rights/medical-bill-rights"
+      }
+     ]
+    },
+    {
+     "id": "medicaid-dental-vision-hearing",
+     "q": "Does Medicaid cover dentures, glasses and hearing aids?",
+     "a": [
+      "Yes. New York Medicaid covers medically necessary dental, eye and hearing care, both with straight Medicaid and in Medicaid health plans. You must use a provider who takes Medicaid. Some items need prior approval (permission from Medicaid first); your provider asks for it for you.",
+      "Teeth: Medicaid covers exams, cleanings, X-rays, fillings, pulling teeth, root canals, crowns and dentures. Implants, including a single implant, can be covered when your dentist shows they are medically necessary and other choices like dentures won't work. Dentures, even if lost or broken, are usually replaced only once every 8 years, unless your dentist shows a new set is medically necessary.",
+      "Eyes: Medicaid covers eye exams and glasses, usually one exam for glasses and new lenses every two years. You can get them sooner for some conditions, like diabetes, glaucoma, a fast-changing cataract, or a child's quickly changing eyesight. Lost or broken glasses can be replaced. Contact lenses are covered only when medically necessary.",
+      "Hearing: With a referral from a doctor, physician assistant or nurse practitioner, Medicaid covers hearing tests. It also covers hearing aids, ear molds, batteries and repairs when testing shows you need them. Adults 21 and older need prior approval for two hearing aids. A lost, stolen or broken hearing aid can be replaced if it is out of warranty. Medicaid does not pay for FM systems, listening devices or tinnitus maskers.",
+      "Small copays may apply. A Medicaid dentist can't charge you more than the copay unless you agree and sign a private-pay agreement before treatment starts. To find a provider who takes Medicaid, call your health plan or the Medicaid Helpline at 1-800-541-2831, or search this directory for \"Straight Medicaid\"."
+     ],
+     "keywords": "medicaid dental dentist dentures false teeth partials implants teeth pulled root canal crown glasses eyeglasses eye exam optometrist contacts hearing aid hearing aids audiologist batteries how often replace",
+     "sources": [
+      {
+       "label": "NYS Department of Health: Medicaid dental benefits",
+       "url": "https://www.health.ny.gov/health_care/medicaid/program/dental/member/"
+      },
+      {
+       "label": "NYS Medicaid Dental Policy and Procedure Manual, 2026 (PDF)",
+       "url": "https://www.emedny.org/ProviderManuals/Dental/PDFS/Dental_Policy_and_Procedure_Manual.pdf"
+      },
+      {
+       "label": "NYS Medicaid Vision Care Manual (PDF)",
+       "url": "https://www.emedny.org/ProviderManuals/VisionCare/PDFS/VisionCare_Policy_Guidelines.pdf"
+      },
+      {
+       "label": "NYS Medicaid Hearing Aid Policy Manual, 2026 (PDF)",
+       "url": "https://www.emedny.org/ProviderManuals/HearingAid/PDFS/HearingAid_Policy_Guidelines.pdf"
+      }
+     ]
+    },
+    {
+     "id": "health-centers-sliding-fee",
+     "q": "Can I see a doctor if I don't have insurance?",
+     "a": [
+      "Yes. Community health centers, also called Federally Qualified Health Centers (FQHCs), are clinics that get federal funding and must serve everyone, even people who can't pay. They offer medical, dental, mental health and substance use care. Many have on-site pharmacies with discounted medicines, and some can help with rides.",
+      "Health centers adjust what you pay based on your income and family size. This is called a sliding fee scale. It can also help people who have insurance but can't afford their deductible or copays.",
+      "In this area, Hudson Headwaters Health Network is an FQHC with many health centers. Its Sliding Fee Program lowers the cost of medical and dental care, X-rays and many prescriptions. You can apply whether or not you have insurance. Ask at any Hudson Headwaters health center or call its Sliding Fee Program at (518) 824-8640.",
+      "To find other health centers, use the federal Find a Health Center tool at findahealthcenter.hrsa.gov. Also check whether you qualify for free or low-cost coverage like Medicaid or the Essential Plan (see those questions), and ask any hospital about financial assistance."
+     ],
+     "keywords": "no insurance uninsured doctor without insurance free clinic low cost clinic sliding fee sliding scale community health center FQHC hudson headwaters HHHN cheap doctor dentist",
+     "sources": [
+      {
+       "label": "HRSA: What is a health center?",
+       "url": "https://bphc.hrsa.gov/about-health-center-program/what-health-center"
+      },
+      {
+       "label": "HRSA: Find a Health Center",
+       "url": "https://findahealthcenter.hrsa.gov/"
+      },
+      {
+       "label": "HealthCare.gov: Community health centers",
+       "url": "https://www.healthcare.gov/community-health-centers/"
+      },
+      {
+       "label": "Hudson Headwaters Health Network: Billing, financial assistance and Sliding Fee Program",
+       "url": "https://www.hhhn.org/resource-hub/financial-services/"
+      }
+     ]
+    },
+    {
+     "id": "prescriptions-not-covered",
+     "q": "My pharmacy says my medicine isn't covered. What can I do?",
+     "a": [
+      "A generic drug has the same active ingredient as the brand-name drug and works the same way, but usually costs less. A formulary (drug list) is the list of medicines a plan covers. Some drugs need prior authorization, which means your prescriber must get the plan's OK first.",
+      "If you have Medicaid, your medicines are covered by NYRx, New York's Medicaid drug program. Since April 1, 2023, this includes people in most Medicaid health plans. People in long-term care plans (like MLTC, MAP or PACE) and the Essential Plan get drugs through their plan instead. Most pharmacies in New York take NYRx.",
+      "NYRx copays are $1 for generics and preferred brands, $3 for non-preferred brands, and 50 cents for over-the-counter medicine. There is no copay for people under 21, during pregnancy, or for mental health medicines and birth control, among others. A pharmacy can't refuse to give you your medicine because you can't pay the copay.",
+      "If the pharmacy says a drug isn't covered, ask why. Often it needs prior authorization, or a \"preferred\" drug on the list would work. Ask your doctor to request approval from Medicaid or switch you to a preferred drug. If the pharmacist can't reach your doctor, the pharmacist can get approval to give you up to a 72-hour emergency supply. Questions: Medicaid Helpline, 1-800-541-2831.",
+      "If you have a Medicare drug plan (Part D), you or your doctor can ask the plan for a \"coverage determination\" or an \"exception.\" Your doctor must explain why you need that drug. If the plan says no, you can appeal. For help with drug costs, see the questions on Extra Help and EPIC."
+     ],
+     "keywords": "prescription not covered pharmacy denied rejected medicine medication prior authorization PA formulary drug list generic brand name NYRx nyrx medicaid pharmacy copay emergency supply 72 hour part d exception",
+     "sources": [
+      {
+       "label": "FDA: Generic drug facts",
+       "url": "https://www.fda.gov/drugs/generic-drugs/generic-drug-facts"
+      },
+      {
+       "label": "NYS Department of Health: NYRx information for Medicaid members",
+       "url": "https://www.health.ny.gov/health_care/medicaid/redesign/mrt2/pharmacy_transition/consumers/index.htm"
+      },
+      {
+       "label": "NYRx Pharmacy Manual Policy Guidelines, September 2026 (PDF)",
+       "url": "https://www.emedny.org/ProviderManuals/Pharmacy/PDFS/Pharmacy_Policy_Guidelines.pdf"
+      },
+      {
+       "label": "Medicare.gov: Appeals in a Medicare drug plan",
+       "url": "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/drug-plans"
+      }
+     ]
+    },
+    {
+     "id": "immigrant-health-coverage",
+     "q": "Can immigrants get Medicaid or the Essential Plan in New York?",
+     "a": [
+      "It depends on immigration status, age, income, and whether you are pregnant. Some rules changed in 2026 because of a federal law (H.R. 1). Apply or ask before you decide you can't get coverage.",
+      "Children under 19 can get Child Health Plus no matter their immigration status, if they otherwise qualify. Pregnant people can get full Medicaid no matter their immigration status, with coverage for 12 months after the pregnancy ends. NY State of Health says coverage for children, pregnant people and people who recently gave birth is not changing.",
+      "Starting October 1, 2026, some immigrants, including refugees, asylees, parolees, and survivors of domestic violence or human trafficking, may move from Medicaid to the Essential Plan. Their benefits are not supposed to change. Since July 1, 2026, DACA recipients with income over 138% of the poverty level no longer qualify for the Essential Plan. Some lawfully present immigrants who get tax credits may see cost changes starting in 2027.",
+      "Undocumented adults ages 19 to 64 can usually get only Emergency Medicaid, if they meet the income rules. Emergency Medicaid pays to treat an emergency medical condition, including labor and delivery. Undocumented adults 65 and older may qualify for full Medicaid in New York, which started in 2024 and is paid with state funds.",
+      "To apply, call NY State of Health at 1-855-355-5777 or meet with a free enrollment assistor. Not sure where to apply? Call the Medicaid Helpline at 1-800-541-2831. If you are worried about your immigration case, see the question on public charge. A free legal aid office can help with your situation."
+     ],
+     "keywords": "immigrant immigrants undocumented green card refugee asylee asylum parolee DACA emergency medicaid noncitizen non-citizen PRUCOL essential plan child health plus pregnant immigration status medicaid",
+     "sources": [
+      {
+       "label": "NY State of Health: Changes to Medicaid Coverage (immigration changes)",
+       "url": "https://info.nystateofhealth.ny.gov/stay-covered"
+      },
+      {
+       "label": "NY State of Health: Essential Plan changes due to federal rules",
+       "url": "https://info.nystateofhealth.ny.gov/news/information-essential-plan-enrollees-about-changes-due-federal-rules"
+      },
+      {
+       "label": "NY State of Health: Immigration and health coverage (assistor training, PDF)",
+       "url": "https://info.nystateofhealth.ny.gov/sites/default/files/Immigration%20and%20Newly%20Entering%20Migrants_12-7-2023.pdf"
+      },
+      {
+       "label": "NY Health Access (NYLAG): Emergency Medicaid and coverage for undocumented immigrants 65+",
+       "url": "https://nyhealthaccess.org/entry/70/"
+      }
+     ]
+    },
+    {
+     "id": "public-charge",
+     "q": "Will using Medicaid or other benefits hurt my green card application (\"public charge\")?",
+     "a": [
+      "Public charge is a test immigration officers use when some people apply for a green card (permanent residence). Officers look at your age, health, family, money and skills to decide if you are likely to depend on the government in the future.",
+      "The rules changed on September 18, 2026. Officers may now consider most income-based benefits, such as Medicaid, SNAP or housing help, that you apply for or get on or after that date. Getting a benefit does not by itself mean you will be denied; it is one part of the whole picture. Benefits you got before September 18, 2026 are judged under the older rule, which only counted cash assistance and long-term care in an institution paid by the government.",
+      "Many people are not affected. The test is part of a green card application, not a citizenship application, and it usually does not apply to people who already have a green card. Refugees, asylees, people applying for TPS, VAWA self-petitioners, T and U visa holders, and special immigrant juveniles are exempt.",
+      "Benefits your family members get, like a U.S. citizen child's Medicaid, are not counted as your own benefits. But officers may look at your whole household's money situation.",
+      "These rules are new and could change. Before you drop or turn down health coverage or food help, get advice. Call the New York State Office for New Americans hotline at 1-800-566-7636 (free, anonymous, many languages) to be connected with free immigration legal help."
+     ],
+     "keywords": "public charge green card immigration benefits medicaid snap food stamps hurt my case deport immigrant fear uscis adjustment of status office for new americans hotline",
+     "sources": [
+      {
+       "label": "USCIS Policy Manual: Public charge, key concepts",
+       "url": "https://www.uscis.gov/policy-manual/volume-8-part-g-chapter-2"
+      },
+      {
+       "label": "USCIS Policy Manual: Public charge, who it applies to",
+       "url": "https://www.uscis.gov/policy-manual/volume-8-part-g-chapter-3"
+      },
+      {
+       "label": "USCIS Policy Manual: Public charge, consideration of benefits",
+       "url": "https://www.uscis.gov/policy-manual/volume-8-part-g-chapter-7"
+      },
+      {
+       "label": "NY Department of State: Office for New Americans hotline",
+       "url": "https://dos.ny.gov/do-you-need-immigration-assistance"
+      }
      ]
     }
    ]
@@ -621,6 +966,96 @@
       "Senior Centers and Social",
       "Navigation and Advocacy"
      ]
+    },
+    {
+     "id": "medicare-advantage-vs-medigap",
+     "q": "Should I choose Medicare Advantage or Original Medicare with a Medigap plan?",
+     "a": [
+      "With Original Medicare (Parts A and B), you can see any doctor or hospital in the U.S. that takes Medicare, usually without referrals or prior approval. But you pay 20% coinsurance for most services, with no yearly limit. Many people add a Medigap policy (Medicare Supplement Insurance) to help pay those costs, plus a separate Part D plan for drugs.",
+      "Medicare Advantage (Part C) is a private plan that you use instead of Original Medicare. Most include drug coverage, and many add extras like some dental, vision or hearing care. Each plan has a yearly limit on what you pay. But you usually must use the plan's network, and you may need referrals and prior approval for some care. You can't use a Medigap policy with Medicare Advantage.",
+      "The trade-off in short: Medicare Advantage puts everything in one plan with a yearly cost limit, but gives you less choice of doctors and more approvals. Original Medicare plus Medigap gives you more choice and fewer approvals, but you pay a premium for the Medigap policy and the drug plan on top of Part B.",
+      "New York gives you extra protection. If you have Parts A and B, you can buy a Medigap policy at any time of year, and the company can't turn you down or charge more because of your health or age. This includes people under 65 who have Medicare because of a disability. A policy can make you wait up to 6 months for coverage of a health problem you already had, but that wait is shortened if you had other coverage with no gap of more than 63 days.",
+      "You can change Medicare plans from October 15 to December 7 each year, with changes starting January 1. If you are in Medicare Advantage, you can also switch plans or go back to Original Medicare from January 1 to March 31. Before you decide, call HIICAP at 1-800-701-0501 or your county Office for the Aging for free counseling (see the question on help choosing a Medicare plan)."
+     ],
+     "keywords": "medicare advantage vs medigap original medicare supplement plan G plan N part c switch medicare advantage to medigap which is better network HMO PPO HIICAP",
+     "sources": [
+      {
+       "label": "Medicare.gov: Compare Original Medicare and Medicare Advantage",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/your-coverage-options/compare-original-medicare-medicare-advantage"
+      },
+      {
+       "label": "NYS Office for the Aging: HIICAP Notebook 2026, Medigap module (PDF)",
+       "url": "https://aging.ny.gov/system/files/documents/2026/03/hiicap-notebook-mod-7-medicare-supplement-insurance-medigap-2026.pdf"
+      },
+      {
+       "label": "Medicare.gov: Joining a health or drug plan",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/joining-a-plan"
+      },
+      {
+       "label": "NYS Office for the Aging: HIICAP",
+       "url": "https://aging.ny.gov/health-insurance-information-counseling-and-assistance-program-hiicap"
+      }
+     ]
+    },
+    {
+     "id": "observation-status",
+     "q": "What is hospital \"observation status,\" and why does it matter for rehab in a nursing home?",
+     "a": [
+      "In the hospital, you are either an inpatient or an outpatient. You are an inpatient only after a doctor writes an order to admit you. If you are \"under observation,\" you are an outpatient, even if you stay overnight in a regular hospital bed.",
+      "This affects what you pay. As an outpatient, you usually pay a copay for each hospital service under Part B, and the pills you normally take at home may not be covered. It matters even more if you need rehab afterward. Original Medicare pays for a skilled nursing facility only after an inpatient stay of at least 3 days in a row. Time under observation or in the emergency room does not count.",
+      "If you are under observation for more than 24 hours, the hospital must give you a Medicare Outpatient Observation Notice (MOON). It tells you that you are an outpatient and why. Ask your doctor, \"Am I an inpatient or under observation?\" If you may need rehab, ask whether you should be admitted.",
+      "If you were admitted as an inpatient and the hospital later changed you to observation, you may have the right to a fast appeal. This right started February 14, 2025, for people in Original Medicare. You should get a Medicare Change of Status Notice before you leave; if you don't, ask for it. Appeal to the Quality Improvement Organization (BFCC-QIO) named on the notice, ideally while you are still in the hospital.",
+      "Medicare Advantage plans may have different rules, and some waive the 3-day stay. For help, call 1-800-MEDICARE (1-800-633-4227), or see the question on free help choosing a Medicare plan (HIICAP)."
+     ],
+     "keywords": "observation status observation stay outpatient inpatient admitted MOON notice three day rule 3 day rule 3-day stay rehab nursing home SNF skilled nursing two midnight change of status appeal",
+     "sources": [
+      {
+       "label": "Medicare.gov: Inpatient or outpatient hospital status affects your costs",
+       "url": "https://www.medicare.gov/coverage/inpatient-hospital-care/inpatient-outpatient-status"
+      },
+      {
+       "label": "Medicare.gov: Skilled nursing facility care",
+       "url": "https://www.medicare.gov/coverage/skilled-nursing-facility-care"
+      },
+      {
+       "label": "Medicare.gov: Appeal when a hospital changes your status to observation",
+       "url": "https://www.medicare.gov/providers-services/claims-appeals-complaints/appeals/original-medicare/appeal-part-a-hospital-status-change"
+      },
+      {
+       "label": "CMS: Appeal rights for certain changes in patient status, fact sheet (PDF)",
+       "url": "https://www.cms.gov/files/document/medicare-appeal-rights-certain-changes-patient-status-final-rule-fact-sheet.pdf"
+      }
+     ]
+    },
+    {
+     "id": "dual-eligible",
+     "q": "I have both Medicare and Medicaid. Which one pays, and what plans can I join?",
+     "a": [
+      "People with both Medicare and Medicaid are called \"dual eligible.\" Medicare pays first for Medicare-covered care. Medicaid pays after that, and covers things Medicare doesn't, like long-term care at home or in a nursing home. Medicaid may also pay your Medicare premiums, deductibles and coinsurance (see the Medicare Savings Program question).",
+      "Your prescriptions are covered by a Medicare drug plan (Part D), not by Medicaid. You automatically get Extra Help with drug costs.",
+      "You can keep Original Medicare and straight Medicaid, or join a plan that puts both together. New York has three kinds of these integrated plans. Medicaid Advantage Plus (MAP) is for adults 18 and older who need long-term care for more than 120 days. PACE is for people 55 and older who need long-term care, with a care team and a day center. IB-Dual is for people who don't need long-term care: you keep your Medicaid health plan and join the same company's Medicare plan for dual eligibles, called a D-SNP.",
+      "If you are in a Medicaid health plan when you become eligible for Medicare, your plan may sign you up for its D-SNP automatically. It must send you a notice at least 60 days before. You can say no by calling your plan. In these plans you usually must use the plan's doctors.",
+      "Free help choosing: HIICAP at 1-800-701-0501, New York Medicaid Choice at 1-888-401-6582 (for MAP), or Medicare at 1-800-633-4227. If you have a problem with a plan, ICAN (the Independent Consumer Advocacy Network) gives free help at 1-844-614-8800."
+     ],
+     "keywords": "dual eligible duals medicare and medicaid both who pays first D-SNP DSNP dual special needs plan MAP medicaid advantage plus PACE IB-Dual integrated plan ICAN",
+     "sources": [
+      {
+       "label": "Medicare.gov: Medicaid and Medicare (dual eligibility)",
+       "url": "https://www.medicare.gov/basics/costs/help/medicaid"
+      },
+      {
+       "label": "NYS Department of Health: Integrated care plans for dual eligible New Yorkers",
+       "url": "https://www.health.ny.gov/health_care/medicaid/redesign/duals/"
+      },
+      {
+       "label": "NYS Department of Health: Managed Long Term Care",
+       "url": "https://www.health.ny.gov/health_care/managed_care/mltc/"
+      },
+      {
+       "label": "ICAN (Independent Consumer Advocacy Network)",
+       "url": "https://www.icannys.org/"
+      }
+     ]
     }
    ]
   },
@@ -807,6 +1242,219 @@
       "Disability Services",
       "Legal Help"
      ]
+    },
+    {
+     "id": "working-on-ssi-ssdi",
+     "q": "Can I work while I get SSI or SSDI?",
+     "a": [
+      "Yes. Social Security has \"work incentives,\" rules that let you try working without losing all your benefits at once. Always report your work and your pay to Social Security.",
+      "SSI: Social Security does not count $20 of your income and the first $65 you earn each month, and it counts only half of your earnings above that. So your SSI check goes down about $1 for every $2 you earn. Students under 22 can have up to $2,410 a month of earnings not counted (up to $9,730 in 2026). Some costs you pay because of your disability so you can work can also be subtracted. If your check stops because of your pay, you can often keep Medicaid, and SSI can restart without a new application if your pay drops.",
+      "SSDI: you get a Trial Work Period of 9 months (within a rolling 5 years) when you keep your full check no matter how much you earn. In 2026, any month you earn over $1,210 counts as a trial month. After that comes a 36-month period when you get your check for any month you earn less than \"substantial gainful activity\" (SGA). In 2026, SGA is $1,690 a month, or $2,830 if you are blind.",
+      "If your benefits stop because of work and your condition later keeps you from working, you can ask for Expedited Reinstatement within 5 years. You can get up to 6 months of temporary payments while Social Security decides.",
+      "Free help: Ticket to Work offers free job services to people 18 to 64 on SSI or SSDI. Free benefits counseling (WIPA) explains how a job will affect your benefits before you take it. Call the Ticket to Work Help Line at 1-866-968-7842 (TTY 1-866-833-2967). Also ask your county DSS about New York's Medicaid Buy-In for working people with disabilities."
+     ],
+     "keywords": "work while on SSI SSDI disability job earnings report wages trial work period TWP SGA substantial gainful activity extended period of eligibility Ticket to Work WIPA benefits counseling 1619(b) Medicaid buy-in PASS IRWE expedited reinstatement",
+     "sources": [
+      {
+       "label": "Social Security: SSI Work Incentives (2026 edition)",
+       "url": "https://www.ssa.gov/ssi/text-work-ussi.htm"
+      },
+      {
+       "label": "Social Security: Trial Work Period amounts",
+       "url": "https://www.ssa.gov/oact/cola/twp.html"
+      },
+      {
+       "label": "Social Security: Substantial Gainful Activity amounts",
+       "url": "https://www.ssa.gov/oact/cola/sga.html"
+      },
+      {
+       "label": "Social Security Red Book: SSDI Employment Supports",
+       "url": "https://www.ssa.gov/redbook/eng/ssdi-only-employment-supports.htm"
+      }
+     ]
+    },
+    {
+     "id": "ssa-overpayment",
+     "q": "I got a Social Security overpayment letter. What can I do?",
+     "a": [
+      "An overpayment means Social Security says it paid you more than it should have. The letter says why and how much. Read it right away, because the first 30 days matter.",
+      "If you think the amount is wrong, or that you were not overpaid at all, file an appeal called a \"reconsideration.\" You have 60 days after you get the letter. If you appeal within 30 days, Social Security will not collect until it decides.",
+      "If the amount is right but it was not your fault and you cannot afford to pay it back (or it would be unfair), ask for a waiver. Use form SSA-632. You can upload it through your my Social Security account, or mail or fax it to your local office. If you ask within 30 days, Social Security will not collect until it decides.",
+      "If you do nothing, Social Security will start keeping 50% of your monthly Social Security benefit, or 10% of your SSI payment, until it is paid back. To pay less each month, send form SSA-634. To pay or set up a payment plan, call 1-855-807-8807, Monday to Friday, 8 a.m. to 4:30 p.m. If you no longer get benefits, the money can be taken from tax refunds or wages.",
+      "A free legal aid office can help with your situation. You can also call Social Security at 1-800-772-1213 (TTY 1-800-325-0778). Keep copies of everything you send."
+     ],
+     "keywords": "overpayment over payment overpaid letter Social Security SSI SSDI pay back repay waiver SSA-632 appeal reconsideration SSA-561 withholding 50% 10% payment plan SSA-634 debt",
+     "sources": [
+      {
+       "label": "Social Security: Resolve an overpayment",
+       "url": "https://www.ssa.gov/manage-benefits/resolve-overpayment"
+      },
+      {
+       "label": "Social Security: Ask us to waive an overpayment",
+       "url": "https://www.ssa.gov/manage-benefits/resolve-overpayment/ask-us-waive-overpayment"
+      },
+      {
+       "label": "Social Security: Repay overpaid benefits",
+       "url": "https://www.ssa.gov/manage-benefits/resolve-overpayment/repay-overpaid-benefits"
+      },
+      {
+       "label": "Social Security: Request reconsideration",
+       "url": "https://www.ssa.gov/apply/appeal-decision-we-made/request-reconsideration"
+      }
+     ]
+    },
+    {
+     "id": "ssi-savings-trusts",
+     "q": "How can I save money and still keep SSI or Medicaid?",
+     "a": [
+      "SSI has a resource limit: $2,000 for one person or $3,000 for a couple. Resources are things like cash, bank accounts, stocks and savings bonds. If what you own is over the limit at the start of a month, you get no SSI for that month.",
+      "Many things do not count: your home, household goods, one car used for transportation, burial spaces, up to $1,500 each in burial funds for you and your spouse, and life insurance with a total face value of $1,500 or less. Back payments from SSI or Social Security do not count for 9 months. Tax refunds, including the EITC, do not count for 12 months.",
+      "An ABLE account lets some people with disabilities save up to $100,000 without it counting for SSI. See \"What is an ABLE account?\" for who qualifies.",
+      "Trusts: a supplemental (special) needs trust for a disabled person under 65, or a pooled trust run by a nonprofit for a disabled person of any age, does not count for SSI or Medicaid if it is set up correctly. When the person dies, money left over pays Medicaid back. Money the trust pays to you directly counts as income. For SSI, trust payments for rent or housing can lower your check (by up to $351.33 a month in 2026), but payments for things like phone bills or medical care do not.",
+      "Pooled trusts and spend-down: in New York, a person who is certified disabled can put their extra (excess) income into a pooled trust each month. Medicaid then does not count that income, which can end the monthly spend-down. The trust pays the person's bills, such as rent and utilities, from that money. Give your county DSS a copy of the trust and a written statement of how much you will deposit each month. Talk to a lawyer before setting up any trust; a free legal aid office can help with your situation."
+     ],
+     "keywords": "SSI resource limit $2000 asset limit savings save money too much money bank account what counts excluded resources ABLE supplemental needs trust special needs trust SNT pooled trust pooled income trust spend down excess income surplus income Medicaid",
+     "sources": [
+      {
+       "label": "Social Security: SSI Resources (2026 edition)",
+       "url": "https://www.ssa.gov/ssi/text-resources-ussi.htm"
+      },
+      {
+       "label": "Social Security: SSI Spotlight on Trusts (2026 edition)",
+       "url": "https://www.ssa.gov/ssi/spotlights/spot-trusts.htm"
+      },
+      {
+       "label": "NY Department of Health: Explanation of the Effect of Trusts on Medicaid Eligibility (OHIP-0119)",
+       "url": "https://www.health.ny.gov/health_care/medicaid/publications/docs/gis/20ma03_att_1.pdf"
+      },
+      {
+       "label": "Social Security: Spotlight on ABLE Accounts",
+       "url": "https://www.ssa.gov/ssi/spotlights/spot-able.html"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Work, taxes and family money",
+   "entries": [
+    {
+     "id": "tax-credits-refunds",
+     "q": "What tax credits can put money in my pocket, even if I don't owe taxes?",
+     "a": [
+      "Some tax credits are \"refundable.\" That means if the credit is more than the tax you owe, you get the rest back as a refund. You must file a tax return to get them, even if you don't owe any taxes.",
+      "The federal Earned Income Tax Credit (EITC) is for people who work and earn low to moderate pay. For tax year 2025 (the returns filed in 2026), it is worth up to $649 with no children, $4,328 with one child, $7,152 with two, and $8,046 with three or more. Income limits depend on family size. For example, a single parent with one child could earn up to $50,434. New York State has its own earned income credit that adds to the federal one.",
+      "The federal Child Tax Credit is worth up to $2,200 for each child under 17 for tax year 2025. Up to $1,700 per child can come back as a refund if you earned at least $2,500. You (and your spouse, if filing jointly) and each child need a Social Security number that is valid for work.",
+      "New York's Empire State Child Credit is also refundable. It is for full-year New York residents with a child under 17. For tax year 2025, it is up to $1,000 for each child under 4 and $330 for each child age 4 to 16. For tax year 2026 (filed in 2027), the amount for ages 4 to 16 goes up to $500. See the next question for free help filing."
+     ],
+     "keywords": "tax refund EITC EIC earned income credit child tax credit CTC ACTC Empire State Child Credit ESCC NY earned income credit refundable credit file taxes no income taxes owe nothing tax year 2025",
+     "sources": [
+      {
+       "label": "NY Department of Taxation and Finance: Valuable Income Tax Credits (Jan. 2026)",
+       "url": "https://www.tax.ny.gov/press/rel/2026/valuablecredits012926.htm"
+      },
+      {
+       "label": "IRS: EITC income limits and maximum credit amounts",
+       "url": "https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit/earned-income-and-earned-income-tax-credit-eitc-tables"
+      },
+      {
+       "label": "IRS: Child Tax Credit",
+       "url": "https://www.irs.gov/credits-deductions/individuals/child-tax-credit"
+      },
+      {
+       "label": "NY Department of Taxation and Finance: Empire State Child Credit",
+       "url": "https://www.tax.ny.gov/pit/credits/empire_state_child_credit.htm"
+      }
+     ]
+    },
+    {
+     "id": "free-tax-help",
+     "q": "Where can I get free help filing my taxes?",
+     "a": [
+      "Free tax prep: IRS-trained volunteers at VITA sites prepare basic tax returns for free for people who generally make about $70,244 or less, people with disabilities, and people who speak limited English. Tax Counseling for the Elderly (TCE) focuses on people 60 and older. Most TCE sites are run by AARP Tax-Aide. To find a site, call 1-800-906-9887. From January to April, you can also call AARP Tax-Aide at 1-888-227-7669.",
+      "File online for free: if your 2025 income (adjusted gross income) was $89,000 or less, you can use IRS Free File software. Each company may have its own rules, so check before you start to avoid a fee. Free File Fillable Forms are free at any income if you are comfortable doing your own return. New York's Taxpayer Assistance Program (TAP) also offers free guided help, in person or online, for people with income of $89,000 or less.",
+      "IRS Direct File (the IRS's own free filing tool) was not on the IRS's list of free filing options for 2026. Check IRS.gov for the newest free options before you file.",
+      "Missed a year? You can still file to claim a refund, including the EITC, for up to 3 years after the deadline. For example, the deadline to claim a refund for 2023 is April 15, 2027."
+     ],
+     "keywords": "free tax help free tax prep VITA TCE AARP Tax-Aide Free File Direct File TAP Taxpayer Assistance Program file taxes free e-file late tax return past years old refund",
+     "sources": [
+      {
+       "label": "IRS: Free tax return preparation for qualifying taxpayers (VITA and TCE)",
+       "url": "https://www.irs.gov/individuals/free-tax-return-preparation-for-qualifying-taxpayers"
+      },
+      {
+       "label": "IRS: 2026 tax filing season opens with several free filing options available",
+       "url": "https://www.irs.gov/newsroom/2026-tax-filing-season-opens-with-several-free-filing-options-available"
+      },
+      {
+       "label": "NY Department of Taxation and Finance: E-file and free filing options",
+       "url": "https://www.tax.ny.gov/pit/efile/"
+      },
+      {
+       "label": "IRS: How to claim the EITC (including past years)",
+       "url": "https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit/how-to-claim-the-earned-income-tax-credit-eitc"
+      }
+     ]
+    },
+    {
+     "id": "unemployment-insurance",
+     "q": "How do I get unemployment benefits in New York?",
+     "a": [
+      "Unemployment Insurance (UI) pays weekly benefits to people who lost their job or had their hours cut, and who are ready, willing and able to work. You need enough recent wages from work. For claims in 2026, the state calculator looks for at least $3,500 in wages in at least one calendar quarter (a 3-month period). If you quit or were fired, apply anyway. The Department of Labor (DOL) will review your claim.",
+      "File in your first week out of work, because waiting can cost you benefits. Apply online at unemployment.labor.ny.gov (best between 7:30 a.m. and 7:30 p.m.). Or call the Telephone Claim Center at 1-888-209-8124, Monday to Friday, 8 a.m. to 5 p.m. Interpreters are available by phone. The first payment usually comes 2 to 3 weeks after your claim is processed.",
+      "How much and how long: your weekly amount is based on your past wages. The most anyone can get is $869 a week. You can get up to 26 weeks of benefits. To estimate your amount, use the DOL Benefit Rate Calculator.",
+      "\"Certifying\" means asking for each week's payment. You must do it every week you are out of work. Weeks run Monday to Sunday. Certify for the past week any time from that Sunday through the next Saturday, online or by phone at 1-888-581-5812. Report any work you did, even if it was only an hour. You must also do at least 3 work search activities each week, or follow an official work search plan.",
+      "If you are denied, you have 30 days from the date of the decision to ask for a hearing. Note: DOL is upgrading its unemployment system starting November 2, 2026, which may delay some payments."
+     ],
+     "keywords": "unemployment UI unemployment insurance laid off lost job fired quit file claim certify weekly certification weekly benefits how much unemployment $869 26 weeks work search partial unemployment NYS DOL labor department denied hearing",
+     "sources": [
+      {
+       "label": "NY Department of Labor: The Unemployment Claimant Benefit Process",
+       "url": "https://dol.ny.gov/unemployment-claimant-benefit-process-0"
+      },
+      {
+       "label": "NY Department of Labor: Certify for Weekly Benefits",
+       "url": "https://dol.ny.gov/unemployment/certify-weekly-unemployment-insurance-benefits"
+      },
+      {
+       "label": "NY Department of Labor: Benefit Rate Calculator",
+       "url": "https://ux.labor.ny.gov/benefit-rate-calculator/"
+      },
+      {
+       "label": "Governor of New York: Maximum weekly unemployment benefit raised to $869 (Oct. 2025)",
+       "url": "https://www.governor.ny.gov/news/governor-hochul-and-labor-leaders-announce-maximum-weekly-benefit-increase-unemployed-workers"
+      }
+     ]
+    },
+    {
+     "id": "child-support",
+     "q": "How do I get or change child support in New York?",
+     "a": [
+      "Your county's child support office can help you get a support order from Family Court. Once there is an order, the Support Collection Unit collects payments from the other parent, keeps track of them, and sends them to you.",
+      "To start, enroll online at childsupport.ny.gov. Or fill out a Child Support Enrollment Form and a Family Safety Screening Form and give them to your local child support office. If you apply for cash assistance, you are referred automatically, and Medicaid applicants may be too. If working on child support would go against your child's best interests, for example because of safety, tell the worker. You can refuse without penalty.",
+      "Family Court figures support using a set guideline: a percent of the parents' income after certain deductions (17% for one child, 25% for two, 29% for three, 31% for four and at least 35% for five or more), plus each parent's share of child care, medical and school costs. A $35 yearly fee applies only to parents who never got cash assistance and who receive more than $550 in support in a year.",
+      "Changing an order: only a court can change it, so keep paying the full amount until it does. Either parent can ask Family Court for a change (Form 4-11) if there is a big change in circumstances. For orders from October 13, 2010 or later, you can also ask if 3 years have passed, if either parent's gross income changed by 15% or more, or if you are in jail or prison. Every 2 years the program also checks orders for a cost-of-living increase.",
+      "Questions? Call the Child Support Helpline at 888-208-4485 (TTY 866-875-9975), Monday to Friday, 8 a.m. to 7 p.m. A free legal aid office can help with your situation."
+     ],
+     "keywords": "child support SCU support collection unit open a case enroll family court petition modify change order lower payment raise payment lost job COLA cost of living paternity parentage custodial noncustodial parent helpline",
+     "sources": [
+      {
+       "label": "NY Child Support Services: Enroll for Child Support",
+       "url": "https://childsupport.ny.gov/enroll"
+      },
+      {
+       "label": "NY Child Support Services: Establish Order",
+       "url": "https://childsupport.ny.gov/order/establish"
+      },
+      {
+       "label": "NY Child Support Services: Modify Order",
+       "url": "https://childsupport.ny.gov/order/modify"
+      },
+      {
+       "label": "NY Child Support Services: Services FAQ",
+       "url": "https://childsupport.ny.gov/services/faq"
+      }
+     ]
     }
    ]
   },
@@ -924,7 +1572,7 @@
      "sources": [
       {
        "label": "U.S. HHS: Low Income Home Energy Assistance Program (LIHEAP)",
-       "url": "https://www.acf.hhs.gov/ocs/programs/liheap"
+       "url": "https://acf.gov/ocs/programs/liheap"
       },
       {
        "label": "U.S. Department of Energy: Weatherization Assistance Program",
@@ -1017,6 +1665,91 @@
      "related_categories": [
       "Legal Help",
       "Social Services"
+     ]
+    },
+    {
+     "id": "snap-interview-renewal-theft",
+     "q": "How do SNAP interviews and renewals work, and what if my EBT benefits are stolen?",
+     "a": [
+      "After you apply for SNAP, you must do an eligibility interview, by phone or in person. You should get a decision within 30 days. If you have little or no money, ask to be checked for \"expedited\" (fast) SNAP. If you qualify, you get your first benefits within 7 days.",
+      "Renewing (recertification): about two months before your benefits end, you get a packet in the mail with a form and a phone interview time. Send in the form before the interview date, at myBenefits.ny.gov or by mail, fax or in person. You can also ask for a face-to-face interview. If your form arrives after the interview date, it is up to you to reschedule before your benefits end.",
+      "Reporting changes: your notice tells you what to report. Under New York's usual rules, you must report if your household's total monthly income before taxes goes over the limit on your notice. Report it within 10 days after the end of that month. If you are approved for more than 6 months, you also get a Periodic Report form halfway through. Return it within 10 days. If you don't report, you may have to pay benefits back.",
+      "Stolen benefits: thieves can copy EBT cards with hidden \"skimmers\" on card readers, or trick you with fake texts and calls. Stolen SNAP benefits can no longer be replaced. Stolen cash assistance (TA) may be replaced once a year if you apply within 30 days of finding the theft. Either way, call EBT Customer Service at 1-888-328-6399 right away for a new card.",
+      "Protect your card: use the ebtEDGE app or ebtEDGE.com to freeze your card between uses, change your PIN often, and block out-of-state and online purchases. Never give your PIN to anyone who calls or texts you."
+     ],
+     "keywords": "SNAP interview recertification recert renewal renew food stamps periodic report change report 130% expedited emergency SNAP EBT stolen skimming skimmer scam phishing replace benefits freeze card ebtEDGE PIN",
+     "sources": [
+      {
+       "label": "NY OTDA: SNAP Frequently Asked Questions (interview, expedited SNAP)",
+       "url": "https://otda.ny.gov/programs/snap/qanda.asp"
+      },
+      {
+       "label": "NY OTDA: SNAP Recertification FAQ",
+       "url": "https://otda.ny.gov/programs/snap/recertification-faqs.asp"
+      },
+      {
+       "label": "NYC Human Resources Administration: SNAP FAQ (New York's change reporting rules)",
+       "url": "https://www.nyc.gov/site/hra/help/snap-faq.page"
+      },
+      {
+       "label": "NY OTDA: EBT Scam Alert (stolen benefits, card freeze)",
+       "url": "https://otda.ny.gov/workingfamilies/EBT-scam-alert.asp"
+      }
+     ]
+    },
+    {
+     "id": "utility-shutoff-protections",
+     "q": "Can my power or heat be shut off? What protections do I have in New York?",
+     "a": [
+      "New York's Home Energy Fair Practices Act (HEFPA) protects people with electric or gas service at home. Before a shutoff, your utility must send a written final notice and wait 15 days so you can pay or make a payment plan. Shutoffs can only happen Monday to Thursday, 8 a.m. to 4 p.m. They are not allowed on holidays, the day before a holiday, or the two weeks around Christmas and New Year's. You have a right to pay overdue bills in reasonable installments based on what you can afford (a \"deferred payment agreement\").",
+      "Medical emergency: if someone in your home has a serious illness or condition that a shutoff would make worse, get a certificate from a doctor or the local board of health. Your service may not be shut off while it is in effect. After 30 days the doctor must renew it, and you must show you cannot pay. If the service runs life-support equipment, the certificate stays in effect, but every 3 months you must show why you cannot pay.",
+      "Older, blind or disabled: tell your utility if you are 62 or older, blind or disabled, and everyone else at home is 62 or older, 18 or younger, blind or disabled. The utility must then make special efforts to reach you before and after a shutoff. From November 1 to April 15, utilities must also make a special effort to find out if turning off heat would seriously harm anyone's health or safety.",
+      "Energy Affordability Program (EAP): large electric and gas utilities give a monthly bill discount to lower-income customers. You may be signed up automatically if you get HEAP, SNAP, Medicaid, SSI or some other benefits. If you think you qualify but don't see the discount, call your utility.",
+      "If you get a shutoff notice, call your utility first to set up a payment plan. If that doesn't work, call the Department of Public Service emergency hotline at 1-800-342-3355 (business days, 7:30 a.m. to 7:30 p.m.). For other utility complaints, call 1-800-342-3377. Also ask your county DSS about Emergency HEAP and emergency assistance."
+     ],
+     "keywords": "utility shut off shutoff disconnect termination notice electric gas heat power National Grid NYSEG HEFPA medical certificate doctor letter elderly disabled cold weather winter deferred payment agreement payment plan Energy Affordability Program EAP discount PSC Public Service Commission",
+     "sources": [
+      {
+       "label": "NY Department of Public Service: Your Rights and Protections as a Residential Energy Customer (HEFPA)",
+       "url": "https://dps.ny.gov/system/files/documents/2026/03/your-rights-and-protections-hefpa-brochure-12-25-rv-cropped.pdf"
+      },
+      {
+       "label": "NY Department of Public Service: Winter Preparedness",
+       "url": "https://dps.ny.gov/winter"
+      },
+      {
+       "label": "NY Department of Public Service: Energy Affordability Program",
+       "url": "https://dps.ny.gov/energy-affordability-program"
+      }
+     ]
+    },
+    {
+     "id": "funeral-burial-help",
+     "q": "Is there help paying for a funeral or burial?",
+     "a": [
+      "Low-income families may get help paying for a burial from their county Department of Social Services (DSS). Each county sets its own steps and limits. The state Attorney General says you can apply up to 120 days after the death, but call DSS as soon as you can, and before you sign a funeral contract if possible. Warren County DSS: 518-761-6300. Washington: 518-746-2300. Saratoga: 518-884-4140.",
+      "Social Security pays a one-time $255 death payment to a surviving spouse or some minor children. Family members may also get monthly survivor benefits. Funeral homes usually tell Social Security about the death. Call 1-800-772-1213.",
+      "Veterans: burial in a VA national cemetery is free for eligible veterans. It includes the gravesite, opening and closing the grave, a liner, a headstone or marker, and ongoing care of the grave. The VA may also pay a burial allowance if the veteran meets VA rules. For a death not caused by military service on or after October 1, 2026, it is up to $1,032 for burial and $1,032 for a plot. For a service-connected death after September 11, 2001, it is up to $2,000. Apply at VA.gov.",
+      "Your rights: a funeral home must give you an itemized price list (called a General Price List) when you ask. You do not have to buy a casket or urn from the funeral home, and it cannot charge you extra for one bought somewhere else."
+     ],
+     "keywords": "funeral burial cremation cost help pay for funeral indigent burial DSS burial assistance death benefit $255 lump sum Social Security veteran burial VA national cemetery headstone plot allowance General Price List casket",
+     "sources": [
+      {
+       "label": "NY Attorney General: Funeral Services, Know Your Rights",
+       "url": "https://ag.ny.gov/publications/funeral-services"
+      },
+      {
+       "label": "Social Security: What you could get from Survivor benefits",
+       "url": "https://www.ssa.gov/survivor/amount"
+      },
+      {
+       "label": "VA: Veterans Burial Allowance and Transportation Benefits",
+       "url": "https://www.va.gov/burials-memorials/veterans-burial-allowance/"
+      },
+      {
+       "label": "VA: What does burial in a VA national cemetery include?",
+       "url": "https://www.va.gov/resources/what-does-burial-in-a-va-national-cemetery-include"
+      }
      ]
     }
    ]
@@ -1114,6 +1847,564 @@
      "related_categories": [
       "Housing and Shelter",
       "Crisis Help"
+     ]
+    },
+    {
+     "id": "eviction-process",
+     "q": "How does an eviction work in New York, and what should I do at each step?",
+     "a": [
+      "In New York, a landlord must go to court to evict you. Only a sheriff, marshal or constable can remove you, and only with a court order called a warrant of eviction. Changing the locks, shutting off your electric or water, taking your things, or keeping you out without that order is an illegal eviction, and it is a crime. If it happens, call the police, then call a free legal aid office.",
+      "In a case about unpaid rent, the landlord should first send a late notice by certified mail if rent is more than 5 days late. Then the landlord must give you a written 14-day rent demand. If you do not pay within those 14 days, the landlord can start a court case. The court papers (a notice of petition and a petition) must be delivered 10 to 17 days before the court date. If the landlord just wants to end or not renew your tenancy, the landlord must give you 30, 60 or 90 days' written notice, depending on how long you have lived there.",
+      "Do not ignore court papers. If you do not go to court, you can lose the case without being heard. At your first court date, you can ask for time to get a lawyer, and the judge must postpone the case for at least 14 days. Bring your lease, rent receipts, letters, and photos of any repair problems. Problems like needed repairs can be a defense.",
+      "If the landlord wins, the judge signs a warrant of eviction. A sheriff, marshal or constable must then give you a notice with 14 days to leave, and evictions happen only on business days. In a case about unpaid rent, paying everything you owe before the eviction is carried out stops it. If you get a 14-day notice, act right away. The only way to stop or delay it is a written request to the court, called an order to show cause.",
+      "Get free help as early as you can. Outside New York City, apply online through EvictionDefenderNY on LawHelpNY, or call the Legal Aid Society of Northeastern New York at (833) 628-0087. For help paying back rent, ask your county Department of Social Services (DSS) about emergency assistance, or call 211. A free legal aid office can help with your situation."
+     ],
+     "keywords": "eviction evicted evict evicion eviciton landlord tenant court rent demand 14 day notice petition notice of petition warrant of eviction marshal sheriff constable order to show cause OTSC lockout locked out illegal eviction changed locks back rent nonpayment holdover housing court city court town court justice court EvictionDefenderNY",
+     "sources": [
+      {
+       "label": "LawHelpNY: What are the steps in an eviction for not paying rent?",
+       "url": "https://www.lawhelpny.org/resource/what-are-steps-eviction-not-paying-rent"
+      },
+      {
+       "label": "LawNY: General Eviction Information for New York",
+       "url": "https://www.lawny.org/page/69/general-eviction-information-new-york"
+      },
+      {
+       "label": "NY Attorney General: Residential Tenants' Rights Guide",
+       "url": "https://ag.ny.gov/publications/residential-tenants-rights-guide"
+      },
+      {
+       "label": "LawHelpNY: EvictionDefenderNY (eviction help outside NYC)",
+       "url": "https://www.lawhelpny.org/EvictionDefenderNY"
+      }
+     ],
+     "related_categories": [
+      "Legal Help",
+      "Housing and Shelter",
+      "Rent, Utility and Emergency Help"
+     ]
+    },
+    {
+     "id": "renters-rights",
+     "q": "What are my basic rights as a renter in New York (deposits, repairs, Section 8)?",
+     "a": [
+      "Security deposit: a landlord cannot ask for more than one month's rent as a deposit, and cannot ask for last month's rent on top of it. After you move out, the landlord has 14 days to return the deposit, or to give you an itemized list of what was taken out for damage. If the landlord does not send that list within 14 days, they must return the whole deposit. You can ask the landlord to inspect before you move out, so you have a chance to fix problems. (Rent-regulated apartments have different deposit rules.)",
+      "Other money rules: before you sign a lease, the most a landlord can charge for a credit and background check is $20, and they must give you a copy. Rent is not late until it is more than 5 days past due, and a late fee can be no more than $50 or 5% of the monthly rent, whichever is less.",
+      "Repairs: every lease includes a promise that your home will be livable, safe and clean. This is called the \"warranty of habitability.\" Examples of problems are no heat or hot water, or bugs that are not taken care of. Tell the landlord in writing, keep a copy, and take photos. You can also report problems to your local housing or code enforcement office. Be careful about holding back rent: the landlord can sue you for it, although a judge may lower the rent if the landlord did not make repairs. It is illegal for a landlord to punish you for a good-faith complaint.",
+      "Section 8 and other income: in New York, a landlord cannot refuse to rent to you, or treat you differently, because you pay with a Section 8 voucher, public assistance, Social Security, child support or any other lawful source of income. This is called source-of-income discrimination.",
+      "To report discrimination, contact the NYS Division of Human Rights at (844) 697-3471 or use its online form. It is free and you do not need a lawyer. You generally have 3 years from the discrimination to report it. For security deposit problems, call the NY Attorney General's office at 1-800-771-7755."
+     ],
+     "keywords": "tenant rights renter rights security deposit deposit back last month rent repairs landlord won't fix warranty of habitability no heat hot water bugs mold code enforcement late fee application fee background check retaliation section 8 voucher source of income discrimination public assistance landlord won't take section 8 DHR human rights complaint fair housing",
+     "sources": [
+      {
+       "label": "NY Attorney General: Residential Tenants' Rights Guide",
+       "url": "https://ag.ny.gov/publications/residential-tenants-rights-guide"
+      },
+      {
+       "label": "NYS Homes and Community Renewal: Fair Housing Information",
+       "url": "https://hcr.ny.gov/fair-housing-information"
+      },
+      {
+       "label": "NYS Division of Human Rights: File a complaint",
+       "url": "https://dhr.ny.gov/complaint"
+      }
+     ],
+     "related_categories": [
+      "Housing and Shelter",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "housing-disability-accommodation",
+     "q": "How do I ask my landlord for a change because of a disability?",
+     "a": [
+      "If you have a disability, federal and New York law say a housing provider must make reasonable changes so you can use and enjoy your home. A \"reasonable accommodation\" is a change to a rule, policy or service. A \"reasonable modification\" is a physical change to your home or a shared area.",
+      "Examples of accommodations: an assigned parking space near your door when parking is usually first-come; an assistance animal in a \"no pets\" building; letting a friend mail your rent if your disability makes it hard to leave home; or, in a voucher program, extra time to find a unit or an extra bedroom for a live-in aide. The landlord cannot charge you an extra fee or deposit for an accommodation.",
+      "Examples of modifications: grab bars in the bathroom, a ramp at the entrance, wider doorways, or lever door handles. In most private housing, the landlord must allow the change but you pay for it, and you may have to put the inside of the unit back when you move out. In public housing and other federally funded housing, the housing provider usually pays, unless the cost would be an undue burden.",
+      "How to ask: you can ask out loud, but it is best to ask in writing and keep a copy. Say that you have a disability, what change you need, and how it helps. If your disability is not obvious, the landlord may ask for reliable proof that you have a disability and need the change. A letter from a doctor or other medical professional, a peer support group, a service agency, or another reliable third party can work.",
+      "If you are turned down, ask why, and whether another change would meet your need. You can file a free complaint with the NYS Division of Human Rights at (844) 697-3471. A free legal aid office can help with your situation."
+     ],
+     "keywords": "reasonable accommodation reasonable modification disability housing landlord request emotional support animal ESA service animal assistance animal no pets parking space grab bars ramp wheelchair accessible apartment fair housing ADA section 504 accomodation acommodation",
+     "sources": [
+      {
+       "label": "HUD/DOJ: Reasonable Accommodations under the Fair Housing Act (PDF)",
+       "url": "https://www.hud.gov/sites/documents/huddojstatement.pdf"
+      },
+      {
+       "label": "HUD/DOJ: Reasonable Modifications under the Fair Housing Act (PDF)",
+       "url": "https://www.hud.gov/sites/documents/reasonable_modifications_mar08.pdf"
+      },
+      {
+       "label": "NYS Homes and Community Renewal: Fair Housing Information",
+       "url": "https://hcr.ny.gov/fair-housing-information"
+      },
+      {
+       "label": "NYS Division of Human Rights: File a complaint",
+       "url": "https://dhr.ny.gov/complaint"
+      }
+     ],
+     "related_categories": [
+      "Housing and Shelter",
+      "Disability Services",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "nowhere-to-sleep-tonight",
+     "q": "I have nowhere to sleep tonight. What do I do?",
+     "a": [
+      "Contact your county Department of Social Services (DSS) as soon as you can. If you are homeless, DSS can give emergency help, including paying for a shelter or a motel stay. You do not have to already get Temporary Assistance (cash assistance) to get emergency help. DSS should interview you and tell you its decision in writing the same day you apply.",
+      "After business hours, on weekends and on holidays, each county keeps an emergency number for DSS. Some counties have it answered by the sheriff's office or another emergency center. Check the DSS listing for your county in this directory for the after-hours number, or call 211.",
+      "In winter, New York has \"Code Blue\" rules. When the temperature, with wind chill, is expected to drop below 32 degrees for at least 2 hours, the county must call a Code Blue and take emergency steps to get people who are homeless out of the cold. A Code Blue lasts until it warms above 32 degrees, and at least until 7 a.m. the next morning. Our directory lists local Code Blue shelters.",
+      "211 Northeast NY covers Warren, Washington and Saratoga Counties. Dial 2-1-1, or (888) 366-3211, to find shelter and other help. If you are in danger, call 911. If you are fleeing abuse, call a 24-hour domestic violence hotline (in the crisis bar at the top of this site). They can help you get to a safe place, and they keep shelter locations private for safety."
+     ],
+     "keywords": "homeless nowhere to sleep nowhere to go shelter emergency shelter emergency housing motel hotel temporary housing assistance THA DSS after hours code blue cold weather warming 211 kicked out evicted sleeping in car living in car couch surfing",
+     "sources": [
+      {
+       "label": "NY OTDA: Temporary Assistance (Emergency Benefits)",
+       "url": "https://otda.ny.gov/programs/temporary-assistance/"
+      },
+      {
+       "label": "NY OTDA: Housing and Support Services",
+       "url": "https://otda.ny.gov/programs/housing/"
+      },
+      {
+       "label": "NY OTDA: Code Blue (23-LCM-11, PDF)",
+       "url": "https://otda.ny.gov/policy/directives/2023/LCM/23-LCM-11.pdf"
+      },
+      {
+       "label": "211 Northeast New York",
+       "url": "https://www.211neny.org/"
+      }
+     ],
+     "related_categories": [
+      "Housing and Shelter",
+      "Crisis Help",
+      "Social Services"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Legal help, rights and safety",
+   "entries": [
+    {
+     "id": "orders-of-protection",
+     "q": "How do I get an order of protection, and what if it is broken?",
+     "a": [
+      "An order of protection is a court order that tells someone to stop hurting, threatening or harassing you. A judge can order the person to stay away from you and your children, to move out, to give up guns, or not to harm pets. A New York order is good anywhere in the state, and it can be enforced in other states too.",
+      "Family Court is for people who are \"family or household members\": a current or former spouse, someone you have a child with, a relative by blood or marriage, or someone you have or had an intimate relationship with, even if you never lived together. You file a family offense petition at your county's Family Court. It is free to file. You have the right to a lawyer in Family Court, and the court will assign one if you cannot afford one.",
+      "Criminal court can give an order of protection when the person has been charged with a crime, for example after an arrest. The district attorney asks the judge for it. Family Court is your own case; in criminal court the police or district attorney bring the charges.",
+      "Family Court may give you a temporary order the same day you ask. It usually lasts until the next court date. If Family Court is closed, a local town or city court can give a temporary order, and then you go to Family Court when it opens. An order only works after it has been served (formally delivered) to the other person. A final Family Court order can last 1 to 5 years.",
+      "If the person breaks the order, call 911. Breaking an order of protection is a crime. You can also file a violation petition in Family Court. Keep a copy of your order with you; you can also ask for a free wallet-size Hope Card that police will enforce. For help any time, call the NYS Domestic and Sexual Violence Hotline at 1-800-942-6906, or text 844-997-2121."
+     ],
+     "keywords": "order of protection OOP restraining order stay away order no contact order temporary order of protection TOP family offense petition family court criminal court violation violated hope card protection order domestic violence harassment stalking",
+     "sources": [
+      {
+       "label": "NY Crime Victims Legal Help: Orders of Protection from Family Court",
+       "url": "https://crimevictimshelpny.org/rights/safety/item.9012-Orders_of_Protection_from_Family_Court"
+      },
+      {
+       "label": "NYS Office for the Prevention of Domestic Violence: Orders of Protection",
+       "url": "https://opdv.ny.gov/orders-protection"
+      }
+     ],
+     "related_categories": [
+      "Crisis Help",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "domestic-violence-safety",
+     "q": "I am being abused at home. What is a safety plan, and what other protections are there?",
+     "a": [
+      "A safety plan is your own plan to stay safer and be ready if you are in danger. It can include a code word to tell friends you need help, copies of important papers kept where you can get them, a bag packed with clothes, money and medicine for you and your children, a safe place to go, and ways to protect your phone and internet use. A domestic violence advocate can help you make one. If you are in danger now, call 911.",
+      "You can call the NYS Domestic and Sexual Violence Hotline any time at 1-800-942-6906, or text 844-997-2121. Warren and Washington Counties and Saratoga County also have 24-hour local hotlines, listed in the crisis bar at the top of this site. These programs can help you find a safe place to stay. For safety, we never list where shelters are.",
+      "New York's Address Confidentiality Program (ACP) is free. It gives you a substitute mailing address in Albany to use instead of your real address, and forwards your mail to you. It is for victims of domestic violence, sexual offenses, human trafficking, stalking and kidnapping who have moved or are moving for safety. People in your household can join too. An application assistant, often at a domestic violence program, can help you apply. ACP phone: (855) 350-4595.",
+      "Ending a lease early: under New York law (Real Property Law 227-c), if you or someone in your household is a victim of domestic violence and fears more violence by staying, you can end your lease. Give the landlord written notice at least 30 days before you plan to leave. Within 25 days of the notice, give proof, such as an order of protection or a police report. The landlord must keep this private.",
+      "The Legal Aid Society of Northeastern New York has a domestic violence program for Warren, Washington and Saratoga Counties: call (833) 628-0087. A free legal aid office can help with your situation."
+     ],
+     "keywords": "domestic violence DV abuse abusive partner boyfriend girlfriend husband wife safety plan hotline text address confidentiality program ACP substitute address break lease early 227-c leave lease stalking human trafficking go bag battered",
+     "sources": [
+      {
+       "label": "NY Crime Victims Legal Help: Safety Plans",
+       "url": "https://crimevictimshelpny.org/rights/safety/item.9009-Safety_Plans"
+      },
+      {
+       "label": "NY Crime Victims Legal Help: NYS Address Confidentiality Program",
+       "url": "https://crimevictimshelpny.org/rights/safety/item.9016-NYS_Address_Confidentiality_Program"
+      },
+      {
+       "label": "NYS Department of State: Address Confidentiality Program",
+       "url": "https://dos.ny.gov/address-confidentiality-program"
+      },
+      {
+       "label": "NY Attorney General: Residential Tenants' Rights Guide (domestic violence lease termination)",
+       "url": "https://ag.ny.gov/publications/residential-tenants-rights-guide"
+      }
+     ],
+     "related_categories": [
+      "Crisis Help",
+      "Legal Help",
+      "Housing and Shelter"
+     ]
+    },
+    {
+     "id": "crime-victim-compensation",
+     "q": "Can I get help paying costs after I was the victim of a crime?",
+     "a": [
+      "Yes, you may. The NYS Office of Victim Services (OVS) can pay back some out-of-pocket costs caused by a crime that happened in New York. This is called crime victim compensation. Not every victim qualifies for every kind of help. OVS pays last, after other sources like health insurance or workers' compensation.",
+      "OVS can help with: medical and counseling costs; lost wages or lost support, up to $30,000; funeral and burial, up to $12,000; moving and storage, up to $2,500; repairing or replacing essential personal property, up to $2,500; crime scene cleanup, up to $2,500; rides to crime-related medical appointments and court; and domestic violence shelter costs.",
+      "Rules changed on December 31, 2025. You now have 3 years to file a claim, and OVS can accept a late claim for a good reason, such as not knowing the program existed. Instead of a police report, you can tell a local victim service provider, or a medical or mental health professional, and they can send OVS a short form. OVS can decide your claim even if no one was arrested or convicted.",
+      "To apply, use OVS Compass online or a paper application from ovs.ny.gov. You do not need a lawyer or a Social Security number. A local victim assistance program can help you apply for free. Call OVS at 1-800-247-8035, Monday to Friday, 8 a.m. to 5 p.m."
+     ],
+     "keywords": "crime victim compensation OVS office of victim services victim assistance crime victims board reimbursement assault robbery medical bills counseling lost wages funeral burial relocation moving crime scene cleanup claim application OVS Compass",
+     "sources": [
+      {
+       "label": "NYS Office of Victim Services: Victim Compensation",
+       "url": "https://ovs.ny.gov/victim-compensation"
+      },
+      {
+       "label": "NYS Office of Victim Services: Compensation Program Updates",
+       "url": "https://ovs.ny.gov/compensation-program-updates-victims-and-survivors"
+      },
+      {
+       "label": "NYS Office of Victim Services: Frequently Asked Questions",
+       "url": "https://ovs.ny.gov/faq"
+      }
+     ],
+     "related_categories": [
+      "Crisis Help",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "free-legal-help",
+     "q": "How do I get a free lawyer for a problem that isn't a criminal case?",
+     "a": [
+      "Civil legal aid is free help from a lawyer for problems that are not criminal charges. Legal aid offices often help with eviction and housing, homelessness prevention and foreclosure, public benefits like SNAP or disability, family matters like orders of protection, problems for older adults, and some consumer and tax problems.",
+      "Free legal aid is mostly for people with low income. The Legal Aid Society of Northeastern New York (LASNNY) says your household income should generally be at or below 200% of the federal poverty level (about twice the poverty line). Some of its projects have higher income limits or none at all.",
+      "In Warren, Washington and Saratoga Counties, LASNNY has an office in Saratoga Springs. Call (833) 628-0087 toll-free or (518) 587-5188 (Relay 711). Intake by phone goes on each day until the schedule fills, so call early. If LASNNY can't take your case, it may refer you for free to a volunteer private lawyer for some problems, such as divorce, bankruptcy, wills and consumer debt.",
+      "LawHelpNY.org has a free directory of legal help by county, plain-language guides and forms, and a LiveHelp chat (Monday to Thursday, 9 a.m. to 9 p.m.). If you are facing eviction outside New York City, apply through EvictionDefenderNY on LawHelpNY."
+     ],
+     "keywords": "free lawyer legal aid legal services civil legal help pro bono attorney can't afford a lawyer LASNNY Legal Aid Society of Northeastern New York LawHelpNY law help lawhelp legal advice housing lawyer benefits lawyer family court lawyer",
+     "sources": [
+      {
+       "label": "LawHelpNY",
+       "url": "https://www.lawhelpny.org/"
+      },
+      {
+       "label": "LawHelpNY: Legal Aid Society of Northeastern New York, Saratoga Springs office",
+       "url": "https://www.lawhelpny.org/organization/legal-aid-society-of-northeastern-new-york-sa"
+      },
+      {
+       "label": "Legal Aid Society of Northeastern New York: Get Help",
+       "url": "https://www.lasnny.org/get-help"
+      }
+     ],
+     "related_categories": [
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "guardianship-poa-proxy",
+     "q": "What is the difference between guardianship, a power of attorney and a health care proxy?",
+     "a": [
+      "All three let someone else make decisions for a person. The big differences are who picks the helper, what decisions they cover, and whether a court is involved.",
+      "A power of attorney (POA) is a paper you sign to name an \"agent\" to handle your money and property, like banking, bills, benefits and taxes. You choose the agent. It does not cover medical decisions. You must be at least 18 and able to understand what you are signing, and it must be notarized. A health care proxy is a separate form that names someone to make medical decisions only if you cannot. Many people need both. (See our entry on health care proxies and MOLST.)",
+      "Guardianship is when a judge appoints someone to make decisions for a person who can no longer manage. It takes a court case, and the judge may pick someone the person would not have chosen. A POA and health care proxy only work if they are signed while the person can still understand them. Planning ahead can often avoid guardianship.",
+      "New York has two kinds of adult guardianship. Article 81 (Mental Hygiene Law) can be used for any adult who cannot manage personal needs or property. The court looks at what the person can and cannot do, not just a diagnosis. A court evaluator looks into the case, there is a hearing, and the judge gives the guardian only the powers that are needed. It is meant to be a last resort.",
+      "Article 17-A (Surrogate's Court Procedure Act) is for adults with an intellectual or developmental disability. It is filed in Surrogate's Court and often gives the guardian full powers. Supported decision-making, where a person picks trusted helpers but keeps their own rights, is a less restrictive choice. A free legal aid office can help with your situation."
+     ],
+     "keywords": "guardianship guardian article 81 article 17-A 17A surrogate's court power of attorney POA durable power of attorney agent health care proxy health care agent supported decision making SDM incapacity dementia developmental disability intellectual disability turning 18 conservatorship",
+     "sources": [
+      {
+       "label": "Guide to Adult Guardianship: Article 81 (prepared for NYS Office of Children and Family Services, PDF)",
+       "url": "https://www.broomecountyny.gov/sites/default/files/dept/Guide-to-NY-Article-81-Guardianships.pdf"
+      },
+      {
+       "label": "Legal Aid Society of Northeastern NY: Power of Attorney (Legal Lifelines, PDF)",
+       "url": "https://www.lawhelpny.org/sites/default/files/attachments/623D2EFC-0A46-FF30-F1EC-F76C7DB6E429/lifelines-poa.pdf"
+      },
+      {
+       "label": "OPWDD: Family Advocacy (guardianship and supported decision-making)",
+       "url": "https://opwdd.ny.gov/family-advocacy"
+      },
+      {
+       "label": "OPWDD: Supported Decision-Making regulations, response to public comment (PDF)",
+       "url": "https://opwdd.ny.gov/system/files/documents/2025/09/sdm-assessment-of-public-comment-final_acc.pdf"
+      }
+     ],
+     "related_categories": [
+      "Legal Help",
+      "Disability Services",
+      "Hospice and Caregiver Support"
+     ]
+    },
+    {
+     "id": "clean-slate",
+     "q": "What is Clean Slate, and will my old criminal record be sealed?",
+     "a": [
+      "Clean Slate is a New York law that seals many old criminal convictions automatically, so you do not have to apply. It took effect November 16, 2024. The court system has up to 3 years from that date, until November 2027, to set up the process and seal records that already qualify. So many eligible records are not sealed yet.",
+      "A misdemeanor can be sealed 3 years after sentencing, or after release if you were in jail. A felony can be sealed 8 years after sentencing or release from prison. You must have no new convictions, no pending charges, and be off probation or parole. A new conviction, or having probation or parole revoked, restarts the clock. Sex offenses that require registration, murder and other non-drug Class A felonies are not sealed.",
+      "Sealed records are hidden from most background checks for jobs and housing. You do not have to list a sealed conviction on most NYS license applications, but until a conviction is actually sealed, you must still report it when asked. Police, courts and prosecutors can still see sealed records. So can some other checks, such as fingerprint background checks required by law, jobs with children, older adults or other vulnerable people, gun licenses, commercial driver's licenses and public housing.",
+      "To see your NYS record, ask the Division of Criminal Justice Services (DCJS) for a Record Review. You get fingerprinted through IdentoGo, (877) 472-6915. The fee is $17.50 for New York residents (as of February 2026), and you can ask for a fee waiver. Until the courts finish Clean Slate sealing, your record will still show convictions that will be sealed later. A free legal aid office can tell you if you can ask a court to seal a record sooner."
+     ],
+     "keywords": "clean slate record sealing sealed record expunge expungement criminal record rap sheet background check conviction misdemeanor felony job housing landlord employer DCJS record review fingerprint 160.57 160.59 cleanslate",
+     "sources": [
+      {
+       "label": "NY State Assembly: Clean Slate Act",
+       "url": "https://assembly.ny.gov/cleanslate/?sec=what_it_does"
+      },
+      {
+       "label": "NY Governor: Clean Slate Act signed",
+       "url": "https://www.governor.ny.gov/news/governor-hochul-expands-economic-opportunity-new-yorkers-protects-public-safety-signing-clean"
+      },
+      {
+       "label": "NYS DCJS: Request Your New York State Criminal History",
+       "url": "https://criminaljustice.ny.gov/ojis/recordreview.htm"
+      },
+      {
+       "label": "NYS Department of State: Persons with Criminal Convictions",
+       "url": "https://dos.ny.gov/convictions"
+      }
+     ],
+     "related_categories": [
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "replace-birth-certificate-ss-card",
+     "q": "How do I replace a lost birth certificate or Social Security card?",
+     "a": [
+      "Birth certificate: if you were born in New York State outside New York City, you can order a certified copy from the NYS Department of Health (DOH) Vital Records, or from the local registrar where you were born. The local registrar is usually the city, town or village clerk. If you were born in New York City, order from the NYC Health Department instead.",
+      "You can order your own birth certificate, or your child's if your name is on it. Others need a court order. DOH charges $45 online or by phone (plus a vendor fee), or $30 by mail. DOH says it has long delays right now. Local registrars also give copies; call ahead for their fee, hours and what to bring. DOH Vital Records: (855) 322-1022.",
+      "You need a copy of photo ID, such as a driver's license, NYS non-driver ID, passport or U.S. military ID. If you do not have photo ID, DOH accepts two papers that show your name and address, such as a utility or phone bill, or a letter from a government agency dated in the last six months.",
+      "Social Security card: a replacement is free. Often you do not need the card at all, just the number. Start online at ssa.gov; you may be able to finish there. If not, you will need an appointment at a Social Security office. The office cannot print a card for you; it comes in the mail 5 to 10 business days after your request is finished. Call 1-800-772-1213 (TTY 1-800-325-0778) for help."
+     ],
+     "keywords": "birth certificate lost birth certificate copy of birth certificate vital records town clerk city clerk registrar social security card lost social security card replace SS card replacement card SSA ID documents paperwork",
+     "sources": [
+      {
+       "label": "NYS Department of Health: Birth Certificates",
+       "url": "https://www.health.ny.gov/vital_records/birth.htm"
+      },
+      {
+       "label": "Social Security Administration: Replace Social Security card",
+       "url": "https://www.ssa.gov/number-card/replace-card"
+      },
+      {
+       "label": "CDC: Where to Write for Vital Records, New York",
+       "url": "https://www.cdc.gov/nchs/w2w/new_york.htm"
+      }
+     ],
+     "related_categories": [
+      "IDs and Documents"
+     ]
+    },
+    {
+     "id": "debt-collectors",
+     "q": "A debt collector is calling, or I got sued over a debt. What are my rights?",
+     "a": [
+      "A debt collector must give you written \"validation\" information in its first message or within 5 days. It must name who you owe, break down the amount (interest, fees, payments and credits), and give a date by which you can dispute the debt, about 30 days. If you dispute in writing by that date, the collector must stop collecting the disputed amount until it sends proof.",
+      "Old debts: in New York, a collector generally has 3 years to sue you over consumer credit debt, like a credit card or loan. After that, they cannot sue you or threaten to sue. Making a payment after the 3 years are up does not restart the clock.",
+      "Some income is protected (\"exempt\") from debt collectors, including Social Security, SSI, public assistance, veterans' benefits, unemployment, workers' compensation, child support and pensions. If federal benefits like Social Security or SSI are directly deposited, your bank must leave you two months' worth even if a collector tries to freeze your account. If your account is frozen, tell the bank, the court and the collector in writing that the money is exempt, and get legal help right away. LawHelpNY lists the current protected amounts.",
+      "If you are sued, do not ignore the court papers. Respond by the deadline on the papers. Answering does not mean you admit you owe; it makes the collector prove the debt. If you do not answer, the court can give the collector a \"default judgment.\" Then the collector may be able to take part of your pay (garnish wages) or freeze your bank account, and a judgment is hard to undo.",
+      "For free help, call the Legal Aid Society of Northeastern New York at (833) 628-0087. To complain about a debt collector, call the NY Attorney General at 1-800-771-7755. A free legal aid office can help with your situation."
+     ],
+     "keywords": "debt collector collection agency collections calls sued lawsuit summons court papers answer default judgment garnishment wage garnishment frozen bank account bank levy restraint exempt income social security SSI statute of limitations old debt credit card debt validation letter dispute debt FDCPA",
+     "sources": [
+      {
+       "label": "NY Attorney General: New limits on lawsuits over old debts",
+       "url": "https://ag.ny.gov/press-release/2022/attorney-general-james-warns-debt-collectors-new-state-regulations-banning"
+      },
+      {
+       "label": "CFPB: What information does a debt collector have to give me?",
+       "url": "https://www.consumerfinance.gov/ask-cfpb/what-information-does-a-debt-collector-have-to-give-me-about-the-debt-en-331/"
+      },
+      {
+       "label": "CFPB: What should I do if I'm sued by a debt collector?",
+       "url": "https://www.consumerfinance.gov/ask-cfpb/what-should-i-do-if-im-sued-by-a-debt-collector-or-creditor-en-334/"
+      },
+      {
+       "label": "LawHelpNY: Protecting your money from debt collectors",
+       "url": "https://www.lawhelpny.org/resource/debt-collection-and-exempt-income"
+      }
+     ],
+     "related_categories": [
+      "Legal Help"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Crisis and recovery",
+   "entries": [
+    {
+     "id": "crisis-988-911-mobile",
+     "q": "Should I call 988, 911, or a mobile crisis team?",
+     "a": [
+      "Call 911 if someone is in physical danger right now. Examples are a suicide attempt in progress, a suspected overdose, or a medical emergency like chest pain or trouble breathing. 911 sends police, an ambulance or fire crews.",
+      "Call or text 988, the 988 Suicide & Crisis Lifeline, for a mental health, suicide or substance use crisis when no one is in immediate physical danger. You can also chat at 988lifeline.org. It is free, confidential and open 24 hours a day, 7 days a week. You can reach out for yourself or for someone you are worried about.",
+      "When you call 988, a recording first offers choices: press 1 for the Veterans Crisis Line, press 2 for Spanish, or stay on the line for a local crisis center. A trained counselor answers, asks if you are safe, listens, and shares resources. Most calls are handled on the phone. Counselors contact 911 only in a small share of calls, when a life is at risk, and usually with the caller's agreement.",
+      "A mobile crisis team is a small team of trained staff, often including a peer (someone with lived experience), who come to you: at home, at school, or another place in the community. It is voluntary and aims to help without police or a hospital stay when possible. In Warren, Washington and Saratoga Counties, Northern Rivers Family of Services runs mobile crisis teams for adults, children and teens. Find the number in the Crisis Help category of this directory. If the team is not available, call 988, or 911 in an emergency."
+     ],
+     "keywords": "988 911 suicide hotline suicidal crisis line crisis text chat mobile crisis team mental health emergency psych crisis breakdown Northern Rivers sucide lifeline veterans crisis line",
+     "sources": [
+      {
+       "label": "988 Lifeline: What to Expect",
+       "url": "https://988lifeline.org/get-help/what-to-expect/"
+      },
+      {
+       "label": "SAMHSA: 988 Frequently Asked Questions",
+       "url": "https://www.samhsa.gov/mental-health/988/faqs"
+      },
+      {
+       "label": "NY Office of Mental Health: Comprehensive Crisis Response System",
+       "url": "https://omh.ny.gov/omhweb/bho/crisis-intervention.html"
+      },
+      {
+       "label": "Northern Rivers Family of Services: Mobile Crisis",
+       "url": "https://www.northernrivers.org/mobile-crisis"
+      }
+     ],
+     "related_categories": [
+      "Crisis Help",
+      "Mental Health"
+     ]
+    },
+    {
+     "id": "psychiatric-emergency-rights",
+     "q": "What happens at a psychiatric emergency room, and what are my rights?",
+     "a": [
+      "In a mental health crisis, a hospital emergency room doctor will examine you and decide what care you need. Some larger hospitals have a CPEP (Comprehensive Psychiatric Emergency Program), a 24-hour crisis center inside the hospital. A CPEP can keep someone in an observation bed for up to 72 hours, which often avoids a longer hospital stay.",
+      "Voluntary care means you agree to it. You sign a form asking to be admitted. If you want to leave, tell the hospital in writing. The hospital must then let you go promptly, unless the director thinks you need to stay. In that case, the hospital has 72 hours to ask a court for an order to keep you.",
+      "Involuntary care (sometimes called a hold) happens without your agreement. Under New York's Mental Hygiene Law, it is allowed only when a mental illness is likely to cause serious harm. That means a danger to yourself, a danger to others, or being unable to meet your own basic needs like food, shelter or medical care. Staff must try voluntary care first. In an emergency admission, a psychiatrist must confirm the need within 48 hours, and the stay can last up to 15 days. Keeping someone longer takes more doctor reviews, and you or someone acting for you can ask for a court hearing.",
+      "You have rights. You must get a written notice of your legal status and rights. You can have visitors, contact people outside the hospital, talk with a lawyer, and help make your treatment plan. Mental Hygiene Legal Service (MHLS) is a free, independent court agency. MHLS can answer your or your family's legal questions and represent you in court. Ask any staff member to connect you.",
+      "Family and friends can help. A patient age 16 or older can ask a relative or close friend to take part in treatment planning. The hospital must help plan care for after discharge. For insurance problems, the state's CHAMP help line is 888-614-5400. This is general information, not legal advice. For your situation, contact MHLS or a free legal aid office."
+     ],
+     "keywords": "psych ER psychiatric hold involuntary commitment 9.39 9.27 CPEP mental hygiene law MHLS patient rights voluntary admission 72 hours behavioral health unit psych ward committed",
+     "sources": [
+      {
+       "label": "NY Office of Mental Health: Transport and Civil Voluntary and Involuntary Admissions Statutes",
+       "url": "https://omh.ny.gov/omhweb/guidance/transport-civil-voluntary-involuntary-admissions-statutes.html"
+      },
+      {
+       "label": "NY Office of Mental Health: Notice to Patients and Rights (Form 463, PDF)",
+       "url": "https://omh.ny.gov/omhweb/forms/notice-of-rights-omh463.pdf"
+      },
+      {
+       "label": "NY Office of Mental Health: Emergency Admission Form 474 (PDF)",
+       "url": "https://omh.ny.gov/omhweb/forms/mhl-9-39-omh474.pdf"
+      },
+      {
+       "label": "NY Office of Mental Health: Article 9 Changes FAQ (PDF)",
+       "url": "https://omh.ny.gov/omhweb/guidance/mhl-article9-faq.pdf"
+      }
+     ],
+     "related_categories": [
+      "Crisis Help",
+      "Mental Health"
+     ]
+    },
+    {
+     "id": "naloxone-good-samaritan",
+     "q": "Where can I get free Narcan (naloxone), and will I get in trouble for calling 911 during an overdose?",
+     "a": [
+      "Naloxone (brand name Narcan) is a medicine that can reverse an opioid overdose. Opioids include heroin, fentanyl and many prescription pain pills. Signs of an overdose: the person can't be woken up, is breathing very slowly or not at all, makes gurgling sounds, or has blue or gray lips. Call 911 right away.",
+      "Ways to get naloxone in New York: Any pharmacy can give it to you without a prescription from your own doctor, through a statewide standing order. If you have insurance with drug coverage, the state's N-CAP program covers the copay, so you pay little or nothing. Registered community overdose prevention programs give free naloxone kits and free training. OASAS (the state Office of Addiction Services and Supports) also mails free naloxone through an online order form.",
+      "Fentanyl test strips check a drug for fentanyl, a very strong opioid that is often mixed into other drugs. You can order them free through the same OASAS form or get them from a local overdose prevention program.",
+      "New York's 911 Good Samaritan Law protects people of any age who call 911 for an overdose, and the person who overdosed. You can't be charged for having drugs (less than 8 ounces), having marijuana, having drug equipment, sharing drugs, or underage drinking. It does not protect against selling drugs, open warrants, or probation or parole violations. Questions: call 1-800-692-8528.",
+      "See the Substance Use and Recovery category in this directory for local programs."
+     ],
+     "keywords": "narcan narcon naloxone overdose OD opioid fentanyl test strips heroin free narcan pharmacy good samaritan law 911 harm reduction N-CAP",
+     "sources": [
+      {
+       "label": "NY OASAS: Overdose Prevention",
+       "url": "https://oasas.ny.gov/overdose-prevention"
+      },
+      {
+       "label": "NY Department of Health: 911 Good Samaritan Law",
+       "url": "https://www.health.ny.gov/diseases/aids/general/opioid_overdose_prevention/good_samaritan_law.htm"
+      },
+      {
+       "label": "NY Department of Health: Naloxone Co-payment Assistance Program (N-CAP)",
+       "url": "https://www.health.ny.gov/diseases/aids/general/opioid_overdose_prevention/directories.htm"
+      },
+      {
+       "label": "NY Department of Health: Opioid Overdose Prevention Program",
+       "url": "https://www.health.ny.gov/diseases/aids/general/opioid_overdose_prevention/"
+      }
+     ],
+     "related_categories": [
+      "Substance Use and Recovery",
+      "Crisis Help"
+     ]
+    },
+    {
+     "id": "opioid-medication-treatment",
+     "q": "How do I start medicine for opioid addiction (buprenorphine, methadone or naltrexone)?",
+     "a": [
+      "Medicine is the standard treatment for opioid use disorder (opioid addiction). There are three medicines: buprenorphine (often called Suboxone or \"bupe\"), methadone, and a monthly naltrexone shot (Vivitrol). Buprenorphine eases withdrawal and cravings, and it helps protect against overdose if someone uses opioids again.",
+      "Buprenorphine can be prescribed in many places, including a regular doctor's office or clinic, and filled at a local pharmacy. The special \"X-waiver\" that prescribers used to need was removed by federal law at the end of 2022. Now any prescriber with a standard DEA registration for these medicines can prescribe it, and there is no limit on how many patients they treat.",
+      "Methadone for addiction can only be given at a certified opioid treatment program (OTP), sometimes called a methadone clinic. You take your dose at the program at first. Once you are stable, you may be allowed to take some doses home. The naltrexone shot can be given in a medical office, but opioids must be fully out of your body first.",
+      "Cost: New York Medicaid covers all three. Most buprenorphine products and the naltrexone shot do not need prior approval from Medicaid. If you have no insurance or not enough coverage, the state's Buprenorphine Assistance Program (BUPE-AP) can pay for buprenorphine. Call 1-800-542-2437 to check if you qualify.",
+      "To start, ask your doctor, or call the NY HOPEline (1-877-846-7369, or text 467369) to find treatment near you. You can also search FindTreatment.gov."
+     ],
+     "keywords": "suboxone subutex bupe buprenorphine methadone clinic vivitrol naltrexone MAT MOUD opioid addiction treatment heroin fentanyl pain pills OTP x-waiver",
+     "sources": [
+      {
+       "label": "NY OASAS: Medications for the Treatment of Opioid Use Disorder",
+       "url": "https://oasas.ny.gov/providers/medications-treatment-opioid-use-disorder"
+      },
+      {
+       "label": "SAMHSA: Waiver Elimination (MAT Act)",
+       "url": "https://www.samhsa.gov/substance-use/treatment/resources/mat-act"
+      },
+      {
+       "label": "NY Medicaid Update, March 2025 (opioid treatment programs are covered)",
+       "url": "https://www.health.ny.gov/health_care/medicaid/program/update/2025/no03_2025-03.htm"
+      },
+      {
+       "label": "NY Department of Health: Buprenorphine Assistance Program (BUPE-AP)",
+       "url": "https://www.health.ny.gov/diseases/aids/consumers/prevention/oduh/buprenorphine_assistance.htm"
+      }
+     ],
+     "related_categories": [
+      "Substance Use and Recovery",
+      "Medical"
+     ]
+    },
+    {
+     "id": "peer-support-recovery-coach",
+     "q": "What is a peer advocate or recovery coach, and how do I find one?",
+     "a": [
+      "A peer is someone who has lived through a similar struggle, like addiction or a mental health condition, and is trained to support others. Peers are not therapists. They use their own experience to listen, give hope, and help you find your way through services.",
+      "For addiction, New York has Certified Recovery Peer Advocates (CRPAs), sometimes called recovery coaches. They can help you get into treatment, support you after a hospital stay or jail, teach about different paths to recovery, go with you to medical appointments, connect you to recovery groups, and help you apply for benefits. They work in treatment programs, hospital emergency rooms, community programs and courts.",
+      "For mental health, New York Certified Peer Specialists are in recovery from a mental health condition themselves. Family Peer Advocates are parents or caregivers who have raised a child with emotional or behavioral needs, and they help other families. Youth Peer Advocates are young adults with lived experience who help young people.",
+      "To find one, ask your treatment program, clinic or hospital if they have peer staff. Recovery centers offer drug- and alcohol-free places for peer support, groups and activities. In Warren County, the Hope and Healing Recovery Community and Outreach Center is in Glens Falls. You can also search the OASAS support services list, call the HOPEline at 1-877-846-7369, or see the Substance Use and Recovery category in this directory."
+     ],
+     "keywords": "peer advocate recovery coach CRPA peer specialist family peer advocate youth peer recovery center sober support mentor lived experience Hope and Healing",
+     "sources": [
+      {
+       "label": "NY OASAS: Become a Certified Recovery Peer Advocate",
+       "url": "https://oasas.ny.gov/recovery/become-certified-recovery-peer-advocate"
+      },
+      {
+       "label": "NY OASAS: Support Services (find peers and recovery centers)",
+       "url": "https://oasas.ny.gov/support-services"
+      },
+      {
+       "label": "NY Office of Mental Health: Peer Support Services Guidance (PDF)",
+       "url": "https://omh.ny.gov/omhweb/clinic_restructuring/part599/mhotrs-peer-support-services-guidance.pdf"
+      },
+      {
+       "label": "NY OASAS: Hope and Healing Recovery Community and Outreach Center",
+       "url": "https://oasas.ny.gov/osf-at-work-hope-and-healing"
+      }
+     ],
+     "related_categories": [
+      "Substance Use and Recovery",
+      "Mental Health"
      ]
     }
    ]
@@ -1235,6 +2526,302 @@
      "related_categories": [
       "Substance Use and Recovery",
       "Crisis Help"
+     ]
+    },
+    {
+     "id": "iep-vs-504",
+     "q": "My school-age child is struggling. What is the difference between an IEP and a 504 plan?",
+     "a": [
+      "An IEP (Individualized Education Program) is a written plan for a student with a disability who needs special education. It sets goals and lists services, such as special classes or therapy. In New York, each school district's Committee on Special Education (CSE) decides who qualifies and writes the IEP for students ages 5 to 21. For younger children, see our entry on Early Intervention and CPSE.",
+      "A 504 plan comes from a federal civil rights law called Section 504. It covers students with a physical or mental impairment that substantially limits a major life activity, such as learning, reading or concentrating. The plan lists supports and changes (called accommodations) so the student can learn alongside other students. A student does not have to be failing to qualify. A different school team, not the CSE, handles 504 plans.",
+      "To ask for a special education evaluation, write a letter to the CSE chairperson or your child's principal. Say you think your child may have a disability and ask for an initial evaluation. Date it and keep a copy. The district must ask for your written consent. The evaluation is free and must be done within 60 calendar days after the district gets your consent.",
+      "Parents have rights. You get a copy of the evaluation report. If you disagree with it, you can ask for an independent evaluation (IEE) at the district's cost. You can also ask for free mediation or an impartial hearing. State-funded Family and Community Engagement (FACE) Centers help parents understand the process. A free legal aid office can help with your situation."
+     ],
+     "keywords": "IEP 504 plan special education CSE committee on special education evaluation accommodations learning disability ADHD autism school help parent rights IEE impartial hearing",
+     "sources": [
+      {
+       "label": "NYSED: Special Education in New York State, Parent Guide (PDF)",
+       "url": "https://www.nysed.gov/sites/default/files/programs/special-education/special-education-parent-guide-2025.pdf"
+      },
+      {
+       "label": "NYSED: Section 200.4 Procedures for Referral and Evaluation",
+       "url": "https://www.nysed.gov/special-education/section-2004-procedures-referral-evaluation-iep-development-placement-and-review"
+      },
+      {
+       "label": "U.S. Department of Education: Parent and Educator Resource Guide to Section 504 (PDF)",
+       "url": "https://www.ed.gov/sites/ed/files/about/offices/list/ocr/docs/504-resource-guide-201612.pdf"
+      }
+     ],
+     "related_categories": [
+      "Disability Services",
+      "Youth Programs"
+     ]
+    },
+    {
+     "id": "head-start-pre-k",
+     "q": "Can my child go to Head Start or free pre-K?",
+     "a": [
+      "Head Start is a free federal program that helps young children get ready for school. Early Head Start serves pregnant women and children from birth to age 3. Head Start preschool serves children ages 3 to 5. All programs welcome children with disabilities.",
+      "Who qualifies for Head Start: families with income below the federal poverty guidelines. Children also qualify no matter the income if they are in foster care, are homeless, or the family gets TANF (cash assistance), SSI or SNAP. Pregnant women may qualify for Early Head Start.",
+      "How to apply: contact your local program. Find it in the Pregnancy and Young Children category of this directory or with the Head Start Locator on headstart.gov. The program will check if your child qualifies, give you the forms, and tell you what papers to bring. If there is no space, ask to join the waiting list. For help finding a program, call 1-866-763-6481 (weekdays, noon to 6 p.m.).",
+      "Universal pre-K (UPK) is free pre-kindergarten through public school districts, sometimes held at child care centers. Any child who lives in the district can go the school year they turn 4 on or before December 1. There is no income test. Call your school district to ask when registration starts. If there are more children than seats, the district holds a lottery. Some districts also have pre-K for 3-year-olds.",
+      "Pre-K is growing. Under the 2026-27 state budget, every district can get state money for pre-K. By the 2028-29 school year, districts must offer pre-K to every eligible 4-year-old who applies."
+     ],
+     "keywords": "Head Start Early Head Start preschool pre-K UPK universal pre-k free preschool 3 year old 4 year old daycare kindergarten readiness",
+     "sources": [
+      {
+       "label": "HeadStart.gov: Poverty Guidelines and Eligibility",
+       "url": "https://headstart.gov/ersea/article/poverty-guidelines-determining-eligibility-participation-head-start-programs"
+      },
+      {
+       "label": "HeadStart.gov: How to Apply",
+       "url": "https://headstart.gov/how-apply"
+      },
+      {
+       "label": "NYSED: Family FAQs for Universal Pre-Kindergarten (PDF)",
+       "url": "https://www.nysed.gov/sites/default/files/programs/early-learning/reformated-family-faqs_0.pdf"
+      },
+      {
+       "label": "NYSED: Universal Prekindergarten for 2026-27 and Beyond (PDF)",
+       "url": "https://www.nysed.gov/sites/default/files/programs/early-learning/6.3.26-upk-provision-in-the-executed-state-budget-accessible.pdf"
+      }
+     ],
+     "related_categories": [
+      "Pregnancy and Young Children",
+      "Child Care"
+     ]
+    },
+    {
+     "id": "opwdd-care-coordination-life-plan",
+     "q": "After someone is found eligible for OPWDD, what happens next?",
+     "a": [
+      "After OPWDD finds someone eligible, Front Door staff give you information about the Care Coordination Organizations (CCOs) in your area. A CCO is an agency that provides a care manager. You choose the CCO, and the CCO helps you enroll.",
+      "You also choose a type of care management. Health Home Care Management is the full option. A care manager helps you get disability services and also coordinates medical, dental and mental health care, and links you to housing, jobs and family supports. Basic HCBS Plan Support is a very small option. It keeps your plan and paperwork up to date but does not coordinate health or mental health care.",
+      "Your care manager works with you to write your Life Plan. The Life Plan is built around your goals and needs. It covers your disability supports and your other services, like medical, dental and mental health care. It is reviewed regularly and updated when your needs change.",
+      "Most OPWDD services need Medicaid, including care coordination and HCBS waiver services (home and community-based services such as respite, day programs, supported employment and residential care). Front Door staff or a CCO can help you apply for Medicaid.",
+      "The CCO does not approve or cut services. OPWDD's regional office does that. If you are not happy, you can ask for a different care manager, change your level of care management, or switch to another CCO in your region."
+     ],
+     "keywords": "OPWDD CCO care coordination organization care manager life plan health home HCBS waiver developmental disability services after eligibility Care Design Advance Care Alliance",
+     "sources": [
+      {
+       "label": "OPWDD: Care Management",
+       "url": "https://opwdd.ny.gov/care-management"
+      },
+      {
+       "label": "OPWDD: Find a Care Manager (CCO list)",
+       "url": "https://opwdd.ny.gov/find-care-coordination-organization"
+      },
+      {
+       "label": "OPWDD: Medicaid and OPWDD Services",
+       "url": "https://opwdd.ny.gov/getting-started/medicaid-and-opwdd-services"
+      },
+      {
+       "label": "OPWDD: FAQs for Individuals and Families New to Services (PDF)",
+       "url": "https://opwdd.ny.gov/system/files/documents/2020/10/mc_ind_fams_-new_to_services_faqs_22219_acc.pdf"
+      }
+     ],
+     "related_categories": [
+      "Disability Services"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Older adults and caregivers",
+   "entries": [
+    {
+     "id": "who-pays-long-term-care",
+     "q": "Who pays for rehab, home health care, a nursing home or assisted living?",
+     "a": [
+      "Medicare pays for short-term skilled care, not long-term help with daily living. Skilled care is care from nurses or therapists, like wound care or physical therapy after a hospital stay. Help with bathing, dressing and eating is called custodial care, and Medicare does not pay for long-term care like that.",
+      "Rehab in a nursing home: after an inpatient hospital stay of at least 3 days, Original Medicare can pay for a skilled nursing facility (SNF) for up to 100 days in each benefit period, if you need daily skilled care. In 2026, you pay $0 for days 1 to 20 (after the Part A deductible, which you usually already paid for the hospital stay), $217 a day for days 21 to 100, and all costs after day 100. You usually must enter the SNF within 30 days of leaving the hospital. See the question on observation status.",
+      "Home health care: Medicare pays the full cost of part-time skilled nursing and therapy at home if you are homebound and a doctor or nurse practitioner confirms you need it. It does not pay for 24-hour care, meals, cleaning, or personal care when that is the only help you need.",
+      "Long-term care: Medicaid can pay for long-term care for people who qualify, at home (see the MLTC and CDPAP questions) or in a nursing home. Apply at your county Department of Social Services. Otherwise, people pay on their own or with private long-term care insurance.",
+      "Assisted living: Medicare does not pay for it. New York's Assisted Living Program (ALP) is for people who would otherwise need a nursing home but don't need constant nursing care. Both Medicaid members and people paying privately can use it. An ALP provides room, meals, personal care, nursing and therapy. Contact an ALP directly. For free help sorting out your options, call NY Connects or your county Office for the Aging (see the \"Where do I start?\" question)."
+     ],
+     "keywords": "who pays nursing home rehab skilled nursing facility SNF 100 days 20 days home health care visiting nurse custodial care long term care assisted living ALP assisted living program medicaid nursing home private pay",
+     "sources": [
+      {
+       "label": "Medicare.gov: Skilled nursing facility care",
+       "url": "https://www.medicare.gov/coverage/skilled-nursing-facility-care"
+      },
+      {
+       "label": "Medicare.gov: Home health services",
+       "url": "https://www.medicare.gov/coverage/home-health-services"
+      },
+      {
+       "label": "Medicare.gov: Long-term care",
+       "url": "https://www.medicare.gov/coverage/long-term-care"
+      },
+      {
+       "label": "NYS Department of Health: Assisted Living Program (ALP)",
+       "url": "https://www.health.ny.gov/health_care/medicaid/program/longterm/alps.htm"
+      }
+     ]
+    },
+    {
+     "id": "office-for-the-aging",
+     "q": "What does the Office for the Aging do, and who can use it?",
+     "a": [
+      "Each county has an Office for the Aging. It helps people age 60 and older stay safe and independent at home. Many services, like meals, have no income limit. Some ask for a small voluntary donation, and in-home help uses a sliding scale (the cost depends on income).",
+      "Local offices: Warren County is served by the Warren/Hamilton Counties Office for the Aging in Lake George. Washington County has the Office for Aging and Disabilities Resources in Fort Edward. Saratoga County has its own Office for the Aging. NY Connects gives free, unbiased help with long-term care to older adults and to people of any age with a disability. Your county office can connect you, or call NY Connects statewide at 1-800-342-9871.",
+      "Home-delivered meals (often called Meals on Wheels) go to people 60 and older who are homebound and can't make their own meals. A spouse may get meals too. Group meals at senior dining sites are open to anyone 60 or older. A small donation is suggested but not required.",
+      "EISEP (Expanded In-home Services for the Elderly Program) gives non-medical help at home, like housekeeping, shopping, bathing and dressing, plus a case manager. It is for people 60 and older who need help with daily tasks and are not eligible for the same help through Medicaid. There may be a waiting list.",
+      "Offices also offer HIICAP Medicare counseling, caregiver support and respite (a break for caregivers), help with benefit applications, and rides for older adults. Call your county office to ask what is offered where you live."
+     ],
+     "keywords": "office for the aging OFA senior services meals on wheels home delivered meals EISEP home care NY Connects elderly seniors 60 plus WHCOFA congregate meals",
+     "sources": [
+      {
+       "label": "NY State Office for the Aging: EISEP",
+       "url": "https://aging.ny.gov/expanded-home-services-elderly-eisep"
+      },
+      {
+       "label": "Warren County: Office for the Aging",
+       "url": "https://www.warrencountyny.gov/ofa"
+      },
+      {
+       "label": "Washington County: Office for Aging and Disabilities Resources / NY Connects",
+       "url": "https://www.washingtoncountyny.gov/839/Washington-County-ADRC---NY-Connects"
+      },
+      {
+       "label": "211 Northeast NY: Saratoga County Office for the Aging",
+       "url": "https://www.211neny.org/resource/saratoga-county-office-for-the-aging-2/"
+      }
+     ],
+     "related_categories": [
+      "Senior Centers and Social",
+      "Food",
+      "Home Care"
+     ]
+    },
+    {
+     "id": "adult-protective-services",
+     "q": "What is Adult Protective Services (APS), and what happens after a report?",
+     "a": [
+      "Adult Protective Services (APS) helps adults age 18 and older who live in the community and, because of a physical or mental impairment, can't protect themselves from abuse, neglect or financial exploitation (someone misusing their money or property). It is for people who have no one willing and able to help them responsibly. APS is run by each county's Department of Social Services (DSS).",
+      "Anyone can make a report, and you can stay anonymous. Call your county DSS and ask for Adult Protective Services, or call the statewide line at 1-844-697-3505 on weekdays. If someone is in danger right now, call 911.",
+      "After a report, APS visits the person's home within three working days, or within 24 hours if the situation is life-threatening. A caseworker looks at the risks and offers help. Help can include counseling, medical or mental health checks, help applying for benefits, help managing money, homemaker services, or finding a safer place to live. In serious cases, APS can ask a court for protective orders or a guardian.",
+      "An adult who has mental capacity (can understand the risks and make their own choices) has the right to refuse help, even if others disagree. APS will keep offering help and try to convince the person to accept it. If there are questions about the person's capacity, APS will seek a mental health evaluation to decide if a court should step in."
+     ],
+     "keywords": "APS adult protective services elder abuse neglect self-neglect financial exploitation scam vulnerable adult report abuse caregiver abuse guardianship",
+     "sources": [
+      {
+       "label": "NY Office of Children and Family Services: Adult Protective Services",
+       "url": "https://ocfs.ny.gov/programs/adult-svcs/aps/"
+      },
+      {
+       "label": "NY Office of Children and Family Services: APS Frequently Asked Questions",
+       "url": "https://ocfs.ny.gov/programs/adult-svcs/aps/FAQ.php"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Senior Centers and Social",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "hospice-vs-palliative",
+     "q": "What is the difference between hospice and palliative care?",
+     "a": [
+      "Palliative care is extra support for anyone with a serious illness, at any age and any stage. A team works to ease pain, other symptoms and stress. You can keep getting treatment to cure or control your illness at the same time. Anyone can ask for a palliative care referral.",
+      "Hospice is a type of palliative care for people near the end of life. For Medicare, your doctor and the hospice doctor must certify that you are expected to live 6 months or less if the illness runs its usual course. Care focuses on comfort instead of a cure. Hospice is usually given at home, or in a nursing home or assisted living. It also supports the family, including grief counseling for up to 13 months after a death.",
+      "Choosing hospice does not mean giving up all care. Medicare still covers health problems that are not related to the terminal illness. You can keep seeing your regular doctor. You can stop hospice and go back to treatment for your illness, and you can sign up for hospice again later.",
+      "Who pays: Medicare Part A covers hospice. You pay nothing for hospice care, except up to $5 per prescription for pain and symptom drugs and a small share for short inpatient respite stays. Medicare's hospice benefit does not pay room and board in a nursing home. New York Medicaid also covers hospice. Palliative care is billed in different ways, so ask a social worker or your health plan what is covered.",
+      "New York law requires doctors and nurse practitioners to offer information about palliative care and end-of-life options to patients expected to die within 6 months. You can always ask for it yourself. See the Hospice and Caregiver Support category in this directory."
+     ],
+     "keywords": "hospice palliative care comfort care end of life terminal illness Medicare hospice benefit dying comfort measures pain management hospise",
+     "sources": [
+      {
+       "label": "Medicare.gov: Hospice Care Coverage",
+       "url": "https://www.medicare.gov/coverage/hospice-care"
+      },
+      {
+       "label": "NY Department of Health: Palliative Care Information Act",
+       "url": "https://www.health.ny.gov/professionals/patients/patient_rights/palliative_care/information_act.htm"
+      },
+      {
+       "label": "NY Department of Health: Palliative Care FAQs",
+       "url": "https://www.health.ny.gov/professionals/patients/patient_rights/palliative_care/questions_and_answers.htm"
+      },
+      {
+       "label": "NY Department of Health: Medicaid Hospice",
+       "url": "https://www.health.ny.gov/health_care/medicaid/program/longterm/hospice.htm"
+      }
+     ],
+     "related_categories": [
+      "Hospice and Caregiver Support",
+      "Medical"
+     ]
+    },
+    {
+     "id": "caregiver-respite",
+     "q": "I'm a family caregiver and I need a break. What help is there?",
+     "a": [
+      "Respite means short-term care for your loved one so you can rest, work, or take care of yourself. It can happen at home, when a worker comes in, or outside the home, such as at an adult day program, a senior center, or a short stay in a nursing home or assisted living.",
+      "Your county Office for the Aging runs caregiver programs. Through the National Family Caregiver Support Program, they can offer information, counseling, support groups, training and respite. You may qualify if you are an adult caring for someone 60 or older, or for someone of any age with Alzheimer's disease or a related dementia. Relatives 55 or older who are raising a child, or caring for an adult relative age 18 to 59 with a disability, may also qualify.",
+      "The State Respite Program and EISEP (in-home help for people 60 and older) can also provide respite. To ask, call your county Office for the Aging or NY Connects at 1-800-342-9871.",
+      "For memory loss or dementia, the Alzheimer's Association 24/7 Helpline is free: 1-800-272-3900. Staff can help with caregiver stress, behavior changes, safety, care planning, respite, and finding local programs. Interpreters are available in more than 200 languages.",
+      "If the person has Medicaid, CDPAP may pay a family member to give care (see our CDPAP entry). See the Hospice and Caregiver Support category in this directory for local help."
+     ],
+     "keywords": "caregiver respite break burnout family caregiver support group adult day care dementia Alzheimers helpline caregiver stress NFCSP care for parent",
+     "sources": [
+      {
+       "label": "NY State Office for the Aging: Respite Services",
+       "url": "https://aging.ny.gov/respite"
+      },
+      {
+       "label": "NY State Office for the Aging: National Family Caregiver Support Program",
+       "url": "https://aging.ny.gov/national-family-caregiver-support-program"
+      },
+      {
+       "label": "Alzheimer's Association: 24/7 Helpline",
+       "url": "https://www.alz.org/help-support/resources/helpline"
+      }
+     ],
+     "related_categories": [
+      "Hospice and Caregiver Support",
+      "Senior Centers and Social",
+      "Home Care"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Getting around",
+   "entries": [
+    {
+     "id": "rides-without-a-car",
+     "q": "I don't drive. How can I get around in Warren, Washington or Saratoga County?",
+     "a": [
+      "If you have Medicaid, you can get free rides to medical appointments. See our entry on Medicaid rides. For other trips, here are the main options.",
+      "CDTA buses: CDTA (Capital District Transportation Authority) runs public buses in the Glens Falls area and in parts of Saratoga County. Glens Falls routes reach places like Hudson Falls, Fort Edward, South Glens Falls and Moreau. Routes and times change, so check cdta.org or call CDTA at (518) 482-8822.",
+      "Half fare: People 65 and older, people with a disability, and honorably discharged veterans can ride CDTA buses for half fare all day. You need a CDTA half-fare photo ID card. Bring a photo ID showing your age, or proof of disability such as a Medicare card, SSI or SSDI papers, or a VA disability letter.",
+      "STAR paratransit: STAR is CDTA's door-to-door ride for people whose disability keeps them from using the regular bus. It runs within 3/4 mile of CDTA bus routes, on the same days and hours. You must apply first, and your medical provider fills out part of the form. Book up to 7 days ahead, and no later than 4 p.m. the day before. A one-way trip currently costs $2.50.",
+      "Office for the Aging rides: Each county Office for the Aging has rides for people 60 and older, often for medical visits and errands. In Washington County, rides are arranged through LEAP, and eligible people 60 and older with no other way to travel can get free GoGoGrandparent rides (using Uber or Lyft). You must register with the Office for Aging first. Rural Washington County has very little public transit: CDTA buses there mainly serve the Hudson Falls and Fort Edward area. Plan ahead, and call 211 or see the Transportation category for more options."
+     ],
+     "keywords": "bus CDTA rides transportation paratransit STAR half fare reduced fare senior rides no car disabled transportation GoGoGrandparent LEAP ride to doctor Glens Falls bus",
+     "sources": [
+      {
+       "label": "CDTA: Glens Falls Service Updates (2026)",
+       "url": "https://www.cdta.org/news/glens-falls-meeting"
+      },
+      {
+       "label": "CDTA: Half Fare",
+       "url": "https://www.cdta.org/half-fare"
+      },
+      {
+       "label": "CDTA: STAR Handbook and Booking Guide (PDF)",
+       "url": "https://www.cdta.org/sites/default/files/Handbook%20and%20Booking%20Guide%202025%20-%20Accessibility%20Review%20-%20Optimized.pdf"
+      },
+      {
+       "label": "Washington County Office for Aging: Transportation",
+       "url": "https://www.washingtoncountyny.gov/819/Transportation"
+      }
+     ],
+     "related_categories": [
+      "Transportation",
+      "Senior Centers and Social"
      ]
     }
    ]

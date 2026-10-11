@@ -12,6 +12,7 @@ import { handleProviderRequest } from './routes/provider-form.js';
 import { handleBarrierReport, barrierSummary } from './routes/barriers.js';
 import { handleSuggestion } from './routes/suggestions.js';
 import { withSecurityHeaders, json, notAvailable, notFound, isSameOrigin } from './http.js';
+import { decoratePage, sitemap, robots } from './routes/pages.js';
 import { emailWeeklyBackup } from './backup.js';
 
 function isAdminPath(path) {
@@ -65,24 +66,38 @@ async function route(request, env, url, admin) {
 
   if (method !== 'GET' && method !== 'HEAD') return json({ error: 'Not allowed.' }, 405);
 
-  // Each listing has its own link, served by the directory page.
-  if (/^\/listing\/[a-z0-9-]{1,80}$/.test(path)) {
-    return env.ASSETS.fetch(new Request(new URL('/', url), request));
+  if (path === '/sitemap.xml') return sitemap(env, url);
+  if (path === '/robots.txt') return robots(url);
+
+  // Pages are always fetched whole (no "not changed" replies), so the notice
+  // and listing titles added below are never stale in a visitor's browser.
+  if (!/\.[a-z0-9]+$/i.test(path) || path.endsWith('.html')) {
+    const h = new Headers(request.headers);
+    h.delete('If-None-Match');
+    h.delete('If-Modified-Since');
+    request = new Request(request, { headers: h });
   }
 
-  // Pages with a form get the Turnstile site key from the settings.
-  if (path === '/request' || path === '/needs' || path === '/suggest') {
+  let res;
+  if (/^\/listing\/[a-z0-9-]{1,80}$/.test(path)) {
+    // Each listing has its own link, served by the directory page.
+    res = await env.ASSETS.fetch(new Request(new URL('/', url), request));
+  } else if (path === '/request' || path === '/needs' || path === '/suggest') {
+    // Pages with a form get the Turnstile site key from the settings.
     const page = await env.ASSETS.fetch(request);
     const support = env.SUPPORT_EMAIL || '';
-    return new HTMLRewriter()
+    res = new HTMLRewriter()
       .on('.cf-turnstile', { element: (e) => e.setAttribute('data-sitekey', env.TURNSTILE_SITE_KEY || '') })
       .on('#support-email', { element: (e) => { if (support) { e.setAttribute('href', `mailto:${support}`); e.setInnerContent(support); } } })
       .on('#support-line', { element: (e) => { if (support) e.removeAttribute('hidden'); } })
       .transform(page);
+  } else {
+    res = await env.ASSETS.fetch(request);
+    if (res.status === 404) return notFound(path);
   }
-
-  const res = await env.ASSETS.fetch(request);
-  return res.status === 404 ? notFound(path) : res;
+  // Public pages: link previews, listing titles and the site notice.
+  const isPage = (res.headers.get('Content-Type') || '').startsWith('text/html') && res.status === 200;
+  return isPage && !isAdminPath(path) ? decoratePage(res, env, url) : res;
 }
 
 export default {

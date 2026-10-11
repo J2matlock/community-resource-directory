@@ -23,6 +23,8 @@ const ADMIN_REQUESTS = [
   ['GET', '/api/admin/requests'],
   ['GET', '/api/admin/barriers'],
   ['GET', '/api/admin/suggestions'],
+  ['GET', '/api/admin/notice'],
+  ['PUT', '/api/admin/notice', { message: 'Hijacked notice', level: 'info', ends_on: '' }],
   ['GET', '/api/admin/region'],
   ['POST', '/api/admin/requests/1/handled', { note: 'x' }],
   ['GET', '/admin/'],
