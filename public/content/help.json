@@ -1,0 +1,371 @@
+{
+ "updated": "2026-10-10",
+ "orgs": [
+  {
+   "name": "Comfort Food Community",
+   "listing_id": "comfort-food-community",
+   "what_it_funds": "Gifts help fight rural hunger with food pantries, home food delivery for older adults, and food rescued from stores and farms.",
+   "donate_url": "https://www.comfortfoodcommunity.org/donate-now",
+   "volunteer_url": "https://www.comfortfoodcommunity.org/volunteer",
+   "wishlist_url": "https://www.comfortfoodcommunity.org/donate-food"
+  },
+  {
+   "name": "Franklin Community Center",
+   "listing_id": "franklin-community-center-food-pantry",
+   "what_it_funds": "Gifts support the food pantry, the Free Store, Project Lift and other help for families in Saratoga Springs.",
+   "donate_url": "https://www.franklincommunitycenter.org/waystogive/donate/",
+   "volunteer_url": "https://www.franklincommunitycenter.org/waystogive/volunteer/",
+   "wishlist_url": "https://www.franklincommunitycenter.org/waystogive/donation-wish-list/"
+  },
+  {
+   "name": "Open Door Mission",
+   "listing_id": "open-door-food-pantry",
+   "what_it_funds": "Gifts pay for meals, shelter, the food pantry and other help for people who are homeless or struggling in the Glens Falls area.",
+   "donate_url": "https://opendoor-ny.org/get-involved/ways-to-give",
+   "volunteer_url": "https://opendoor-ny.org/get-involved/volunteer",
+   "wishlist_url": "https://opendoor-ny.org/get-involved/donation-needs"
+  },
+  {
+   "name": "LifeWorks Community Action",
+   "listing_id": "lifeworks-community-action",
+   "what_it_funds": "Gifts support LifeWorks programs for Saratoga County neighbors, including the food pantry and soup kitchen.",
+   "donate_url": "https://www.lifeworksaction.org/donate",
+   "volunteer_url": "https://www.lifeworksaction.org/volunteer",
+   "wishlist_url": "https://www.amazon.com/hz/wishlist/ls/2D6HVFD8PN5BU/ref=hz_ls_biz_ex"
+  },
+  {
+   "name": "Wellspring",
+   "listing_id": "wellspring",
+   "what_it_funds": "Gifts keep Wellspring's domestic violence and sexual assault services free for survivors in Saratoga and Washington Counties.",
+   "donate_url": "https://www.wellspringcares.org/ways-to-donate/",
+   "volunteer_url": "https://www.wellspringcares.org/make-a-change/",
+   "wishlist_url": "https://www.wellspringcares.org/wishlist/"
+  },
+  {
+   "name": "North Country Ministry",
+   "listing_id": "north-country-ministry-food-pantry",
+   "what_it_funds": "Gifts support the food pantries, clothing center, furniture program and emergency help funds in Warrensburg and northern Warren County.",
+   "donate_url": "https://www.northcountryministry.org/donate-to-us",
+   "volunteer_url": "https://www.northcountryministry.org/volunteer",
+   "wishlist_url": "https://www.northcountryministry.org/donate-to-us"
+  },
+  {
+   "name": "Family Service Association of Glens Falls",
+   "listing_id": "family-service-association-food-pantry",
+   "what_it_funds": "Gifts support the food pantry, Feet First, Adopt a Family and the Special Needs program for families in crisis.",
+   "donate_url": "https://www.fsaglensfalls.org/donation-information/",
+   "volunteer_url": "",
+   "wishlist_url": "https://www.fsaglensfalls.org/homepage/wish-list-for-our-food-pantry/"
+  },
+  {
+   "name": "Shelters of Saratoga",
+   "listing_id": "shelters-of-saratoga",
+   "what_it_funds": "Gifts help meet the needs of shelter guests and help people move into supportive housing.",
+   "donate_url": "https://sheltersofsaratoga.org/donate/",
+   "volunteer_url": "https://sheltersofsaratoga.org/volunteer/",
+   "wishlist_url": "https://sheltersofsaratoga.org/donate/donate-goods/"
+  },
+  {
+   "name": "RISE Housing and Support Services",
+   "listing_id": "rise-saratoga",
+   "what_it_funds": "Gifts help people living with mental health, substance use and other challenges stay safe and healthy in the community; you can pick a program.",
+   "donate_url": "https://www.riseservices.org/about-us/donate-online/",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Moreau Community Center",
+   "listing_id": "moreau-community-center-food-pantry",
+   "what_it_funds": "Gifts support the food pantry and other programs for neighbors in the South Glens Falls area.",
+   "donate_url": "https://moreaucommunitycenter.org/donate/",
+   "volunteer_url": "https://moreaucommunitycenter.org/volunteer/",
+   "wishlist_url": "https://moreaucommunitycenter.org/wp-content/uploads/2025/09/Donation-Guidelines.pdf"
+  },
+  {
+   "name": "Habitat for Humanity of Northern Saratoga, Warren and Washington Counties",
+   "listing_id": "habitat-for-humanity-of-northern-saratoga-warren-and-washing",
+   "what_it_funds": "Gifts help build affordable homes for local families working toward owning a home.",
+   "donate_url": "https://glensfallshabitat.org/donate/",
+   "volunteer_url": "https://glensfallshabitat.org/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Warren-Hamilton Counties Community Action",
+   "listing_id": "warren-hamilton-community-action-food-pantry",
+   "what_it_funds": "Gifts support community action programs in Warren County, including the food pantry and clothing help.",
+   "donate_url": "https://wahacaa.org/donate/",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "LEAP (Washington County)",
+   "listing_id": "leap-food-pantry",
+   "what_it_funds": "Gifts go where the need is greatest across LEAP's Washington County programs, such as Head Start, the food pantry and emergency help.",
+   "donate_url": "https://www.leapservices.org/donate/",
+   "volunteer_url": "https://www.leapservices.org/partnership/volunteers/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Catholic Charities of the Diocese of Albany (Saratoga, Warren and Washington Counties)",
+   "listing_id": "catholic-charities-emergency-assistance-saratoga-office",
+   "what_it_funds": "Gifts support Catholic Charities services for people in need; you can give where the need is greatest or name a program.",
+   "donate_url": "https://ccrcda.org/get-involved/ways-to-give",
+   "volunteer_url": "https://ccrcda.org/get-involved/volunteer",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Adirondack Save A Stray",
+   "listing_id": "adk-save-a-stray",
+   "what_it_funds": "Gifts help this no-kill shelter care for rescued dogs and cats.",
+   "donate_url": "https://www.adirondacksaveastray.org/donate",
+   "volunteer_url": "https://www.adirondacksaveastray.org/volunteer",
+   "wishlist_url": "https://www.adirondacksaveastray.org/wish-list"
+  },
+  {
+   "name": "No Empty Bowls",
+   "listing_id": "no-empty-bowls",
+   "what_it_funds": "Gifts buy pet food for families who need help feeding their pets.",
+   "donate_url": "https://noemptybowls.org/donations",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Woofs for Warriors",
+   "listing_id": "woofs-for-warriors",
+   "what_it_funds": "Gifts help veterans adopt, train and care for their companion or support dogs.",
+   "donate_url": "https://woofsforwarriors.org/donate/",
+   "volunteer_url": "https://woofsforwarriors.org/about/volunteer",
+   "wishlist_url": ""
+  },
+  {
+   "name": "The SPCA of Upstate New York",
+   "listing_id": "the-spca-of-upstate-new-york",
+   "what_it_funds": "Gifts help care for shelter animals and stock the pet food pantry.",
+   "donate_url": "http://www.spcauny.org/donations-1.html",
+   "volunteer_url": "http://www.spcauny.org/volunteer.html",
+   "wishlist_url": "http://www.spcauny.org/donations-1.html"
+  },
+  {
+   "name": "Council for Prevention (Hope & Healing Recovery Community Center)",
+   "listing_id": "hope-and-healing-recovery-community-center",
+   "what_it_funds": "Gifts support prevention education and mental health and recovery programs in Warren, Washington and Hamilton Counties.",
+   "donate_url": "https://councilforprevention.org/donate/",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "The Prevention Council of Saratoga County (Healing Springs Recovery Center)",
+   "listing_id": "healing-springs-recovery-community-and-outreach-center",
+   "what_it_funds": "Gifts support Healing Springs Recovery Center and youth prevention programs in Saratoga County.",
+   "donate_url": "https://preventioncouncil.org/donate/",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Big Brothers Big Sisters of the Southern Adirondacks",
+   "listing_id": "big-brothers-big-sisters-of-the-southern-adirondacks",
+   "what_it_funds": "Gifts support one-to-one youth mentoring.",
+   "donate_url": "https://bbbssadk.org/donate/",
+   "volunteer_url": "https://bbbssadk.org/get-involved/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Saratoga Regional YMCA",
+   "listing_id": "ymca-financial-assistance-saratoga-regional-ymca-including-g",
+   "what_it_funds": "Annual Campaign gifts pay for financial help so families and children can use the Y no matter what they can afford.",
+   "donate_url": "https://srymca.org/main/donate",
+   "volunteer_url": "https://srymca.org/programsandservices/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Wilton Food Pantry",
+   "listing_id": "wilton-food-pantry",
+   "what_it_funds": "Gifts buy food for the Wilton Food Pantry.",
+   "donate_url": "https://www.wiltonfoodpantry.org/donate",
+   "volunteer_url": "https://www.wiltonfoodpantry.org/volunteer",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Rebuilding Together Saratoga County",
+   "listing_id": "rebuilding-together-saratoga",
+   "what_it_funds": "Gifts pay for critical home repairs, accessibility changes and safety upgrades for low-income homeowners.",
+   "donate_url": "https://rtsaratoga.org/donate-to-rts/",
+   "volunteer_url": "https://rtsaratoga.org/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Southern Adirondack Independent Living (SAIL)",
+   "listing_id": "sail",
+   "what_it_funds": "Gifts help SAIL give free services to people with disabilities so they can live on their own.",
+   "donate_url": "https://www.sailhelps.org/support",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "The Conkling Center",
+   "listing_id": "conkling-center-on-the-go",
+   "what_it_funds": "Gifts support programs and activities for seniors in Glens Falls, including On the Go rides.",
+   "donate_url": "https://www.theconklingcenter.org/contact-donations",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Tri-County Literacy Center",
+   "listing_id": "tri-county-literacy-center",
+   "what_it_funds": "Gifts support free tutoring for adults learning to read and write.",
+   "donate_url": "https://trilitcenter.org/donate",
+   "volunteer_url": "https://trilitcenter.org/volunteer-tutors-needed",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Warren Washington CARE Center",
+   "listing_id": "warren-washington-care-center-child-advocacy-center",
+   "what_it_funds": "Gifts help children who have been abused feel safe during interviews and keep the center running.",
+   "donate_url": "https://www.wwcarecenter.org/support-our-work/",
+   "volunteer_url": "",
+   "wishlist_url": "https://a.co/09SiIwdD"
+  },
+  {
+   "name": "High Peaks Hospice",
+   "listing_id": "high-peaks-hospice",
+   "what_it_funds": "Gifts help pay for hospice care and support for patients and their families.",
+   "donate_url": "https://highpeakshospice.org/donate/",
+   "volunteer_url": "https://highpeakshospice.org/volunteers/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "The Community Hospice",
+   "listing_id": "community-hospice-of-saratoga-and-washington",
+   "what_it_funds": "Gifts pay for programs and special services insurance doesn't cover, so no one is turned away.",
+   "donate_url": "https://www.communityhospice.org/donate",
+   "volunteer_url": "https://www.communityhospice.org/volunteer",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Saratoga Senior Center",
+   "listing_id": "saratoga-senior-center",
+   "what_it_funds": "Gifts support services and activities for older adults in Saratoga Springs.",
+   "donate_url": "https://saratogaseniorcenter.org/donate/",
+   "volunteer_url": "https://saratogaseniorcenter.org/volunteer/",
+   "wishlist_url": "https://saratogaseniorcenter.org/donate/"
+  },
+  {
+   "name": "Greater Glens Falls Senior Center",
+   "listing_id": "greater-glens-falls-senior-center",
+   "what_it_funds": "Gifts support programs for older adults in the Glens Falls area.",
+   "donate_url": "https://gfseniors.com/get-involved/contributions",
+   "volunteer_url": "https://gfseniors.com/get-involved/volunteer",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Tri-County United Way",
+   "listing_id": "free-tax-preparation-vita",
+   "what_it_funds": "Gifts support Tri-County United Way's work with local nonprofits in Warren, Washington and northern Saratoga Counties.",
+   "donate_url": "https://givebutter.com/tcuw",
+   "volunteer_url": "https://www.tricountyunitedway.org/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Legal Aid Society of Northeastern New York",
+   "listing_id": "legal-aid-society-of-northeastern-new-york-saratoga-office",
+   "what_it_funds": "Gifts help provide free civil legal help to people with low incomes.",
+   "donate_url": "https://www.lasnny.org/donate/",
+   "volunteer_url": "https://www.lasnny.org/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Rural Law Center of New York",
+   "listing_id": "rural-law-center-of-new-york",
+   "what_it_funds": "Gifts support free legal help for people in rural northern New York.",
+   "donate_url": "https://rurallawcenter.org/donate/",
+   "volunteer_url": "https://rurallawcenter.org/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "NAMI Capital Region NY",
+   "listing_id": "nami-capital-region-family-support",
+   "what_it_funds": "Gifts support free mental health support groups and education for people and families.",
+   "donate_url": "https://namicapitalregionny.org/get-involved/donate/",
+   "volunteer_url": "https://namicapitalregionny.org/get-involved/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "WWAARC (Warren, Washington & Albany Counties Arc)",
+   "listing_id": "wwaarc-warren-washington-and-albany-counties-arc",
+   "what_it_funds": "Gifts support services for people with developmental disabilities.",
+   "donate_url": "https://wwaarc.org/donate-to-wwaarc/",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Center for Disability Services (Prospect Center)",
+   "listing_id": "prospect-center",
+   "what_it_funds": "Gifts support services for children and adults with disabilities, including Prospect Center.",
+   "donate_url": "https://cfdsny.org/giving/",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "ASCEND Mental Wellness",
+   "listing_id": "ascend-caleo-counseling",
+   "what_it_funds": "Gifts support ASCEND's mental wellness services and housing programs in Washington and Warren Counties.",
+   "donate_url": "https://ascendmw.org/donate/",
+   "volunteer_url": "https://ascendmw.org/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "Soul Saving Station Church (Mother Susan Anderson Women + Children Shelter)",
+   "listing_id": "mother-susan-anderson-women-children-shelter",
+   "what_it_funds": "Church giving page says offerings pay for food and supplies for its shelter for homeless women and children, among other programs.",
+   "donate_url": "https://soulsavingstationchurch.com/giving",
+   "volunteer_url": "",
+   "wishlist_url": ""
+  },
+  {
+   "name": "The Salvation Army, Glens Falls Corps",
+   "listing_id": "salvation-army-food-pantry-glens-falls",
+   "what_it_funds": "Gifts support Salvation Army help such as the food pantry and emergency assistance.",
+   "donate_url": "https://www.salvationarmyusa.org/ny/glens-falls/broad-street-corps/",
+   "volunteer_url": "https://www.salvationarmyusa.org/usa-eastern-territory/volunteer/",
+   "wishlist_url": ""
+  },
+  {
+   "name": "The Salvation Army, Saratoga Springs Corps",
+   "listing_id": "salvation-army-food-pantry-saratoga-springs",
+   "what_it_funds": "Gifts support Salvation Army help such as the food pantry.",
+   "donate_url": "https://www.salvationarmyusa.org/ny/saratoga-springs/woodlawn-avenue-corps/",
+   "volunteer_url": "https://www.salvationarmyusa.org/usa-eastern-territory/volunteer/",
+   "wishlist_url": ""
+  }
+ ],
+ "no_online_page": [
+  {
+   "name": "St. Mary's Food Pantry (Glens Falls)",
+   "how": "Drop off food just inside the entrance of St. Mary's Church any time the church is open, usually daily 9 AM–6 PM. All items welcome."
+  },
+  {
+   "name": "St. Clement's Food Pantry (Saratoga Springs)",
+   "how": "See the 'Food Pantry Needs' and 'Current Volunteer Opportunities' sections on the parish Outreach page."
+  },
+  {
+   "name": "Christ Episcopal Church Food Pantry (Ballston Spa)",
+   "how": "Contact the church office to ask how to give food or money to the pantry."
+  },
+  {
+   "name": "Queensbury UMC Food Pantry",
+   "how": "Call the church to ask what the pantry needs."
+  },
+  {
+   "name": "Pine Knolls Alliance Church Food Pantry",
+   "how": "Call the church to ask what the pantry needs."
+  },
+  {
+   "name": "Cambridge Valley Senior Center",
+   "how": "Donate goods to the center's Thrift Shop, Monday–Friday, 10 AM–2 PM."
+  },
+  {
+   "name": "Mechanicville Area Community Services Center",
+   "how": "Their homepage says 'Donate time, money, food or goods!' and has a Donate > Money menu, but we could not read the link (bot-check page)."
+  }
+ ]
+}

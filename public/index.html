@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Find local help: Southern ADK Help</title>
+  <meta name="description" content="Free directory of local help in Warren, Washington and Saratoga Counties, NY: food, housing, health care, legal help and more.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script defer src="/js/nav.js"></script>
+  <script defer src="/js/directory.js"></script>
+</head>
+<body data-site-name="Southern ADK Help" data-domain="southernadkhelp.org" data-fallback="call 211 or search 211neny.org">
+  <a class="skip-link" href="#search">Skip to search</a>
+
+  <aside class="crisis" aria-label="Crisis help">
+    <div class="crisis-group">
+      <p class="crisis-title">In crisis?</p>
+      <ul class="crisis-list three">
+        <li><a href="tel:988"><strong>988</strong> Call</a></li>
+        <li><a href="sms:988"><strong>988</strong> Text</a></li>
+        <li class="wide-only"><a href="https://988lifeline.org/chat/"><strong>988</strong> Chat online</a></li>
+        <li><a href="tel:911"><strong>911</strong> Emergency</a></li>
+        <li class="wide-only crisis-note">Can't call from this computer? Dial 911 from any phone.</li>
+      </ul>
+    </div>
+    <div class="crisis-group">
+      <p class="crisis-title">Domestic violence, 24 hours:</p>
+      <ul class="crisis-list two">
+        <li><a href="tel:+15187939496"><span class="visually-hidden">Domestic violence hotline, </span><strong>(518) 793-9496</strong> Warren &amp; Washington</a></li>
+        <li><a href="tel:+15185848188"><span class="visually-hidden">Domestic violence hotline, </span><strong>(518) 584-8188</strong> Saratoga</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <header class="site-header">
+    <div class="header-row">
+      <div>
+        <p class="site-name"><a href="/" data-region="siteName">Southern ADK Help</a></p>
+        <p class="tagline" data-region="tagline">Free and low-cost help in Warren, Washington and Saratoga Counties, NY</p>
+      </div>
+      <a class="request-button" href="/request"><span class="rb-long">Run a program? </span><strong>Request a listing or a correction</strong></a>
+    </div>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="/" aria-current="page">Find help</a></li>
+        <li><a href="/learn">Learn</a></li>
+        <li><a href="/needs">Community needs</a></li>
+        <li><a href="/help">Ways to help</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <h1 id="page-title" class="visually-hidden">Find help</h1>
+
+    <div id="finder">
+      <form id="search-form" role="search" class="search">
+        <label for="search">Search for help</label>
+        <div class="search-row">
+          <input id="search" name="q" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="Try: food, dentist, rent" aria-describedby="search-hint">
+          <button type="submit">Search</button>
+        </div>
+        <p id="search-hint" class="hint">Search names, services and towns. Small typos are OK.</p>
+      </form>
+
+      <details id="browse" class="browse">
+        <summary>Browse by category <span id="browse-current"></span></summary>
+        <nav aria-label="Categories">
+          <ul id="categories" class="category-list"></ul>
+        </nav>
+      </details>
+
+      <details id="filters" class="filters">
+        <summary>Filters <span id="filter-count"></span></summary>
+        <div class="filter-grid">
+          <div class="field">
+            <label for="f-county">County served</label>
+            <select id="f-county" data-key="county"><option value="">Any county</option></select>
+          </div>
+          <div class="field">
+            <label for="f-plan">Insurance accepted</label>
+            <select id="f-plan" data-key="plan"><option value="">Any plan</option></select>
+          </div>
+          <div class="field">
+            <label for="f-cost">Cost</label>
+            <select id="f-cost" data-key="cost"><option value="">Any cost</option></select>
+          </div>
+          <div class="field">
+            <label for="f-age">Age group</label>
+            <select id="f-age" data-key="age"><option value="">Any age</option></select>
+          </div>
+        </div>
+        <button type="button" id="clear-filters" class="secondary">Clear search and filters</button>
+      </details>
+
+      <p class="suggest-top"><a href="/suggest">Don't see the help you need? Tell us</a></p>
+    </div>
+
+    <p id="back-link" class="back-link" hidden><a href="/">← All resources</a></p>
+
+    <p id="result-status" class="result-status" role="status" aria-live="polite" tabindex="-1">Loading resources… If nothing appears, <span data-region="fallbackText">call 211 or search 211neny.org</span>.</p>
+    <p id="plan-note" class="note" hidden></p>
+
+    <ol id="results" class="results" aria-labelledby="page-title"></ol>
+
+    <aside class="fallback" aria-label="More help">
+      <p><strong>Can't find it?</strong> <span data-region="fallbackLinks">Call <a href="tel:211">211</a> or search <a href="https://www.211neny.org/">211neny.org</a></span>.</p>
+      <p class="suggest-bottom"><a class="request-button" href="/suggest">Don't see the help you need? <strong>Tell us anonymously</strong></a></p>
+    </aside>
+
+    <p id="handout-live" class="visually-hidden" aria-live="polite"></p>
+    <div id="handout-bar" class="handout-bar" hidden>
+      <p id="handout-count"></p>
+      <p class="handout-hint">About 8 fit on one page.</p>
+      <button type="button" id="handout-print">Print handout</button>
+      <button type="button" id="handout-clear" class="secondary">Clear</button>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>A listing is not an endorsement.</strong> Details can change. Please call ahead to confirm.</p>
+    <p>Run a program that should be listed, or see something wrong? <a href="/request">Request a listing or a correction</a>.</p>
+  </footer>
+
+  <section id="handout" class="handout" aria-hidden="true"></section>
+
+  <noscript>
+    <p class="noscript">This directory needs JavaScript turned on. You can also <span data-region="fallbackText">call 211 or search 211neny.org</span>.</p>
+  </noscript>
+</body>
+</html>

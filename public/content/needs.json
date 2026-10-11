@@ -1,0 +1,498 @@
+{
+ "updated": "2026-10-10",
+ "intro": "This page shows where help is missing in Warren, Washington and Saratoga Counties. It is for funders, public officials and organizations who want to know where the biggest gaps are. Each section uses public reports, government data and local news, with links so you can check the facts. Money is tight for many families here. New York's 2026 ALICE report found that 48 percent of households in the state cannot afford basic costs like housing, child care, food and transportation. Tri-County United Way reports that about one in four people in Warren and Saratoga Counties, and more in Washington County, live below that line. Numbers are the most recent we could find as of October 2026. Some cover a larger area than our three counties, and we say so when they do.",
+ "intro_sources": [
+  {
+   "label": "Spectrum News, Nearly half of New York households are struggling to make ends meet (Sept. 14, 2026)",
+   "url": "https://spectrumlocalnews.com/nys/central-ny/news/2026/09/14/nearly-half-of-new-york-households-are-struggling-to-make-ends-meet--report-says"
+  },
+  {
+   "label": "Tri-County United Way, ALICE report for Warren, Washington and Northern Saratoga",
+   "url": "https://www.tricountyunitedway.org/what-we-do/alice-report/"
+  }
+ ],
+ "gaps": [
+  {
+   "id": "transportation",
+   "title": "Getting there: transportation",
+   "summary": "Outside Glens Falls and Saratoga Springs there is little or no bus service, and the rides that do exist have strict rules, so many people without a car struggle to reach doctors, jobs and stores.",
+   "paragraphs": [
+    "Bus service in our area is thin. CDTA took over the Glens Falls bus system in 2024, and it serves Glens Falls, Lake George, Hudson Falls and Fort Edward. CDTA is closing a budget gap of nearly $3 million and says it has cut more than 90,000 hours of little-used service since August 2025. In the August 23, 2026 changes, Saturday service ended on two Glens Falls-area routes and the West Glens Falls route was cut to a few weekday trips at rush hour. Some service was added too, like Sunday buses on the Glen Street route and a route extension to Glens Falls Hospital.",
+    "Most of Washington County has no regular bus at all. The rides that do exist are for certain groups. For example, L.E.A.P. rides are for people 60 and over with a referral from the Office for the Aging, or for adults who qualify for its federal anti-poverty grant. Rides run on weekdays by appointment, and medical trips come first. CDTA's STAR paratransit only runs within three-quarters of a mile of a bus route, during the same hours as the bus.",
+    "Many households have no car. About 2,000 households in Washington County (8 percent), 2,350 in Warren County (8 percent) and 4,800 in Saratoga County (5 percent) have no vehicle, based on Census estimates. In Warren County, people who answered the regional health survey named transportation problems as one of the top five things hurting health. Glens Falls Hospital's needs assessment says transportation \"continues to be a significant issue in our rural area,\" and that from 2007 to 2016, more than half of its cancer patients traveled over 10 miles for care.",
+    "Medicaid rides help, but they have limits. Rides must be booked at least 72 hours ahead, every trip must be approved, and Medicaid does not give rides to places like pharmacies or grocery stores. The State Comptroller found that in rural counties, buses often run only on weekdays with few routes, rides between counties are rare, and getting people without cars to health care is \"particularly challenging.\""
+   ],
+   "what_would_help": [
+    "Link rural towns to health care with more transportation options, and open paratransit to more people than just older adults, as the State Comptroller suggests.",
+    "Mobile clinics that come to rural towns on a set schedule, so people do not have to travel as far (State Comptroller).",
+    "Weekend and evening bus service where workers need it. Lake George-area employers told WAMC that seasonal workers rely on buses to reach jobs and stores.",
+    "Steady funding for rides run by community action agencies and Offices for the Aging, which depend on state and federal grants."
+   ],
+   "sources": [
+    {
+     "label": "WAMC, CDTA adjusting services in Warren, Washington counties (Apr. 8, 2026)",
+     "url": "https://www.wamc.org/wamc-news/2026-04-08/cdta-adjusting-services-in-warren-washington-counties"
+    },
+    {
+     "label": "CDTA, Service changes effective Aug. 23, 2026",
+     "url": "https://www.cdta.org/news/august-service-changes-2"
+    },
+    {
+     "label": "CDTA, STAR paratransit program",
+     "url": "https://www.cdta.org/star-program"
+    },
+    {
+     "label": "L.E.A.P., Transportation for seniors and adults in Washington County",
+     "url": "https://www.leapservices.org/assistance/transportation-for-seniors-and-adults-with-disabilities-in-washington-county-ny/"
+    },
+    {
+     "label": "U.S. Census Bureau, American Community Survey 2020–2024, households with no vehicle (via Census Reporter, table B25044)",
+     "url": "https://censusreporter.org/data/table/?table=B25044&geo_ids=05000US36091,05000US36113,05000US36115"
+    },
+    {
+     "label": "Glens Falls Hospital, Community Health Needs Assessment 2025–2027",
+     "url": "https://www.albanymed.org/wp-content/uploads/sites/2/2025/12/GFH_CHNA_2025-2027_FINAL-Web-Version.pdf"
+    },
+    {
+     "label": "NYS Department of Health, Medicaid Transportation",
+     "url": "https://www.health.ny.gov/health_care/medicaid/members/medtrans_overview.htm"
+    },
+    {
+     "label": "NYS Comptroller, The Doctor is … Out: Shortages of Health Professionals in Rural Areas (Aug. 2025)",
+     "url": "https://www.osc.ny.gov/files/reports/pdf/rural-health-shortages.pdf"
+    }
+   ]
+  },
+  {
+   "id": "procedure-escort",
+   "title": "A ride home after sedation",
+   "summary": "People who live alone often cannot get a colonoscopy or other procedure because the clinic requires a responsible adult to take them home and stay with them, and we found no local program that fills that gap.",
+   "paragraphs": [
+    "Local clinics require an adult escort after sedation. Instructions for the GI Center at Glens Falls Hospital say you must have a responsible adult with you even if you take a taxi or use medical transport, and that adult must stay with you for 24 hours. At the Northern GI Endoscopy Center in Glens Falls, a nurse checks for these plans on the day of the procedure. If they are not in place, you are asked to reschedule.",
+    "This is a real barrier for people who live alone. About 21,900 households in our three counties are a person 65 or older living alone (about 13,600 in Saratoga, 4,700 in Warren and 3,700 in Washington County), based on Census estimates. Harvard Health notes that taxis and ride services usually do not count as an escort, and that some people skip needed screening or treatment because they have no one to take them. A medical journal review in Gastrointestinal Endoscopy looked at these transportation and escort barriers and the legal questions they raise for endoscopy units.",
+    "The stakes are high. Glens Falls Hospital's assessment reports that Washington County's colorectal cancer rate (40.8 per 100,000) is higher than the state rate (37.7). Colonoscopy can find this cancer early, but only if people can get one.",
+    "Solutions exist elsewhere, but we did not find them here. Paid escort services operate in New York City, and some clinics there refer patients to them. Since 2012, Mayo Clinic has used a structured process that lets carefully chosen patients go home without an escort, and a study of more than 2,400 of these patients found no rise in readmissions or emergency visits. In Seattle, UW Medicine and Fred Hutch tested free rideshare trips for colonoscopy patients, at about $20 to $25 per ride. New York's aging services already count \"escort service\" as a service type, but statewide only about 278 people a year got it through the state's Unmet Need funding."
+   ],
+   "what_would_help": [
+    "A volunteer or paid \"procedure companion\" program, for example through county Offices for the Aging, which already have escort service as a recognized service type.",
+    "Short escort visits from home care agencies. Harvard Health lists these and faith-community volunteers as options.",
+    "Hospitals and GI centers studying safe, structured ways to let low-risk patients go home alone, like Mayo Clinic's process.",
+    "Covered rideshare or car service paired with a check-in from a nurse or navigator, like the UW Medicine and Fred Hutch pilot.",
+    "Asking patients early whether they have an escort, and offering lighter sedation or other options when it is medically safe (Harvard Health)."
+   ],
+   "sources": [
+    {
+     "label": "Gastroenterology Associates of Northern NY, colonoscopy instructions for the GI Center at Glens Falls Hospital",
+     "url": "https://www.giassociatespc.com/wp-content/uploads/2020/04/G5-Colonoscopy-with-GoLytely-Prep.pdf"
+    },
+    {
+     "label": "Northern GI Endoscopy Center, Procedures (what to expect)",
+     "url": "https://www.giassociatespc.com/northern-gi-endoscopy-center/procedures/"
+    },
+    {
+     "label": "U.S. Census Bureau, American Community Survey 2020–2024, people 65 and older living alone (via Census Reporter, table B11007)",
+     "url": "https://censusreporter.org/data/table/?table=B11007&geo_ids=05000US36091,05000US36113,05000US36115"
+    },
+    {
+     "label": "Harvard Health Publishing, Do you need a medical escort? (2024)",
+     "url": "https://www.health.harvard.edu/healthy-aging-and-longevity/do-you-need-a-medical-escort"
+    },
+    {
+     "label": "Gastrointestinal Endoscopy, Transportation barriers and endoscopic procedures (review, 2023)",
+     "url": "https://www.sciencedirect.com/science/article/pii/S0016510723025658"
+    },
+    {
+     "label": "Glens Falls Hospital, Community Health Needs Assessment 2025–2027",
+     "url": "https://www.albanymed.org/wp-content/uploads/sites/2/2025/12/GFH_CHNA_2025-2027_FINAL-Web-Version.pdf"
+    },
+    {
+     "label": "Manhattan Gastroenterology, Patient escort policy and partners (example of paid escort services in New York City)",
+     "url": "https://www.manhattangastroenterology.com/patient-info/patient-escort-policy/"
+    },
+    {
+     "label": "Mayo Clinic Proceedings: Innovations, Quality & Outcomes, Outpatient dismissal with a responsible adult compared with structured solo dismissal (2018)",
+     "url": "https://doi.org/10.1016/j.mayocpiqo.2018.06.002"
+    },
+    {
+     "label": "UW Medicine, Rideshare removes hurdle to colonoscopy, pilot study shows (May 2023)",
+     "url": "https://newsroom.uw.edu/news-releases/rideshare-removes-hurdle-colonoscopy-pilot-study-shows"
+    },
+    {
+     "label": "NYS Comptroller, New York's Support for Aging New Yorkers (Aug. 2025)",
+     "url": "https://www.osc.ny.gov/files/reports/pdf/new-york-support-for-aging-new-yorkers.pdf"
+    }
+   ]
+  },
+  {
+   "id": "nonprofit-funding",
+   "title": "Steady funding for the groups that help",
+   "summary": "Many organizations on this list depend on yearly government grants that are being cut, delayed or put in doubt, while more people are asking them for help.",
+   "paragraphs": [
+    "Local government money is shaky. In November 2025, Saratoga Springs sent nonprofits a letter saying the city might stop funding them in 2026. The city council later restored the money in its 2026 budget, but funded the city's only 24/7 low-barrier shelter for just 10 months. That shelter, run by RISE on Adelphi Street, is closing at the end of October 2026. A Continuum of Care leader said, \"The shelter isn't closing because it failed.\" In October 2026, the city's finance commissioner proposed a 2027 budget that would again suspend support for nonprofits the city has long funded, along with an 18 percent tax increase.",
+    "Federal money is also uncertain. A national Urban Institute survey found that in early 2025, about one in three nonprofits had government funding disrupted: 21 percent lost some funding and 27 percent had payments delayed or frozen. Those groups were more likely to cut staff and programs. The White House's 2027 budget request would end the Community Services Block Grant, which helps pay for programs like L.E.A.P.'s Community Services rides in Washington County. It would also end CDBG, HOME, home heating help (LIHEAP) and the Weatherization program. Members of both parties in Congress have said they support HUD programs like CDBG and HOME, but final funding is not settled.",
+    "At the same time, need is growing. The Regional Food Bank of Northeastern New York reported a 14 percent rise in demand since July 2025 and \"unprecedented demand\" at pantries. Starting October 1, 2026, counties must pay a bigger share of the cost of running SNAP, and county leaders said that money will likely come out of other local services."
+   ],
+   "what_would_help": [
+    "Multi-year, flexible grants so organizations can plan and keep staff, instead of year-to-year funding.",
+    "Clear county and city roles in paying for safety-net services. In Saratoga County, a county supervisor has argued the county should pay its \"rightful share\" of homeless services.",
+    "Using money that is already available. A Continuum of Care leader said Saratoga County could get about $1.5 million more a year in Community Development Block Grant money that is \"sitting there untouched.\"",
+    "Keeping federal programs that local groups rely on, like CSBG, CDBG, HOME, LIHEAP and Weatherization."
+   ],
+   "sources": [
+    {
+     "label": "Times Union, Day after election, Saratoga Springs tells nonprofits to expect cuts (Nov. 2025)",
+     "url": "https://www.timesunion.com/news/article/saratoga-springs-nonprofit-funding-cut-proposal-21166600.php"
+    },
+    {
+     "label": "Daily Gazette, Saratoga Springs adopts budget with funds to nonprofits (Nov. 22, 2025)",
+     "url": "https://www.dailygazette.com/towns/saratoga_springs/city-of-saratoga-budget-funds-nonprofits/article_ef9d8ceb-3f5d-4161-9a26-83d8f76b4ee9.html"
+    },
+    {
+     "label": "Daily Gazette, Saratoga Springs shelter closure prompts discussion on homelessness (Sept. 25, 2026)",
+     "url": "https://www.dailygazette.com/news/government/adelphi-street-shelter-closure-homelessness-saratoga-shelter/article_7ee52601-109d-4304-9c4b-5303c63f90a4.html"
+    },
+    {
+     "label": "CBS6 Albany, Saratoga Springs proposes 18 percent property tax increase, staffing cuts (Oct. 8, 2026)",
+     "url": "https://cbs6albany.com/news/local/saratoga-springs-proposes-18-percent-property-tax-increase-staffing-cuts"
+    },
+    {
+     "label": "Urban Institute, How Government Funding Disruptions Affected Nonprofits in Early 2025",
+     "url": "https://www.urban.org/research/publication/how-government-funding-disruptions-affected-nonprofits-early-2025"
+    },
+    {
+     "label": "National Association of Counties, White House FY 2027 budget request: analysis for counties (Apr. 2026)",
+     "url": "https://www.naco.org/resource/white-house-releases-budget-request-fy-2027-analysis-counties"
+    },
+    {
+     "label": "L.E.A.P., Transportation for seniors and adults in Washington County",
+     "url": "https://www.leapservices.org/assistance/transportation-for-seniors-and-adults-with-disabilities-in-washington-county-ny/"
+    },
+    {
+     "label": "National Low Income Housing Coalition, Appropriators express bipartisan support for HUD programs (2026)",
+     "url": "https://nlihc.org/resource/house-and-senate-appropriators-express-bipartisan-support-hud-programs-during-hearing"
+    },
+    {
+     "label": "North Country Public Radio, A food pantry fills the gap left by SNAP cuts and rising costs (July 23, 2026)",
+     "url": "https://www.northcountrypublicradio.org/news/story/53730/20260723/a-food-pantry-in-watertown-fills-the-gap-left-by-snap-cuts-and-rising-costs"
+    },
+    {
+     "label": "Spectrum News, New York counties brace for millions in new SNAP costs (Sept. 18, 2026)",
+     "url": "https://spectrumlocalnews.com/nys/central-ny/news/2026/09/18/new-york-counties-brace-for-millions-in-new-snap-costs-"
+    },
+    {
+     "label": "WAMC, Advocates: Saratoga County unhoused need permanent solution as shelter build nears (Apr. 29, 2026)",
+     "url": "https://www.wamc.org/news/2026-04-29/saratoga-county-unhoused-shelter-update"
+    }
+   ]
+  },
+  {
+   "id": "home-repair",
+   "title": "Money for home repairs and accessibility",
+   "summary": "Our area has many older homes and many older homeowners, but state repair and ramp programs are small and spread across all of New York.",
+   "paragraphs": [
+    "Homes here are old, and so are many of the people who own them. About 35 percent of homes in Washington County and 22 percent in Warren County were built before 1940. About 39 percent of homeowners in Warren County, 37 percent in Washington County and 33 percent in Saratoga County are 65 or older, based on Census estimates. Warren County's housing study found a limited supply of senior-friendly homes, such as single-story units, for people who want to age in place.",
+    "State repair money is small compared to the need. In 2025, New York offered $4 million statewide for RESTORE, which pays for emergency repairs for low-income older homeowners, with a limit of $20,000 per building. It offered $5 million for Access to Home (ramps, lifts and accessible bathrooms), $5 million for veterans, and $1.5 million for people on Medicaid. In one year (2024–25), Access to Home finished work on 203 homes across the whole state, at an average cost of $15,354 per home.",
+    "Local groups do what they can. Rebuilding Together Saratoga County does free critical repairs and accessibility changes for low-income homeowners in Saratoga, Warren and Washington Counties, using state and federal grants, donations and volunteers. In 2022, the local Habitat for Humanity said it gets weekly calls from seniors who have owned their homes for decades and need help to stay in them. Federal programs that pay for home repairs, like CDBG, HOME and Weatherization, are proposed for elimination in the White House's 2027 budget request."
+   ],
+   "what_would_help": [
+    "More money for RESTORE and Access to Home, with limits that match today's repair costs. In 2022, the state doubled the RESTORE amount because of rising labor and material costs.",
+    "Help for towns and nonprofits to apply for and run state and federal repair grants. Warren County's health plan proposes a technical help program to do this.",
+    "Low-interest repair loans for landlords and a revolving loan fund to fix up year-round rental housing, which Warren County's health plan names as tools.",
+    "Keeping federal CDBG, HOME and Weatherization funding."
+   ],
+   "sources": [
+    {
+     "label": "U.S. Census Bureau, American Community Survey 2020–2024, year homes were built (via Census Reporter, table B25034)",
+     "url": "https://censusreporter.org/data/table/?table=B25034&geo_ids=05000US36091,05000US36113,05000US36115"
+    },
+    {
+     "label": "U.S. Census Bureau, American Community Survey 2020–2024, homeowners by age (via Census Reporter, table B25007)",
+     "url": "https://censusreporter.org/data/table/?table=B25007&geo_ids=05000US36091,05000US36113,05000US36115"
+    },
+    {
+     "label": "Warren County Housing Needs Study and Market Demand Analysis, summary (2023)",
+     "url": "https://public.warrencountyny.gov/gis/housingneeds/Summary%20Warren%20County%20Housing%20Study.pdf"
+    },
+    {
+     "label": "NYS Homes and Community Renewal, 2025 Access to Home, RESTORE and MMHR application workshop",
+     "url": "https://hcr.ny.gov/system/files/documents/2025/08/2025-state-rehab-application-workshop.pdf"
+    },
+    {
+     "label": "NYS Homes and Community Renewal, Access to Home annual report 2024–25",
+     "url": "https://hcr.ny.gov/system/files/documents/2025/12/2024-25-access-to-home-annual-report-12.29.25.pdf"
+    },
+    {
+     "label": "Rebuilding Together Saratoga County, About us",
+     "url": "https://rtsaratoga.org/about-us/"
+    },
+    {
+     "label": "NYS Assembly, Bill to assist elderly homeowners signed into law (RESTORE changes, Aug. 2022)",
+     "url": "https://assembly.state.ny.us/mem/Carrie-Woerner/story/103304"
+    },
+    {
+     "label": "National Association of Counties, White House FY 2027 budget request: analysis for counties (Apr. 2026)",
+     "url": "https://www.naco.org/resource/white-house-releases-budget-request-fy-2027-analysis-counties"
+    },
+    {
+     "label": "Warren County Public Health, Community Health Improvement Plan 2025–2030",
+     "url": "https://www.warrencountyny.gov/sites/default/files/healthservices/docs/Community_Health_Assessment/2025-2030%20Community%20Health%20Improvement%20Plan.pdf"
+    }
+   ]
+  },
+  {
+   "id": "housing",
+   "title": "Affordable housing and homelessness",
+   "summary": "Rent takes too much of people's income, there are almost no open apartments, voucher waitlists are closed, and the number of people in shelters has grown fast.",
+   "paragraphs": [
+    "Rent is too high for many renters. About half of renters in Washington County (51 percent) and Warren County (48 percent), and 41 percent in Saratoga County, pay 30 percent or more of their income on rent. About one in four renters in each county pays half or more, based on Census estimates. Warren County's 2023 housing study found a rental vacancy rate of just 0.4 percent, waiting lists at nearly all affordable properties, and waits of up to five years at some complexes.",
+    "Help with rent is hard to get. The Section 8 voucher waitlists at the Glens Falls Housing Authority and the Saratoga Springs Housing Authority are both closed. Warren County's health plan sets goals to bring more landlords into Section 8 and to lower the share of renters paying too much for rent.",
+    "Homelessness is rising. Federal counts for our four-county area (Warren, Washington, Saratoga and Hamilton) found 332 people homeless on one night in January 2023, 529 in 2024 and 545 in 2025. The 2025 count included 104 children in families. In Saratoga County alone, the number of people in emergency shelters rose from 196 in January 2025 to 348 in January 2026, according to the local Continuum of Care. People 55 and older are the fastest-growing group, and the Continuum counted 406 people that age who were homeless from January to August 2026.",
+    "Shelter space is shrinking in one place and growing slowly in another. The RISE shelter on Adelphi Street in Saratoga Springs, a 24/7 low-barrier shelter for about 30 people, closes at the end of October 2026. A new 75-bed Code Blue shelter on Ballston Avenue is under construction, but it will only open on freezing nights from November to April and is not expected to open until fall 2027. Glens Falls Hospital also reports more patients who are homeless or about to lose housing while in treatment."
+   ],
+   "what_would_help": [
+    "A year-round low-barrier shelter supported by Saratoga County, and inclusionary zoning, the two top priorities named by a Continuum of Care leader.",
+    "Incentives that bring landlords into Section 8, like damage deposits, holding fees, one-time grants and low-interest repair loans (Warren County health plan).",
+    "Density bonuses and faster zoning approval for affordable and workforce housing, and a Warren County Housing Alliance to work with developers (Warren County health plan).",
+    "A county and city partnership on homelessness in Saratoga County, which advocates and county supervisors have called for."
+   ],
+   "sources": [
+    {
+     "label": "U.S. Census Bureau, American Community Survey 2020–2024, rent as a share of income (via Census Reporter, table B25070)",
+     "url": "https://censusreporter.org/data/table/?table=B25070&geo_ids=05000US36091,05000US36113,05000US36115"
+    },
+    {
+     "label": "Warren County Housing Needs Study and Market Demand Analysis, summary (2023)",
+     "url": "https://public.warrencountyny.gov/gis/housingneeds/Summary%20Warren%20County%20Housing%20Study.pdf"
+    },
+    {
+     "label": "Adirondack Explorer, Warren County report shows major housing shortages (Nov. 2023)",
+     "url": "https://www.adirondackexplorer.org/stories/warren-county-report-shows-major-housing-shortages"
+    },
+    {
+     "label": "Glens Falls Housing Authority, Applications (Section 8 waitlist status)",
+     "url": "https://www.glensfallshousingauthority.org/HTMFLDR/applic.htm"
+    },
+    {
+     "label": "Saratoga Springs Housing Authority, Programs (waitlist status)",
+     "url": "https://saratogaspringspha.org/programs.aspx"
+    },
+    {
+     "label": "Warren County Public Health, Community Health Improvement Plan 2025–2030",
+     "url": "https://www.warrencountyny.gov/sites/default/files/healthservices/docs/Community_Health_Assessment/2025-2030%20Community%20Health%20Improvement%20Plan.pdf"
+    },
+    {
+     "label": "HUD, 2023 Point-in-Time count, NY-523",
+     "url": "https://files.hudexchange.info/reports/published/CoC_PopSub_CoC_NY-523-2023_NY_2023.pdf"
+    },
+    {
+     "label": "HUD, 2024 Point-in-Time count, NY-523",
+     "url": "https://files.hudexchange.info/reports/published/CoC_PopSub_CoC_NY-523-2024_NY_2024.pdf"
+    },
+    {
+     "label": "HUD, 2025 Point-in-Time count, NY-523 Glens Falls, Saratoga Springs/Saratoga, Washington, Warren, Hamilton Counties CoC",
+     "url": "https://files.hudexchange.info/reports/published/CoC_PopSub_CoC_NY-523-2025_NY_2025.pdf"
+    },
+    {
+     "label": "Daily Gazette, Saratoga Springs shelter closure prompts discussion on homelessness (Sept. 25, 2026)",
+     "url": "https://www.dailygazette.com/news/government/adelphi-street-shelter-closure-homelessness-saratoga-shelter/article_7ee52601-109d-4304-9c4b-5303c63f90a4.html"
+    },
+    {
+     "label": "Times Union, Saratoga Springs homeless shelter closes without permanent solution (Sept. 2026)",
+     "url": "https://www.timesunion.com/news/article/saratoga-springs-homeless-shelter-closes-22446413.php"
+    },
+    {
+     "label": "WAMC, Advocates: Saratoga County unhoused need permanent solution as shelter build nears (Apr. 29, 2026)",
+     "url": "https://www.wamc.org/news/2026-04-29/saratoga-county-unhoused-shelter-update"
+    },
+    {
+     "label": "Glens Falls Hospital, Community Health Needs Assessment 2025–2027",
+     "url": "https://www.albanymed.org/wp-content/uploads/sites/2/2025/12/GFH_CHNA_2025-2027_FINAL-Web-Version.pdf"
+    }
+   ]
+  },
+  {
+   "id": "dental",
+   "title": "Dental care for people with Medicaid",
+   "summary": "Medicaid now covers more adult dental care, but there are too few dentists who take it, especially in Washington County.",
+   "paragraphs": [
+    "There are very few dentists in Washington County. The State Comptroller found it has 2.1 dentists for every 10,000 people, compared with 8.3 statewide. In rural areas, people told the Comptroller there is a shortage of dentists who accept Medicaid, and \"extreme wait times\" at the ones that do. The state's own Medicaid provider list shows only two dentists, at three offices in Cambridge, Fort Edward and Granville, with a Washington County office enrolled in regular (fee-for-service) Medicaid, as of October 2026.",
+    "Glens Falls Hospital's assessment notes that Warren and Washington Counties each have a federally designated dental shortage area. In Saratoga County, only 28 percent of people on Medicaid had a dental visit in 2023, lower than before the pandemic. Across the Capital Region, about half of residents on Medicaid (51 percent) said they had not had a routine dental visit in the past year.",
+    "Coverage is better than it used to be. Since January 31, 2024, New York Medicaid covers more root canals, crowns, replacement dentures and implants when medically needed. But coverage only helps if people can find a dentist who will see them."
+   ],
+   "what_would_help": [
+    "Mobile dental clinics and school-based care that come to rural towns (State Comptroller).",
+    "Loan forgiveness and other incentives for dentists who work in shortage areas and accept Medicaid (State Comptroller).",
+    "Better transportation to dental offices, since many Medicaid patients must travel out of county."
+   ],
+   "sources": [
+    {
+     "label": "NYS Comptroller, The Doctor is … Out: Shortages of Health Professionals in Rural Areas (Aug. 2025)",
+     "url": "https://www.osc.ny.gov/files/reports/pdf/rural-health-shortages.pdf"
+    },
+    {
+     "label": "NYS Department of Health, Medicaid Enrolled Provider Listing (open data, checked Oct. 2026)",
+     "url": "https://health.data.ny.gov/Health/Medicaid-Enrolled-Provider-Listing/keti-qx5t"
+    },
+    {
+     "label": "Glens Falls Hospital, Community Health Needs Assessment 2025–2027",
+     "url": "https://www.albanymed.org/wp-content/uploads/sites/2/2025/12/GFH_CHNA_2025-2027_FINAL-Web-Version.pdf"
+    },
+    {
+     "label": "Healthy Capital District, 2025 Capital Region Community Health Needs Assessment (includes Saratoga County)",
+     "url": "https://www.healthycapitaldistrict.org/content/sites/hcdi/CHNA2025/CHNA_HCDI_2025.pdf"
+    },
+    {
+     "label": "NYS Department of Health, Information for Medicaid dental providers (expanded coverage from Jan. 31, 2024)",
+     "url": "https://www.health.ny.gov/health_care/medicaid/program/dental/provider/index.htm"
+    }
+   ]
+  },
+  {
+   "id": "mental-health",
+   "title": "Mental health care, especially for children",
+   "summary": "Mental health is the top health concern in all three counties, but there are not enough providers or beds, and children can wait in the emergency room for weeks.",
+   "paragraphs": [
+    "Mental health tops the list. In the regional health survey, people in every county named mental health conditions as the top priority. In Warren and Washington Counties, they named \"lack of mental health services\" as the second-biggest thing hurting health, after poverty. Warren County's health plan reports that 19.2 percent of adults have frequent mental distress.",
+    "There are not enough providers. Warren and Washington Counties each have two federally designated mental health shortage areas. In Washington County, the shortage designation covers about 38,400 people eligible for Medicaid. The State Comptroller found rural counties have less than half as many mental health providers per person as the state.",
+    "Children's crisis care is especially stretched. Glens Falls Hospital is the only pediatric psychiatric program between Saratoga and Plattsburgh. In 2025, one child waited 117 days in the hospital's emergency department for a residential treatment bed. The hospital opened a 13-bed crisis unit with federal pandemic relief money, and staff said even that is sometimes not enough. In Saratoga County, the rate of emergency visits for mental health was the second highest in the Capital Region in 2023."
+   ],
+   "what_would_help": [
+    "More residential and crisis beds for children and teens closer to home.",
+    "Loan forgiveness for counselors and psychologists in shortage areas, and telehealth paired with better rural broadband (State Comptroller).",
+    "School-based health centers (State Comptroller), and teen mental health first aid and suicide prevention training (Warren County health plan).",
+    "Walk-in and sliding-scale counseling, and parent coaching programs for families with young children (Warren County health plan)."
+   ],
+   "sources": [
+    {
+     "label": "Glens Falls Hospital, Community Health Needs Assessment 2025–2027",
+     "url": "https://www.albanymed.org/wp-content/uploads/sites/2/2025/12/GFH_CHNA_2025-2027_FINAL-Web-Version.pdf"
+    },
+    {
+     "label": "Warren County Public Health, Community Health Improvement Plan 2025–2030",
+     "url": "https://www.warrencountyny.gov/sites/default/files/healthservices/docs/Community_Health_Assessment/2025-2030%20Community%20Health%20Improvement%20Plan.pdf"
+    },
+    {
+     "label": "NYS Comptroller, The Doctor is … Out: Shortages of Health Professionals in Rural Areas (Aug. 2025)",
+     "url": "https://www.osc.ny.gov/files/reports/pdf/rural-health-shortages.pdf"
+    },
+    {
+     "label": "CBS6 Albany, Much-needed pediatric crisis unit operating at Glens Falls Hospital (Apr. 2025)",
+     "url": "https://cbs6albany.com/news/local/much-needed-pediatric-crisis-unit-operating-at-glens-falls-hospital"
+    },
+    {
+     "label": "Healthy Capital District, 2025 Capital Region Community Health Needs Assessment (includes Saratoga County)",
+     "url": "https://www.healthycapitaldistrict.org/content/sites/hcdi/CHNA2025/CHNA_HCDI_2025.pdf"
+    }
+   ]
+  },
+  {
+   "id": "child-care",
+   "title": "Child care",
+   "summary": "Many rural towns have no licensed child care at all, infant care waitlists can run two years, and the number of providers has dropped sharply.",
+   "paragraphs": [
+    "Child care has been disappearing. Between 2019 and 2022, the number of regulated child care facilities fell 40 percent in Warren County (from 50 to 30) and 37 percent in Washington County. A Warren County workforce official said child care is one of the top three barriers to work for job seekers. The Saratoga Regional YMCA's Malta center has a two-year waitlist for infant care.",
+    "Many places have no programs at all. A 2024 report by Brightside Up found no child care programs in parts of Warren County, including Bolton Landing, Brant Lake/Horicon, Johnsburg and Thurman/Stoney Creek. In Washington County, the Hudson Falls and Fort Ann areas had none, and North Greenwich had 48 children for every licensed slot. In northern Saratoga County, Hadley, Edinburg/Day, Barkersville and Gates/Schuylerville had none.",
+    "Help paying for care has been on and off. In spring 2025, Saratoga, Warren and Washington Counties all closed enrollment in the Child Care Assistance Program because state funds ran short. In October 2026, the state said Warren and Washington were among 26 counties able to clear waitlists or reopen after new state money. Families who lost help in between had to pull children out of care, which also made it harder to recruit new home-based providers."
+   ],
+   "what_would_help": [
+    "Start-up help for new home-based child care businesses, like the $205,000 federal grant Warren County obtained to train people to open 20 home-based child care businesses in Warren and Saratoga Counties.",
+    "Employer-supported child care. Stewart's Shops pays half the cost of YMCA child care for its workers.",
+    "Steady state funding for the Child Care Assistance Program so families are not cut off mid-year.",
+    "More infant slots and care in rural towns that have none."
+   ],
+   "sources": [
+    {
+     "label": "Saratoga Business Journal, Regional childcare shortage pushes families, employers and YMCA to adapt (May 2026)",
+     "url": "https://www.saratoga.com/saratogabusinessjournal/2026/05/regional-childcare-shortage-pushes-families-employers-and-ymca-to-adapt/"
+    },
+    {
+     "label": "Brightside Up, The Capital Region's Child Care Landscape (Dec. 2024)",
+     "url": "https://www.brightsideup.org/wp-content/uploads/2024/12/Landscape-report.pdf"
+    },
+    {
+     "label": "North Country Public Radio, Families are losing child care assistance as NYS runs out of program funds (June 2025)",
+     "url": "https://www.northcountrypublicradio.org/news/story/51811/20250604/families-are-losing-child-care-assistance-as-nys-runs-out-of-program-funds"
+    },
+    {
+     "label": "Governor of New York, 13,000 more kids now in affordable child care (Oct. 5, 2026)",
+     "url": "https://www.governor.ny.gov/news/governor-hochul-announces-13000-more-kids-are-now-affordable-childcare-following-her-record"
+    },
+    {
+     "label": "Warren County, Warren County obtains funding for new child care businesses",
+     "url": "https://www.warrencountyny.gov/news/warren-county-obtains-funding-new-child-care-businesses"
+    }
+   ]
+  },
+  {
+   "id": "food",
+   "title": "Enough food",
+   "summary": "About 37,000 people in our three counties do not always have enough food, many of them earn too much for SNAP, and pantries report unprecedented demand.",
+   "paragraphs": [
+    "Hunger is common here. Feeding America estimates that in 2024, 12.5 percent of people in Warren County (8,200 people), 11.3 percent in Washington County (6,810) and 9.3 percent in Saratoga County (22,180) were food insecure, meaning they did not always have enough to eat. Many of them earn too much to get SNAP: 39 percent in Warren, 36 percent in Washington and 53 percent in Saratoga.",
+    "Pantries are under strain. The Regional Food Bank of Northeastern New York, which supplies local pantries, reported a 14 percent rise in demand since July 2025. It pointed to higher costs for food, utilities and transportation, and to people losing SNAP benefits.",
+    "Changes to SNAP may make this worse. Starting October 1, 2026, the federal government stopped paying its share of the cost to run SNAP, and counties now carry more of it. County leaders said the money will likely come from other local services."
+   ],
+   "what_would_help": [
+    "Flexible funding for food pantries, especially in rural towns.",
+    "Help for people to keep SNAP and other benefits through paperwork and rule changes.",
+    "Programs for people who earn too much for SNAP but still cannot afford enough food."
+   ],
+   "sources": [
+    {
+     "label": "Feeding America, Map the Meal Gap: Warren County, NY (2024 data)",
+     "url": "https://map.feedingamerica.org/county/2024/overall/new-york/county/warren"
+    },
+    {
+     "label": "Feeding America, Map the Meal Gap: Washington County, NY (2024 data)",
+     "url": "https://map.feedingamerica.org/county/2024/overall/new-york/county/washington"
+    },
+    {
+     "label": "Feeding America, Map the Meal Gap: Saratoga County, NY (2024 data)",
+     "url": "https://map.feedingamerica.org/county/2024/overall/new-york/county/saratoga"
+    },
+    {
+     "label": "North Country Public Radio, A food pantry fills the gap left by SNAP cuts and rising costs (July 23, 2026)",
+     "url": "https://www.northcountrypublicradio.org/news/story/53730/20260723/a-food-pantry-in-watertown-fills-the-gap-left-by-snap-cuts-and-rising-costs"
+    },
+    {
+     "label": "Spectrum News, New York counties brace for millions in new SNAP costs (Sept. 18, 2026)",
+     "url": "https://spectrumlocalnews.com/nys/central-ny/news/2026/09/18/new-york-counties-brace-for-millions-in-new-snap-costs-"
+    }
+   ]
+  },
+  {
+   "id": "older-adults",
+   "title": "Help at home for older adults",
+   "summary": "More older adults live alone, but there are not enough home care aides, and state aging services cannot serve everyone who asks.",
+   "paragraphs": [
+    "Many older adults here live alone. About 21,900 households in our three counties are one person age 65 or older living alone, based on Census estimates. They often need help with rides, meals, chores and personal care to stay safely at home.",
+    "Aging services cannot reach everyone. The State Comptroller reported in 2025 that about 16,000 older New Yorkers a year cannot be served by local aging programs, and that a shortage of direct care workers has limited what some counties can do. The Comptroller also said waitlist numbers by county are not made public, so it is hard to see who is left out.",
+    "Low pay is part of the problem. Tri-County United Way lists personal care aides among the most common jobs that pay below what it costs to live here."
+   ],
+   "what_would_help": [
+    "Counties training or hiring their own aides, as 14 New York counties had done by October 2024 (State Comptroller).",
+    "Public reporting of county waitlists so funders can see where help is missing (State Comptroller).",
+    "More state Unmet Need funding. In October 2025, the state ended the cost-share requirement for some in-home services paid with this money.",
+    "Better pay for home care aides."
+   ],
+   "sources": [
+    {
+     "label": "U.S. Census Bureau, American Community Survey 2020–2024, people 65 and older living alone (via Census Reporter, table B11007)",
+     "url": "https://censusreporter.org/data/table/?table=B11007&geo_ids=05000US36091,05000US36113,05000US36115"
+    },
+    {
+     "label": "NYS Comptroller, New York's Support for Aging New Yorkers (Aug. 2025)",
+     "url": "https://www.osc.ny.gov/files/reports/pdf/new-york-support-for-aging-new-yorkers.pdf"
+    },
+    {
+     "label": "NYS Office for the Aging, Program Instruction 25-PI-10, Unmet Need (Oct. 2025)",
+     "url": "https://aging.ny.gov/system/files/documents/2025/10/25-pi-10-unmet-need.pdf"
+    },
+    {
+     "label": "Tri-County United Way, ALICE report for Warren, Washington and Northern Saratoga",
+     "url": "https://www.tricountyunitedway.org/what-we-do/alice-report/"
+    }
+   ]
+  }
+ ]
+}

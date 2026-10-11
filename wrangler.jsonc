@@ -1,0 +1,50 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Rename to suit your community. See SETUP.md, step by step.
+  "name": "resource-directory",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-09",
+  "assets": {
+    "directory": "./public/",
+    "binding": "ASSETS",
+    // The Worker runs before every file is served, so the admin check
+    // can't be skipped by asking for a file directly.
+    "run_worker_first": true
+  },
+  // Turn off once your own domain works (or protect it with Cloudflare Access).
+  "workers_dev": true,
+  // Your site's address. Cloudflare sets up the DNS and certificate.
+  "routes": [{ "pattern": "your-domain.org", "custom_domain": true }],
+  "preview_urls": false,
+  // Weekly backup email: Mondays at 11:00 UTC.
+  "triggers": { "crons": ["0 11 * * 1"] },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "resource-directory",
+      // From `npx wrangler d1 create resource-directory`.
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    // Your Cloudflare Access team domain and the Access app's AUD tag.
+    // Empty means everyone is refused from the admin panel.
+    "TEAM_DOMAIN": "https://your-team.cloudflareaccess.com",
+    "POLICY_AUD": "",
+    // "true" opens the directory and forms to the public. Admin stays owner-only.
+    "SITE_PUBLIC": "false",
+    // Turnstile site key (public). Local runs use Cloudflare's test key from .dev.vars.
+    "TURNSTILE_SITE_KEY": "",
+    // Sender for request and backup emails, on your domain (Email Routing on).
+    "EMAIL_FROM": "website@your-domain.org",
+    // Public support address shown on the request form.
+    "SUPPORT_EMAIL": "support@your-domain.org"
+  },
+  // Email sending: an unrestricted binding can only send to your Cloudflare
+  // account's verified destination addresses; the "to" address is the
+  // FORWARD_TO secret, so your personal email never goes in this file.
+  "send_email": [{ "name": "SEND_EMAIL" }]
+  // Secrets (.dev.vars locally, `wrangler secret put` remotely): ADMIN_EMAIL,
+  // FORWARD_TO, TURNSTILE_SECRET_KEY, IP_SALT.
+}

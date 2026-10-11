@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin: Southern ADK Help</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/admin/admin.css">
+  <script type="module" src="/admin/admin.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="admin-header">
+    <div class="bar">
+      <p class="brand">Directory admin</p>
+      <p class="who" id="who"></p>
+    </div>
+    <nav aria-label="Admin">
+      <ul class="nav">
+        <li><a href="#/listings" data-nav="listings">Listings</a></li>
+        <li><a href="#/recheck" data-nav="recheck">Due for re-check</a></li>
+        <li><a href="#/requests" data-nav="requests">Requests</a></li>
+        <li><a href="#/retired" data-nav="retired">Retired</a></li>
+        <li><a href="#/barriers" data-nav="barriers">Barrier reports</a></li>
+        <li><a href="#/suggestions" data-nav="suggestions">Help suggestions</a></li>
+        <li><a href="#/lists" data-nav="lists">Categories &amp; plans</a></li>
+        <li><a href="/api/admin/export">Export to Excel</a></li>
+        <li><a href="/">Public site</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main id="main" tabindex="-1">
+    <p class="loading">Loading…</p>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

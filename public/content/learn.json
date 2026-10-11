@@ -1,0 +1,1297 @@
+{
+ "updated": "2026-10-10",
+ "sections": [
+  {
+   "title": "Getting started",
+   "entries": [
+    {
+     "id": "where-to-start",
+     "q": "I don't know what help I need. Where do I start?",
+     "a": [
+      "Call 211 or search 211neny.org. 211 is a free service that connects you to health and human services. It covers Warren, Washington and Saratoga Counties.",
+      "For long-term help for older adults or people with any disability (like home care or caregiver support), call NY Connects at 1-800-342-9871. NY Connects gives free, unbiased information for people of all ages.",
+      "To apply online for SNAP, HEAP and other state benefits, use myBenefits.ny.gov. If you have a housing, food, utility or heating emergency, contact your county Department of Social Services right away.",
+      "In a life-threatening or medical emergency, call 911."
+     ],
+     "keywords": "211, help line, where to start, social services, DSS, NY Connects, benefits screening, myBenefits",
+     "sources": [
+      {
+       "label": "211 Northeast New York",
+       "url": "https://www.211neny.org/"
+      },
+      {
+       "label": "NY Connects",
+       "url": "https://www.nyconnects.ny.gov/"
+      },
+      {
+       "label": "myBenefits.ny.gov (apply online for SNAP, HEAP and more)",
+       "url": "https://mybenefits.ny.gov/"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Navigation and Advocacy",
+      "Crisis Help"
+     ]
+    },
+    {
+     "id": "social-care-network",
+     "q": "What is the Social Care Network (Healthy Alliance) screening for Medicaid members?",
+     "a": [
+      "New York set up regional Social Care Networks to help Medicaid members with needs like housing, food and transportation. Members answer a short set of screening questions, and the network connects them to local nonprofits. These services are free.",
+      "Healthy Alliance runs the Social Care Network for the Capital Region (which includes Saratoga County) and the North Country (which includes Warren and Washington Counties).",
+      "You can start by answering the state's screening questions at screening.shinny.org, or by contacting your regional Social Care Network."
+     ],
+     "keywords": "1115 waiver, SCN, health-related social needs, HRSN, Healthy Alliance, social care screening, social needs",
+     "sources": [
+      {
+       "label": "NY Department of Health: Social Care Networks (SCN)",
+       "url": "https://www.health.ny.gov/health_care/medicaid/redesign/sdh/scn/"
+      },
+      {
+       "label": "Healthy Alliance: 1115 Waiver Social Care Network",
+       "url": "https://www.healthyalliance.org/1115-waiver/"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Navigation and Advocacy"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Medicaid",
+   "entries": [
+    {
+     "id": "medicaid-basics",
+     "q": "What is Medicaid, and how do I apply in New York?",
+     "a": [
+      "Medicaid is public health coverage for certain people with low income, including children, families, pregnant people, older adults, and people with disabilities. It pays for a wide range of care. Some services have small co-pays; the state says these can be waived if you cannot afford them.",
+      "Most adults 19 to 64 without Medicare, children, pregnant people, and parents or caretaker relatives apply through NY State of Health online or by calling (855) 355-5777.",
+      "Some people apply through their county Department of Social Services instead. This includes people who get SSI, people who are blind or disabled and do not fit the groups above, people who need long-term care at home, and people using the spend-down (excess income) program.",
+      "Questions? Call the New York State Medicaid Helpline at (800) 541-2831."
+     ],
+     "keywords": "Medicaid, apply, application, NY State of Health, DSS, county social services, MAGI, non-MAGI, DOH-4220, health insurance",
+     "sources": [
+      {
+       "label": "NY Department of Health: New York State Medicaid",
+       "url": "https://www.health.ny.gov/health_care/medicaid/"
+      },
+      {
+       "label": "NY Department of Health: How to Apply for NY Medicaid",
+       "url": "https://www.health.ny.gov/health_care/medicaid/how_do_i_apply.htm"
+      },
+      {
+       "label": "Medicare.gov: Parts of Medicare",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/medicare-basics/parts-of-medicare"
+      }
+     ],
+     "related_categories": [
+      "Medical",
+      "Social Services"
+     ]
+    },
+    {
+     "id": "straight-medicaid",
+     "q": "What is \"straight\" (fee-for-service) Medicaid?",
+     "a": [
+      "\"Straight\" Medicaid, also called fee-for-service, means you are not in a Medicaid health plan. You show your Medicaid card at any doctor, dentist or other provider who is enrolled in New York Medicaid, and Medicaid pays that provider directly.",
+      "Some people cannot join a plan, so they stay on straight Medicaid. This includes people on spend-down (excess income), people who have other full health insurance, and people in hospice when they enroll. Some others, such as American Indians and Alaska Natives, may choose not to join a plan.",
+      "Even people in a Medicaid plan get some services straight from Medicaid instead of the plan. These are called \"carve-outs.\" That is one reason to keep your Medicaid card after you join a plan.",
+      "Not every provider takes straight Medicaid. Ask the office, \"Do you take straight (fee-for-service) Medicaid?\" New York also publishes a public list of providers enrolled in Medicaid. In this directory, look for the \"Straight Medicaid (fee-for-service)\" tag."
+     ],
+     "keywords": "straight Medicaid, fee for service, FFS, regular Medicaid, Medicaid card, benefit card, CIN, no plan, carve out",
+     "sources": [
+      {
+       "label": "NY Department of Health: New York State Medicaid",
+       "url": "https://www.health.ny.gov/health_care/medicaid/"
+      },
+      {
+       "label": "New York Medicaid Choice: Who Does Not Have to Join a Health Plan",
+       "url": "https://www.nymedicaidchoice.com/en/who-does-not-have-join-health-plan"
+      },
+      {
+       "label": "NY Department of Health: Overview of Medicaid Managed Care",
+       "url": "https://www.health.ny.gov/health_care/medicaid/redesign/mmc_overview.htm"
+      },
+      {
+       "label": "NY Open Data: Medicaid Enrolled Provider Listing",
+       "url": "https://health.data.ny.gov/Health/Medicaid-Enrolled-Provider-Listing/keti-qx5t"
+      }
+     ],
+     "related_categories": [
+      "Dental",
+      "Eye Care",
+      "Medical"
+     ]
+    },
+    {
+     "id": "managed-medicaid",
+     "q": "What is a Medicaid managed care plan, and how do I switch plans?",
+     "a": [
+      "Most people with Medicaid must join a Medicaid managed care plan, which is a health plan approved by the state. You do not lose your Medicaid benefits; you get them through the plan.",
+      "In a plan, you pick a regular doctor, called a primary care provider (PCP), who helps coordinate your care and refers you to specialists. You usually must use doctors and hospitals in the plan's network. The plan pays those providers directly.",
+      "After you join a plan, you have 90 days to change your mind and switch. After those 90 days, you must stay in the plan for the next nine months, unless you have an urgent reason. Each family member can be in a different plan.",
+      "To learn about plans, switch, or ask about an exemption, call New York Medicaid Choice at 1-800-505-5678 (TTY 1-888-329-1541). It is the state's managed care enrollment program."
+     ],
+     "keywords": "managed care, Medicaid plan, MCO, HMO, Fidelis, UnitedHealthcare, MVP, CDPHP, PCP, switch plans, change plan, lock-in, grace period, New York Medicaid Choice, Maximus",
+     "sources": [
+      {
+       "label": "NY Department of Health: Managed Care",
+       "url": "https://www.health.ny.gov/health_care/managed_care/"
+      },
+      {
+       "label": "NY Department of Health: Overview of Medicaid Managed Care",
+       "url": "https://www.health.ny.gov/health_care/medicaid/redesign/mmc_overview.htm"
+      },
+      {
+       "label": "New York Medicaid Choice: Frequently Asked Questions",
+       "url": "https://www.nymedicaidchoice.com/en/faqs"
+      },
+      {
+       "label": "New York Medicaid Choice (state managed care enrollment program)",
+       "url": "https://www.nymedicaidchoice.com/en"
+      }
+     ],
+     "related_categories": [
+      "Medical",
+      "Dental",
+      "Eye Care"
+     ]
+    },
+    {
+     "id": "medicaid-changes-2026",
+     "q": "What Medicaid changes are coming in 2026 and 2027?",
+     "a": [
+      "A 2025 federal law (H.R. 1) is changing some Medicaid rules in New York.",
+      "Starting October 1, 2026, some immigrants (such as refugees, asylees, parolees, and survivors of domestic violence or trafficking) may move from Medicaid to the Essential Plan. Their benefits are not supposed to change. Coverage for children and pregnant people is not changing.",
+      "Starting January 1, 2027, some adults ages 19 to 64 will need to show they work, go to school, are in job training, or volunteer. They can meet the rule by earning at least $580 a month or doing 80 hours a month of these activities. Many people are excused, including people 65 or older, people who are pregnant, people with a disability, people with Medicare, and parents or caregivers of a child under 14.",
+      "Also starting January 1, 2027, some adults 19 to 64 will need to renew Medicaid every 6 months, and Medicaid will not pay for past medical bills as far back as it does now.",
+      "What to do now: make sure NY State of Health or your county Department of Social Services has your current address, phone and email, and open every notice you get."
+     ],
+     "keywords": "H.R.1, One Big Beautiful Bill, work requirements, Medicaid work rules, 80 hours, renewal, recertification, 6 month renewal, retroactive coverage, immigrants, Medicaid changes",
+     "sources": [
+      {
+       "label": "NY State of Health: Changes to Medicaid Coverage (Oct 6, 2026)",
+       "url": "https://info.nystateofhealth.ny.gov/stay-covered"
+      }
+     ],
+     "related_categories": [
+      "Medical",
+      "Social Services",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "spend-down",
+     "q": "What is a Medicaid spend-down (excess income)?",
+     "a": [
+      "If your monthly income is a little over the Medicaid limit, you may still get Medicaid through the Excess Income program, also called \"spend-down\" or \"surplus income.\" The amount your income is over the limit works like a deductible.",
+      "It is for people who are under 21, 65 or older, certified blind or disabled, pregnant, or the parent of a child under 21.",
+      "Each month, once your medical bills (paid or unpaid) add up to your excess income amount, Medicaid pays your other covered bills for the rest of that month. If you have no bills, you can choose to pay your excess amount to the county instead (the \"Pay-In\" option).",
+      "Bills for you, your spouse, or your children under 21 can count. Old unpaid medical bills you still owe can also count. Ask your county Department of Social Services to start, and send bills early in the month."
+     ],
+     "keywords": "spend down, spenddown, excess income, surplus income, pay-in, medically needy, Medicaid deductible",
+     "sources": [
+      {
+       "label": "NY Department of Health: Medicaid Excess Income (Spenddown) Program",
+       "url": "https://www.health.ny.gov/health_care/medicaid/excess_income.htm"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Medical"
+     ]
+    },
+    {
+     "id": "health-home",
+     "q": "What is Health Home care management?",
+     "a": [
+      "A Health Home is not a building. It is a group of health and service providers that work together for you. Once you enroll, you get a care manager who works with you on a care plan.",
+      "A care manager can help connect you to doctors, mental health and substance use care, medicines, housing, and services like food, benefits and transportation.",
+      "To qualify, you must have Medicaid and either two or more chronic conditions (such as asthma or diabetes) or one of these: HIV/AIDS, serious mental illness (adults), sickle cell disease, or serious emotional disturbance or complex trauma (children). A substance use disorder alone does not qualify, but it counts as one of two conditions.",
+      "To enroll, ask your Medicaid plan, doctor, hospital, discharge planner, or county Department of Social Services, or contact a Health Home directly."
+     ],
+     "keywords": "Health Home, care management, care manager, care coordination, HHUNY, HHSC, chronic conditions, case management, serious mental illness",
+     "sources": [
+      {
+       "label": "NY Department of Health: Medicaid Health Homes",
+       "url": "https://www.health.ny.gov/health_care/medicaid/program/medicaid_health_homes/"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Mental Health",
+      "Navigation and Advocacy"
+     ]
+    },
+    {
+     "id": "medicaid-transportation",
+     "q": "Can Medicaid give me a ride to a medical appointment?",
+     "a": [
+      "Yes. Medicaid members can get free non-emergency rides to and from medical appointments, such as the doctor or the dentist. Rides are not given to pharmacies, gyms, schools or grocery stores. For an emergency, call 911.",
+      "In Warren, Washington and Saratoga Counties, rides are arranged by Medical Answering Services (MAS). Call the upstate line at (866) 932-7740 or set up an account on the MAS website.",
+      "Call at least 72 hours (3 days) before your appointment. Every trip must be approved ahead of time.",
+      "The ride type depends on your needs. It can be a bus, taxi, ambulette, or money back for mileage if you or someone you know drives you."
+     ],
+     "keywords": "Medicaid transportation, Medicaid cab, ride, MAS, Medical Answering Services, ambulette, mileage reimbursement, NEMT, medical transportation",
+     "sources": [
+      {
+       "label": "NY Department of Health: Medicaid Transportation",
+       "url": "https://www.health.ny.gov/health_care/medicaid/members/medtrans_overview.htm"
+      },
+      {
+       "label": "Medical Answering Services (MAS)",
+       "url": "https://www.medanswering.com/"
+      }
+     ],
+     "related_categories": [
+      "Transportation",
+      "Medical"
+     ]
+    },
+    {
+     "id": "mltc",
+     "q": "What is Managed Long Term Care (MLTC)?",
+     "a": [
+      "Managed Long Term Care is for people with Medicaid who are chronically ill or disabled and want to stay at home. A long-term care plan covers services like home health aides, personal care, nursing at home, therapy at home, adult day health care, and CDPAP.",
+      "There are three kinds: MLTC partial capitation plans (age 18 and up), Medicaid Advantage Plus plans (age 18 and up), and PACE (age 55 and up).",
+      "To join, you must be assessed as needing these services for more than 120 days. You must also meet the state's \"minimum needs\" rule: needing at least limited hands-on help with more than two daily activities (like bathing or dressing), or, with dementia or Alzheimer's, needing supervision with more than one.",
+      "The assessment is done by the New York Independent Assessor Program (see the NYIA question). Then New York Medicaid Choice helps you pick a plan."
+     ],
+     "keywords": "MLTC, managed long term care, long term care plan, MAP, Medicaid Advantage Plus, PACE, home care, home health aide, personal care, adult day care, ADL",
+     "sources": [
+      {
+       "label": "NY Department of Health: Managed Long Term Care (MLTC)",
+       "url": "https://www.health.ny.gov/health_care/managed_care/mltc/"
+      },
+      {
+       "label": "New York Independent Assessor Program (NYIAP)",
+       "url": "https://nyindependentassessor.com/en/home.html"
+      },
+      {
+       "label": "New York Medicaid Choice (state managed care enrollment program)",
+       "url": "https://www.nymedicaidchoice.com/en"
+      }
+     ],
+     "related_categories": [
+      "Home Care",
+      "Senior Living and Nursing Homes",
+      "Hospice and Caregiver Support"
+     ]
+    },
+    {
+     "id": "cdpap",
+     "q": "What is CDPAP, and can a family member be paid to care for me?",
+     "a": [
+      "CDPAP (Consumer Directed Personal Assistance Program) is a Medicaid program that lets people who qualify for home care choose and hire their own caregiver, called a personal assistant.",
+      "The assistant can be a friend or family member, but not your spouse, your designated representative, or (for someone under 21) a parent.",
+      "To qualify, you need an assessment showing you need home care. Adults 21 and older must also meet the minimum needs rule that started September 1, 2025. You must be able to direct your own care, or have a designated representative who can.",
+      "Since 2025, every CDPAP member must use one statewide company, Public Partnership LLC (PPL), to handle the assistant's payroll."
+     ],
+     "keywords": "CDPAP, CDPAS, consumer directed, paid family caregiver, personal assistant, PPL, Public Partnership, fiscal intermediary, home care, get paid to care for parent",
+     "sources": [
+      {
+       "label": "NY Department of Health: Consumer Directed Personal Assistance Program (CDPAP)",
+       "url": "https://www.health.ny.gov/health_care/medicaid/program/longterm/cdpap/"
+      },
+      {
+       "label": "NY Department of Health: New York State Medicaid",
+       "url": "https://www.health.ny.gov/health_care/medicaid/"
+      }
+     ],
+     "related_categories": [
+      "Home Care",
+      "Hospice and Caregiver Support",
+      "Disability Services"
+     ]
+    },
+    {
+     "id": "nyia-assessment",
+     "q": "What is the NYIA (New York Independent Assessor) assessment?",
+     "a": [
+      "Before Medicaid approves personal care, CDPAP, or a Managed Long Term Care plan, you need an assessment from the New York Independent Assessor Program (NYIAP). It is run for the state by a company called Maximus.",
+      "There are two parts: a Community Health Assessment done by a registered nurse, and a clinical exam by an independent practitioner who does not already treat you. People who may need more than 12 hours of care a day on average also get a review by an Independent Review Panel.",
+      "To schedule, call the NYIAP Helpline at 1-855-222-8350 (TTY 1-888-329-1541). Hours are Monday to Friday, 8:30 AM to 8 PM, and Saturday, 10 AM to 6 PM."
+     ],
+     "keywords": "NYIA, NYIAP, independent assessor, Maximus, CHA, community health assessment, UAS, IPP, practitioner order, home care assessment, personal care assessment",
+     "sources": [
+      {
+       "label": "New York Independent Assessor Program (NYIAP)",
+       "url": "https://nyindependentassessor.com/en/home.html"
+      },
+      {
+       "label": "NY Department of Health: New York Independent Assessor Program",
+       "url": "https://www.health.ny.gov/health_care/medicaid/redesign/nyiap/"
+      }
+     ],
+     "related_categories": [
+      "Home Care",
+      "Disability Services"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Other health coverage",
+   "entries": [
+    {
+     "id": "essential-plan",
+     "q": "What is the Essential Plan?",
+     "a": [
+      "The Essential Plan is low-cost health insurance from NY State of Health for adults 19 to 64 who live in New York, are lawfully present, and are not eligible for Medicaid, Child Health Plus, or job-based coverage.",
+      "It has a $0 monthly premium and no deductible. It covers dental and vision, hospital care, prescriptions, and free preventive care. You can enroll any time of year.",
+      "Income limits changed on July 1, 2026. For 2026, the most you can make is $31,920 for one person, $43,280 for two, $54,640 for three, and $66,000 for four. People who earned a bit more (between 200% and 250% of the poverty level) lost the Essential Plan and may be able to buy a Qualified Health Plan with financial help instead.",
+      "Apply online at NY State of Health, call 1-855-355-5777 (TTY 1-800-662-1220), or get free help from a certified enrollment assistor."
+     ],
+     "keywords": "Essential Plan, EP, NY State of Health, marketplace, low cost insurance, $0 premium, 200% FPL, Basic Health Program, qualified health plan",
+     "sources": [
+      {
+       "label": "NY State of Health: Essential Plan Information",
+       "url": "https://info.nystateofhealth.ny.gov/EssentialPlan"
+      },
+      {
+       "label": "NY State of Health: Essential Plan changes due to federal rules",
+       "url": "https://info.nystateofhealth.ny.gov/news/information-essential-plan-enrollees-about-changes-due-federal-rules"
+      }
+     ],
+     "related_categories": [
+      "Medical"
+     ]
+    },
+    {
+     "id": "child-health-plus",
+     "q": "What is Child Health Plus?",
+     "a": [
+      "Child Health Plus is New York's health insurance for children under 19. Depending on family income, a child may get Children's Medicaid or Child Health Plus.",
+      "The monthly premium depends on household income and family size. Families with lower incomes pay no premium. There is no deductible and there are no co-pays.",
+      "You can enroll any time of year through NY State of Health, or call 1-800-698-4543 (1-800-698-4KIDS) to ask about Child Health Plus and Children's Medicaid."
+     ],
+     "keywords": "Child Health Plus, CHP, CHIP, kids insurance, children's Medicaid, children health insurance",
+     "sources": [
+      {
+       "label": "NY State of Health: Child Health Plus Information",
+       "url": "https://info.nystateofhealth.ny.gov/ChildHealthPlus"
+      },
+      {
+       "label": "NY Department of Health: Child Health Plus",
+       "url": "https://www.health.ny.gov/health_care/child_health_plus/"
+      },
+      {
+       "label": "NY Department of Health: New York State Medicaid",
+       "url": "https://www.health.ny.gov/health_care/medicaid/"
+      }
+     ],
+     "related_categories": [
+      "Medical",
+      "Pregnancy and Young Children",
+      "Youth Programs"
+     ]
+    },
+    {
+     "id": "va-health-care",
+     "q": "Can I get VA health care as a veteran?",
+     "a": [
+      "You may be eligible for VA health care if you served in the active military, naval or air service and did not get a dishonorable discharge.",
+      "If you enlisted after September 7, 1980, or entered active duty after October 16, 1981, you generally must have served 24 months in a row or the full period you were called to, with some exceptions (for example, a discharge for a service-related disability).",
+      "VA has expanded care to veterans exposed to toxins or other hazards, including those who served in the Vietnam War, Gulf War, Iraq, Afghanistan, or any combat zone after 9/11.",
+      "Getting or qualifying for Medicaid can place a veteran in a higher priority group. Apply online at VA.gov."
+     ],
+     "keywords": "VA, veterans, veteran health care, VA health benefits, toxic exposure, PACT Act, discharge, enroll VA",
+     "sources": [
+      {
+       "label": "VA: Eligibility for VA Health Care",
+       "url": "https://www.va.gov/health-care/eligibility/"
+      },
+      {
+       "label": "VA: How to Apply for VA Health Care",
+       "url": "https://www.va.gov/health-care/how-to-apply/"
+      }
+     ],
+     "related_categories": [
+      "Veterans",
+      "Medical"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Medicare",
+   "entries": [
+    {
+     "id": "medicare-who",
+     "q": "Who can get Medicare, and when does it start?",
+     "a": [
+      "Medicare is federal health insurance for people 65 or older who meet citizenship or residency rules. Some people under 65 can get it earlier because of a disability, End-Stage Renal Disease (ESRD, permanent kidney failure), or ALS (Lou Gehrig's disease).",
+      "Age 65: if you already get Social Security retirement or disability benefits before you turn 65, you usually get Medicare automatically. If not, you sign up through Social Security. Part A usually starts the month you turn 65.",
+      "Disability: Social Security automatically enrolls you in Medicare Parts A and B after you have received disability benefits (SSDI) for 2 years. With ALS, Medicare generally starts the first month you are eligible for disability benefits.",
+      "ESRD: Medicare usually starts on the first day of the fourth month of dialysis, at any age, if you meet the work history rules. It can start sooner if you do home dialysis training or get a kidney transplant.",
+      "SSI by itself does not qualify you for Medicare."
+     ],
+     "keywords": "Medicare eligibility, age 65, 24 months, disability Medicare, SSDI Medicare, ESRD, dialysis, kidney failure, ALS, Lou Gehrig, when does Medicare start",
+     "sources": [
+      {
+       "label": "Medicare.gov: Get started with Medicare",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare"
+      },
+      {
+       "label": "Medicare.gov: When does Medicare coverage start?",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start"
+      },
+      {
+       "label": "Social Security: Disability approval process (waiting period and Medicare)",
+       "url": "https://www.ssa.gov/benefits/disability/approval.html"
+      },
+      {
+       "label": "Medicare.gov: End-Stage Renal Disease (ESRD)",
+       "url": "https://www.medicare.gov/basics/end-stage-renal-disease"
+      },
+      {
+       "label": "Social Security: Sign up for Medicare",
+       "url": "https://www.ssa.gov/medicare/sign-up"
+      }
+     ],
+     "related_categories": [
+      "Medical",
+      "Senior Centers and Social"
+     ]
+    },
+    {
+     "id": "medicare-parts",
+     "q": "What are Medicare Parts A, B, C and D?",
+     "a": [
+      "Part A (hospital insurance) helps cover hospital stays, skilled nursing facility care, hospice, and some home health care.",
+      "Part B (medical insurance) helps cover doctors and other providers, medical equipment like wheelchairs and walkers, and many preventive services like screenings and shots. Part B has a monthly premium.",
+      "Part C is Medicare Advantage: a private plan approved by Medicare that bundles Parts A and B, and usually D. You may need to use the plan's network and get approval before some care. Many plans add extras like vision, hearing and dental.",
+      "Part D helps pay for prescription drugs. You get it from a private drug plan added to Original Medicare, or through a Medicare Advantage plan that includes drug coverage.",
+      "Original Medicare is Parts A and B. Medigap is extra insurance you can buy to help pay what Original Medicare does not, like the 20% coinsurance."
+     ],
+     "keywords": "Medicare Part A, Part B, Part C, Part D, Medicare Advantage, MA plan, Original Medicare, Medigap, supplement, drug plan, prescription coverage",
+     "sources": [
+      {
+       "label": "Medicare.gov: Parts of Medicare",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/medicare-basics/parts-of-medicare"
+      },
+      {
+       "label": "Social Security: Disability approval process (waiting period and Medicare)",
+       "url": "https://www.ssa.gov/benefits/disability/approval.html"
+      }
+     ],
+     "related_categories": [
+      "Medical"
+     ]
+    },
+    {
+     "id": "medicare-enrollment",
+     "q": "When can I sign up for Medicare or change my Medicare plan?",
+     "a": [
+      "Initial Enrollment Period: 7 months around your 65th birthday. It starts 3 months before the month you turn 65 and ends 3 months after it. Signing up late can mean a lifelong late penalty.",
+      "General Enrollment Period: January 1 to March 31 each year, if you missed your first chance. Coverage starts the month after you sign up. A Special Enrollment Period may let you sign up later without a penalty, for example within 8 months after job-based coverage ends.",
+      "Open Enrollment: October 15 to December 7 each year. You can join, switch or drop a Medicare Advantage or drug plan. Changes start January 1.",
+      "Medicare Advantage Open Enrollment: January 1 to March 31. If you are already in a Medicare Advantage plan, you can switch plans or go back to Original Medicare.",
+      "If you have Medicaid or get Extra Help, you may be able to change your drug coverage once a month."
+     ],
+     "keywords": "Medicare enrollment, open enrollment, annual enrollment, AEP, IEP, initial enrollment, general enrollment, special enrollment period, SEP, late penalty, sign up for Medicare",
+     "sources": [
+      {
+       "label": "Medicare.gov: When does Medicare coverage start?",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start"
+      },
+      {
+       "label": "Medicare.gov: Joining a plan",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/joining-a-plan"
+      },
+      {
+       "label": "Medicare.gov: Help with drug costs (Extra Help)",
+       "url": "https://www.medicare.gov/basics/costs/help/drug-costs"
+      }
+     ],
+     "related_categories": [
+      "Medical"
+     ]
+    },
+    {
+     "id": "medicare-savings-programs",
+     "q": "What is a Medicare Savings Program (QMB, SLMB, QI)?",
+     "a": [
+      "A Medicare Savings Program (MSP) uses Medicaid to help people with limited income pay Medicare costs. Every MSP pays the Part B premium, so it is no longer taken out of your Social Security check.",
+      "In New York there are two main levels. QMB (Qualified Medicare Beneficiary) also pays Part A premiums if you have them, plus Medicare deductibles and coinsurance. With QMB, Medicare providers are not allowed to bill you for Medicare cost-sharing. QI (Qualifying Individual) pays the Part B premium only.",
+      "For 2026 in New York, QMB is for incomes at or below $1,836 a month for one person ($2,489 for a couple). QI is for incomes below $2,474 a month ($3,355 for a couple). These limits change each year; check the current limits on the state's MSP page.",
+      "New York has no resource (savings) test for MSP. When you get an MSP, you also automatically get Extra Help with drug costs.",
+      "You may see \"SLMB\" on federal websites; New York's own MSP page lists QMB and QI. To apply, mail form DOH-4328 to your county Department of Social Services, or apply with NY State of Health. Questions: Medicaid Helpline, (800) 541-2831."
+     ],
+     "keywords": "MSP, Medicare Savings Program, QMB, SLMB, QI, Part B premium, Medicare premium help, DOH-4328, dual eligible, buy-in",
+     "sources": [
+      {
+       "label": "NY Department of Health: Medicare Savings Program",
+       "url": "https://www.health.ny.gov/health_care/medicaid/program/update/savingsprogram/"
+      },
+      {
+       "label": "NY Department of Health: Medicare Savings Programs 2026 income limits",
+       "url": "https://www.health.ny.gov/health_care/medicaid/program/update/savingsprogram/medicaresavingsprogram.htm"
+      },
+      {
+       "label": "Medicare.gov: Medicare Savings Programs",
+       "url": "https://www.medicare.gov/basics/costs/help/medicare-savings-programs"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Medical"
+     ]
+    },
+    {
+     "id": "extra-help",
+     "q": "What is Extra Help (the Part D Low-Income Subsidy)?",
+     "a": [
+      "Extra Help is a Medicare program that helps people with limited income and resources pay for Medicare drug coverage (Part D): premiums, deductibles and co-pays. While you have it, you also do not pay a Part D late penalty.",
+      "You get Extra Help automatically if you have a Medicare Savings Program or get SSI. Otherwise, you can apply through Social Security, and a free State Health Insurance Assistance Program counselor can help.",
+      "Medicare says people with a Medicare Savings Program, which includes Extra Help, pay no more than $12.65 for each covered drug in 2026. For 2027, Medicare lists Extra Help costs of up to $5.80 for each generic drug and $14.40 for each brand-name drug.",
+      "If you have Medicaid or get Extra Help, you may be able to change your drug plan once a month."
+     ],
+     "keywords": "Extra Help, LIS, low income subsidy, Part D help, drug costs, prescription help, LI NET",
+     "sources": [
+      {
+       "label": "Medicare.gov: Help with drug costs (Extra Help)",
+       "url": "https://www.medicare.gov/basics/costs/help/drug-costs"
+      },
+      {
+       "label": "Medicare.gov: Medicare Savings Programs",
+       "url": "https://www.medicare.gov/basics/costs/help/medicare-savings-programs"
+      },
+      {
+       "label": "Social Security: Apply for Medicare Part D Extra Help",
+       "url": "https://www.ssa.gov/medicare/part-d-extra-help"
+      }
+     ],
+     "related_categories": [
+      "Medical",
+      "Social Services"
+     ]
+    },
+    {
+     "id": "epic",
+     "q": "What is EPIC?",
+     "a": [
+      "EPIC (Elderly Pharmaceutical Insurance Coverage) is a New York State program that helps seniors pay their Medicare Part D drug costs. It pays after your Part D plan, and can also help with Part D premiums for people with lower incomes.",
+      "To join, you must live in New York, be 65 or older, have income below $75,000 (single) or $100,000 (married), be in or able to join a Medicare Part D plan, and not get full Medicaid.",
+      "You can apply any time of year, online or by mail or fax. No documents are needed; EPIC checks your information with Social Security and NYS Tax. EPIC phone: 1-800-332-3742."
+     ],
+     "keywords": "EPIC, elderly pharmaceutical, prescription help seniors, Part D help, drug coverage seniors, New York drug program",
+     "sources": [
+      {
+       "label": "NY Department of Health: EPIC Program",
+       "url": "https://www.health.ny.gov/health_care/epic/"
+      },
+      {
+       "label": "NY Department of Health: EPIC Eligibility Requirements",
+       "url": "https://www.health.ny.gov/health_care/epic/eligibility.htm"
+      },
+      {
+       "label": "NY Department of Health: Medicaid Excess Income (Spenddown) Program",
+       "url": "https://www.health.ny.gov/health_care/medicaid/excess_income.htm"
+      }
+     ],
+     "related_categories": [
+      "Senior Centers and Social",
+      "Medical"
+     ]
+    },
+    {
+     "id": "hiicap",
+     "q": "Where can I get free, unbiased help choosing a Medicare plan?",
+     "a": [
+      "Medicare points people to their State Health Insurance Assistance Program (SHIP) for free, personal counseling. SHIPs are not connected to any insurance company or health plan.",
+      "In New York, HIICAP (Health Insurance Information Counseling and Assistance Program) has more than 700 trained counselors at local offices for the aging. They can help with Medicare Advantage, Medigap, Medicare drug coverage, and other health insurance questions.",
+      "Call the HIICAP helpline at 1-800-701-0501, or call your county Office for the Aging. You can also call Medicare at 1-800-633-4227 (TTY 1-877-486-2048)."
+     ],
+     "keywords": "HIICAP, SHIP, Medicare counseling, free Medicare help, Office for the Aging, choose Medicare plan, insurance counselor",
+     "sources": [
+      {
+       "label": "NY Office for the Aging: HIICAP",
+       "url": "https://aging.ny.gov/health-insurance-information-counseling-and-assistance-program-hiicap"
+      },
+      {
+       "label": "Medicare.gov: Joining a plan",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/joining-a-plan"
+      }
+     ],
+     "related_categories": [
+      "Senior Centers and Social",
+      "Navigation and Advocacy"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Social Security, SSI and disability income",
+   "entries": [
+    {
+     "id": "ssi-ssdi-retirement",
+     "q": "What is the difference between SSI, SSDI and Social Security retirement?",
+     "a": [
+      "SSI (Supplemental Security Income) is for people who are 65 or older, blind, or disabled AND have very little income and resources. It does not depend on your work history. In New York, people who get SSI generally also get Medicaid.",
+      "SSDI (Social Security Disability Insurance) is for people with a disability who have worked and paid Social Security taxes long enough, generally 5 of the last 10 years. The amount depends on your past earnings. After 2 years on SSDI, you get Medicare.",
+      "Social Security retirement can start as early as age 62 if you worked and paid Social Security taxes for 10 years or more. Medicare is separate and generally starts at 65.",
+      "Many people get both SSI and Social Security benefits. It is possible to have both Medicare and Medicaid. If you have SSI and Medicare, you automatically get Extra Help with drug costs.",
+      "To apply or ask questions, call Social Security at 1-800-772-1213 (TTY 1-800-325-0778)."
+     ],
+     "keywords": "SSI vs SSDI, Social Security, disability benefits, retirement benefits, difference, Medicaid, Medicare, SSA",
+     "sources": [
+      {
+       "label": "Social Security: Supplemental Security Income (SSI)",
+       "url": "https://www.ssa.gov/ssi"
+      },
+      {
+       "label": "Social Security: Who can get Disability",
+       "url": "https://www.ssa.gov/disability/eligibility"
+      },
+      {
+       "label": "Social Security: Retirement benefits",
+       "url": "https://www.ssa.gov/retirement"
+      },
+      {
+       "label": "Social Security: Disability approval process (waiting period and Medicare)",
+       "url": "https://www.ssa.gov/benefits/disability/approval.html"
+      },
+      {
+       "label": "Social Security: SSI and Eligibility for Other Government and State Programs",
+       "url": "https://www.ssa.gov/ssi/text-other-ussi.htm"
+      },
+      {
+       "label": "NY OTDA: New York State Supplement Program (SSP)",
+       "url": "https://otda.ny.gov/programs/ssp/"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Disability Services",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "ssi",
+     "q": "Who can get SSI, and how much does it pay?",
+     "a": [
+      "SSI pays monthly benefits to adults and children who are blind, have a disability, or are 65 or older, and who have little or no income and resources.",
+      "Resources are things you own, like money in the bank. The limit is $2,000 for one person or $3,000 for a couple. Your home, one car used for transportation, and household goods do not count.",
+      "For 2026, the most the federal government pays is $994 a month for one person and $1,491 for an eligible couple. Other income lowers the payment. New York adds a State Supplement (SSP) for most SSI recipients, and people eligible for SSP automatically get Medicaid.",
+      "There is no online SSI application in New York; call Social Security at 1-800-772-1213 to make an appointment. You must report changes in income, resources and living situation every month."
+     ],
+     "keywords": "SSI, supplemental security income, SSI amount, SSI resource limit, $2000, state supplement, SSP, SSI apply",
+     "sources": [
+      {
+       "label": "Social Security: Supplemental Security Income (SSI)",
+       "url": "https://www.ssa.gov/ssi"
+      },
+      {
+       "label": "Social Security: Who can get SSI",
+       "url": "https://www.ssa.gov/ssi/eligibility"
+      },
+      {
+       "label": "Social Security: SSI Resources (2026 edition)",
+       "url": "https://www.ssa.gov/ssi/text-resources-ussi.htm"
+      },
+      {
+       "label": "Social Security: SSI Federal Payment Amounts for 2026",
+       "url": "https://www.ssa.gov/oact/cola/SSI.html"
+      },
+      {
+       "label": "NY OTDA: New York State Supplement Program (SSP)",
+       "url": "https://otda.ny.gov/programs/ssp/"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Disability Services"
+     ]
+    },
+    {
+     "id": "ssdi",
+     "q": "How does SSDI work, and how long is the wait?",
+     "a": [
+      "SSDI pays monthly benefits to people with a disability or blindness that will keep them from working for a year or more, or is expected to result in death, and who have enough work history.",
+      "If you are working, your earnings must be below a limit called \"substantial gainful activity.\" In 2026, that is $1,690 a month ($2,830 if you are blind).",
+      "There is a 5-month waiting period. Benefits generally start in the sixth full month after the date Social Security decides your disability began. There is no waiting period for ALS.",
+      "Medicare starts automatically after you have received SSDI for 2 years (sooner for ALS). Part A is free; Part B has a monthly premium.",
+      "You may be able to go back to work, or keep working, without losing your SSDI benefits. Ask Social Security about the work rules before you start a job, and report any work."
+     ],
+     "keywords": "SSDI, disability insurance, waiting period, 5 months, 24 months, SGA, substantial gainful activity, disability application, Medicare after disability",
+     "sources": [
+      {
+       "label": "Social Security: Disability",
+       "url": "https://www.ssa.gov/disability"
+      },
+      {
+       "label": "Social Security: Who can get Disability",
+       "url": "https://www.ssa.gov/disability/eligibility"
+      },
+      {
+       "label": "Social Security: Disability approval process (waiting period and Medicare)",
+       "url": "https://www.ssa.gov/benefits/disability/approval.html"
+      }
+     ],
+     "related_categories": [
+      "Disability Services",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "social-security-retirement",
+     "q": "When can I start Social Security retirement benefits?",
+     "a": [
+      "You can start retirement benefits as early as age 62 if you worked and paid Social Security taxes for 10 years or more.",
+      "If you start before your full retirement age, your monthly check is reduced a little for each month you start early. For people born in 1960 or later, full retirement age is 67, and starting at 62 lowers the check by about 30%.",
+      "If you wait past full retirement age, up to age 70, your monthly benefit goes up.",
+      "Medicare is separate. Most people sign up for Medicare Parts A and B when they are first eligible, usually at age 65."
+     ],
+     "keywords": "retirement, Social Security retirement, age 62, full retirement age, FRA, 67, early retirement, delayed retirement, age 70",
+     "sources": [
+      {
+       "label": "Social Security: Retirement benefits",
+       "url": "https://www.ssa.gov/retirement"
+      },
+      {
+       "label": "Social Security: Retirement Age and Benefit Reduction",
+       "url": "https://www.ssa.gov/benefits/retirement/planner/agereduction.html"
+      },
+      {
+       "label": "Medicare.gov: When can I sign up for Medicare?",
+       "url": "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-can-i-sign-up-for-medicare"
+      }
+     ],
+     "related_categories": [
+      "Senior Centers and Social"
+     ]
+    },
+    {
+     "id": "representative-payee",
+     "q": "What is a representative payee?",
+     "a": [
+      "A representative payee is a person or organization that Social Security picks to receive and manage Social Security or SSI payments for someone who cannot manage their own money.",
+      "Social Security usually looks for family or friends first. If none can do it, it looks for a qualified organization. You can also name up to three people ahead of time who could be your payee if you ever need one.",
+      "The payee manages the payments on the person's behalf. All payees must keep records of how the money is spent or saved, and many must file a yearly report.",
+      "If you are worried someone cannot manage their benefits, call Social Security at 1-800-772-1213 (TTY 1-800-325-0778)."
+     ],
+     "keywords": "representative payee, rep payee, payee, manage benefits, money management, SSI payee",
+     "sources": [
+      {
+       "label": "Social Security: Representative Payee Program",
+       "url": "https://www.ssa.gov/payee/"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Disability Services",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "able-accounts",
+     "q": "What is an ABLE account?",
+     "a": [
+      "An ABLE account is a tax-advantaged savings account for a person with a disability. The money can pay for disability-related costs like housing, transportation, health care and education.",
+      "Starting January 1, 2026, the disability must have begun before age 46 (it used to be age 26). People on SSI or SSDI because of a disability that started before 46 can qualify, and others can qualify with a signed disability certification.",
+      "For SSI, the first $100,000 in an ABLE account does not count toward the $2,000 resource limit. Medicaid continues even if the ABLE balance goes over that.",
+      "Anyone can put money in. The yearly contribution limit is $20,000 in 2026, and a person can have only one ABLE account."
+     ],
+     "keywords": "ABLE account, ABLE NY, disability savings, save money on SSI, resource limit, special needs savings",
+     "sources": [
+      {
+       "label": "Social Security: Spotlight on ABLE Accounts",
+       "url": "https://www.ssa.gov/ssi/spotlights/spot-able.html"
+      }
+     ],
+     "related_categories": [
+      "Disability Services",
+      "Legal Help"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Food, cash and utility help",
+   "entries": [
+    {
+     "id": "snap",
+     "q": "What is SNAP (food stamps), and what are the work rules?",
+     "a": [
+      "SNAP gives monthly benefits on an EBT card to buy food at approved stores. It helps low-income working people, older adults, people with disabilities and others. Eligibility depends on household size, income and other factors, and most households do not have a savings (resource) test.",
+      "Starting October 1, 2026, the most a household can get is $306 a month for one person and $1,023 for four people. Most households get less. Apply at myBenefits.ny.gov or at your county Department of Social Services. OTDA Hotline: 1-800-342-3009.",
+      "Work rules: adults 18 to 64 who are able to work and do not live with a child under 14 (called ABAWDs) can get SNAP for only 3 months in 3 years, unless they work, train or volunteer at least 80 hours a month. Many people are excused, for example people 65 or older, households with a child under 14, people who get disability benefits, and people who cannot work 80 hours a month because of a physical or mental health reason.",
+      "If you lost SNAP between June 1 and September 30, 2026 because of these work rules, the time limit reset on October 1, 2026 and you can reapply. Call your county DSS if you think you should be excused.",
+      "Tip: you can freeze your EBT card when you are not using it to help protect your benefits from theft."
+     ],
+     "keywords": "SNAP, food stamps, EBT, food benefits, ABAWD, work requirements, time limit, 80 hours, myBenefits, OTDA",
+     "sources": [
+      {
+       "label": "NY OTDA: Supplemental Nutrition Assistance Program (SNAP)",
+       "url": "https://otda.ny.gov/programs/snap/"
+      },
+      {
+       "label": "NY OTDA: SNAP Work Requirements",
+       "url": "https://otda.ny.gov/programs/snap/work-requirements.asp"
+      },
+      {
+       "label": "myBenefits.ny.gov (apply online for SNAP, HEAP and more)",
+       "url": "https://mybenefits.ny.gov/"
+      }
+     ],
+     "related_categories": [
+      "Food",
+      "Social Services"
+     ]
+    },
+    {
+     "id": "wic",
+     "q": "What is WIC?",
+     "a": [
+      "WIC (Women, Infants, and Children) is a free nutrition program. It gives money for healthy food and infant formula, plus pregnancy and breastfeeding support.",
+      "It is for people who are pregnant, people up to 6 months after giving birth (or 12 months if breastfeeding), and children under 5. Parents, grandparents, foster parents and other caregivers can apply for a child.",
+      "If you get SNAP, Medicaid, TANF (cash assistance), the Essential Plan, or Head Start, you may automatically qualify.",
+      "To apply, contact a local WIC office. Bring proof of ID, income and where you live."
+     ],
+     "keywords": "WIC, women infants children, formula, baby food, pregnancy nutrition, breastfeeding, breast pump",
+     "sources": [
+      {
+       "label": "NY Department of Health: WIC Program",
+       "url": "https://www.health.ny.gov/prevention/nutrition/wic/"
+      }
+     ],
+     "related_categories": [
+      "Food",
+      "Pregnancy and Young Children"
+     ]
+    },
+    {
+     "id": "temporary-assistance",
+     "q": "What is Temporary Assistance (cash assistance), and what about emergencies?",
+     "a": [
+      "Temporary Assistance (TA), also called Public Assistance, is cash help for people who cannot work, cannot find a job, or do not earn enough. It is run by your county Department of Social Services.",
+      "Family Assistance is for families with a minor child living with a parent or caretaker relative. Adults have a lifetime limit of 60 months. Safety Net Assistance is for people who do not qualify for Family Assistance; cash Safety Net is generally limited to 2 years in a lifetime, and after that help comes in non-cash form, such as payments made directly to a landlord or utility.",
+      "Emergency Assistance can help with an urgent need, like an eviction notice, a utility shut-off notice, no heating fuel in cold weather, or violence or threats from a partner or household member. You do not need to be on ongoing TA to get emergency help.",
+      "If you have an emergency, contact your county DSS as soon as possible. You should be interviewed and told the decision in writing the same day you apply."
+     ],
+     "keywords": "Temporary Assistance, TA, public assistance, PA, cash assistance, welfare, TANF, Family Assistance, Safety Net, emergency assistance, eviction, shut off notice",
+     "sources": [
+      {
+       "label": "NY OTDA: Temporary Assistance",
+       "url": "https://otda.ny.gov/programs/temporary-assistance/"
+      }
+     ],
+     "related_categories": [
+      "Rent, Utility and Emergency Help",
+      "Social Services"
+     ]
+    },
+    {
+     "id": "heap",
+     "q": "What is HEAP (help with heating bills)?",
+     "a": [
+      "The Home Energy Assistance Program (HEAP) helps eligible New Yorkers heat and cool their homes. You may qualify if your household income is under the limit, or if you get SNAP, Temporary Assistance, or SSI as a person living alone (Code A).",
+      "Regular HEAP gives one benefit per season. For 2026-2027, it is scheduled to open November 2, 2026. The base benefit is $990 (plus add-ons) for households that buy oil, kerosene or propane, and $400 (plus add-ons) for electric or gas heat.",
+      "Emergency HEAP (for 2026-2027, scheduled to open January 4, 2027) helps if your heat or electricity is shut off or about to be, or you are almost out of fuel. Call your county HEAP contact for an emergency.",
+      "Homeowners may also get help to repair or replace a broken furnace or boiler (up to $4,000 to repair, $8,000 to replace). Eligible households may get a \"clean and tune\" of their heating equipment (up to $500). Both opened October 1, 2026.",
+      "Apply at myBenefits.ny.gov or your county DSS. OTDA Hotline: 1-800-342-3009. The 2026-2027 income limits are on the OTDA HEAP page."
+     ],
+     "keywords": "HEAP, heating assistance, heat help, emergency HEAP, fuel oil, propane, utility shut off, furnace repair, clean and tune, cooling assistance, air conditioner",
+     "sources": [
+      {
+       "label": "NY OTDA: Home Energy Assistance Program (HEAP)",
+       "url": "https://otda.ny.gov/programs/heap/"
+      },
+      {
+       "label": "myBenefits.ny.gov (apply online for SNAP, HEAP and more)",
+       "url": "https://mybenefits.ny.gov/"
+      }
+     ],
+     "related_categories": [
+      "Rent, Utility and Emergency Help",
+      "Home Repair"
+     ]
+    },
+    {
+     "id": "liheap-vs-weatherization",
+     "q": "What is the difference between LIHEAP, HEAP and weatherization?",
+     "a": [
+      "LIHEAP is the federal program that funds help with home energy costs. It does not give grants directly to people, and it never charges a fee for a benefit. To get help with heating bills in New York, apply for HEAP (see the HEAP question).",
+      "HEAP helps pay heating bills, fuel and energy emergencies. Weatherization is different: it makes your home more energy efficient, so it costs less to heat and stays safer over time.",
+      "In New York, you are automatically eligible for weatherization if someone in your home gets SSI, Public Assistance, or HEAP. Otherwise, you may qualify if your household income is at or below 60% of the state median income.",
+      "Homeowners and renters pay nothing for weatherization services; owners of rental buildings must pay part of the cost. Priority goes to older adults, families with children, and people with disabilities. To apply, contact your local Weatherization Assistance Provider (the state office is at 518-474-5700)."
+     ],
+     "keywords": "LIHEAP, HEAP, weatherization, WAP, insulation, energy efficiency, lower heating bills, EmPower, home energy",
+     "sources": [
+      {
+       "label": "U.S. HHS: Low Income Home Energy Assistance Program (LIHEAP)",
+       "url": "https://www.acf.hhs.gov/ocs/programs/liheap"
+      },
+      {
+       "label": "U.S. Department of Energy: Weatherization Assistance Program",
+       "url": "https://www.energy.gov/scep/wap/weatherization-assistance-program"
+      },
+      {
+       "label": "NYS Homes and Community Renewal: Weatherization Applicants",
+       "url": "https://hcr.ny.gov/weatherization-applicants"
+      },
+      {
+       "label": "NY OTDA: Home Energy Assistance Program (HEAP)",
+       "url": "https://otda.ny.gov/programs/heap/"
+      }
+     ],
+     "related_categories": [
+      "Home Repair",
+      "Rent, Utility and Emergency Help"
+     ]
+    },
+    {
+     "id": "lifeline",
+     "q": "What is Lifeline (discount phone or internet)?",
+     "a": [
+      "Lifeline is a federal program that gives a monthly discount on phone, internet, or bundled service from participating companies. The discount is up to $9.25 a month (more on Tribal lands).",
+      "You qualify if your household income is at or below 135% of the federal poverty guidelines, or if someone gets SNAP, Medicaid, SSI, federal public housing assistance, or a Veterans Pension.",
+      "Only one Lifeline benefit is allowed per household. You must recertify every year.",
+      "Apply online through the National Verifier at lifelinesupport.org, by mail, or through a phone or internet company. For help or a paper form, call 1-800-234-9473. Survivors of domestic violence or human trafficking may get emergency Lifeline support for up to six months."
+     ],
+     "keywords": "Lifeline, free phone, Obama phone, discount phone, internet discount, cell phone, broadband, National Verifier",
+     "sources": [
+      {
+       "label": "FCC: Lifeline Support for Affordable Communications",
+       "url": "https://www.fcc.gov/lifeline-consumers"
+      },
+      {
+       "label": "Lifeline (USAC): check eligibility and apply",
+       "url": "https://www.lifelinesupport.org/"
+      }
+     ],
+     "related_categories": [
+      "Social Services",
+      "Libraries and Computers"
+     ]
+    },
+    {
+     "id": "child-care-assistance",
+     "q": "Can I get help paying for child care?",
+     "a": [
+      "Yes. New York's Child Care Assistance Program (CCAP), often called the child care subsidy, helps families on Temporary Assistance and other low-income families pay for child care so parents can work or become self-sufficient.",
+      "It is run by your county Department of Social Services and overseen by the state Office of Children and Family Services (OCFS). Families must meet eligibility rules and may have to pay part of the cost.",
+      "Families who qualify can also use family, friend or neighbor care, called legally-exempt care.",
+      "Apply online through the state's Child Care Assistance Application portal or contact your county DSS."
+     ],
+     "keywords": "child care subsidy, CCAP, daycare help, child care assistance, OCFS, legally exempt, babysitter pay",
+     "sources": [
+      {
+       "label": "NY OCFS: Child Care Assistance Program (CCAP)",
+       "url": "https://ocfs.ny.gov/programs/childcare/ccap/"
+      },
+      {
+       "label": "NY OCFS: Help Paying for Child Care",
+       "url": "https://ocfs.ny.gov/programs/childcare/ccap/help.php"
+      }
+     ],
+     "related_categories": [
+      "Child Care",
+      "Pregnancy and Young Children"
+     ]
+    },
+    {
+     "id": "fair-hearing",
+     "q": "What can I do if DSS denies or cuts my benefits? (Fair hearings)",
+     "a": [
+      "If you think a decision your county Department of Social Services made about your case is wrong, you can ask for a fair hearing. An Administrative Law Judge from the state Office of Temporary and Disability Assistance (OTDA) hears your side and issues a written decision. The decision can order the county to fix your case.",
+      "You can request a hearing online, by phone at 1-800-342-3334, by mail, or by fax.",
+      "If the county plans to cut or stop a benefit, send your request in the way and by the date described in your notice. This protects your right to \"aid continuing,\" which can keep your benefits the same until the hearing decision.",
+      "If you win and the county does not do what the decision says, you can file a compliance complaint with OTDA."
+     ],
+     "keywords": "fair hearing, appeal, denial, benefits cut, aid continuing, OTDA, administrative law judge, notice of intent",
+     "sources": [
+      {
+       "label": "NY OTDA: Fair Hearings",
+       "url": "https://otda.ny.gov/hearings/"
+      },
+      {
+       "label": "NY OTDA: Request a Fair Hearing",
+       "url": "https://otda.ny.gov/hearings/request/"
+      }
+     ],
+     "related_categories": [
+      "Legal Help",
+      "Social Services"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Housing",
+   "entries": [
+    {
+     "id": "section-8-vs-public-housing",
+     "q": "What is the difference between Section 8 and public housing, and how do waiting lists work?",
+     "a": [
+      "A Section 8 Housing Choice Voucher helps pay rent in a private apartment or house that you find. The housing agency pays part of the rent straight to the landlord. You usually pay about 30% of your adjusted monthly income, and up to 40% in some cases. You can sometimes move with your voucher.",
+      "Public housing is apartments or homes owned and run by a local housing authority. Your rent is usually based on 30% of your adjusted income, with a small minimum rent.",
+      "Both are for low-income households, including older adults and people with disabilities. You apply with your local housing agency. Demand is high, so you will usually go on a waiting list, and some lists close. For vouchers, you can apply to more than one waiting list, and you do not have to live in that area to apply.",
+      "For Warren, Washington and Saratoga Counties, New York State Homes and Community Renewal (HCR) lists JEM Inc. in Saratoga Springs, (518) 372-8846, as its local Section 8 administrator. You can apply online for open HCR waiting lists through the MyHousing Portal, or on paper with the local administrator.",
+      "While you wait, keep the housing agency up to date on your address, phone and household size, or you may be removed from the list."
+     ],
+     "keywords": "Section 8, housing choice voucher, HCV, public housing, housing authority, PHA, waiting list, waitlist, HUD, subsidized housing, rent help, HCR, MyHousing",
+     "sources": [
+      {
+       "label": "HUD: Housing Choice Voucher Tenants (Section 8)",
+       "url": "https://www.hud.gov/helping-americans/housing-choice-vouchers-tenants"
+      },
+      {
+       "label": "HUD: Public Housing Program",
+       "url": "https://www.hud.gov/helping-americans/public-housing"
+      },
+      {
+       "label": "NYS Homes and Community Renewal: Section 8 Housing Choice Voucher Program",
+       "url": "https://hcr.ny.gov/hcv"
+      }
+     ],
+     "related_categories": [
+      "Housing and Shelter"
+     ]
+    },
+    {
+     "id": "homeless-definition",
+     "q": "What does \"homeless\" mean for housing programs (HUD categories)?",
+     "a": [
+      "HUD-funded homeless programs use four categories.",
+      "Category 1, literally homeless: sleeping in a place not meant for people to live (like a car or outside), staying in a shelter or transitional housing, or leaving an institution (like a hospital or jail) after 90 days or less, if you were homeless right before you went in.",
+      "Category 2, imminent risk: you will lose your home within 14 days and have no other place or resources to get housing.",
+      "Category 3 covers some people who count as homeless under other federal laws. Category 4 covers people fleeing or trying to flee domestic violence, dating violence, sexual assault, stalking or human trafficking, who have no other safe place to live.",
+      "Which category you are in can affect which programs you qualify for. Tell the worker exactly where you slept last night and how long you have been there."
+     ],
+     "keywords": "homeless definition, literally homeless, category 1, category 2, imminent risk, HUD homeless, chronic homelessness, fleeing domestic violence",
+     "sources": [
+      {
+       "label": "HUD Exchange: Four Categories in the Homeless Definition",
+       "url": "https://www.hudexchange.info/homelessness-assistance/coc-esg-virtual-binders/coc-esg-homeless-eligibility/four-categories/"
+      },
+      {
+       "label": "HUD Exchange: Category 1, Literally Homeless",
+       "url": "https://www.hudexchange.info/homelessness-assistance/coc-esg-virtual-binders/coc-esg-homeless-eligibility/four-categories/category-1/"
+      },
+      {
+       "label": "HUD Exchange: Category 2, Imminent Risk of Homelessness",
+       "url": "https://www.hudexchange.info/homelessness-assistance/coc-esg-virtual-binders/coc-esg-homeless-eligibility/four-categories/category-2/"
+      },
+      {
+       "label": "HUD Exchange: Category 4, Fleeing Domestic Violence",
+       "url": "https://www.hudexchange.info/homelessness-assistance/coc-esg-virtual-binders/coc-esg-homeless-eligibility/four-categories/category-4/"
+      }
+     ],
+     "related_categories": [
+      "Housing and Shelter",
+      "Crisis Help"
+     ]
+    },
+    {
+     "id": "coordinated-entry",
+     "q": "What is coordinated entry for homeless services?",
+     "a": [
+      "Coordinated entry is the way a community (called a Continuum of Care) decides who gets referred to housing programs for people who are homeless. It is required for programs that get certain HUD homeless funding.",
+      "There are four steps: access (where you first connect), assessment (questions about your situation and needs), prioritization, and referral to housing and services.",
+      "Because there is not enough housing for everyone, people with the most serious needs and risks are usually prioritized first. Things that can raise priority include serious health problems, frequent use of emergency rooms, jails or psychiatric hospitals, and sleeping outside.",
+      "Coordinated entry should never stop anyone from getting emergency shelter. For help finding coordinated entry or shelter in our area, call 211."
+     ],
+     "keywords": "coordinated entry, CE, continuum of care, CoC, homeless assessment, VI-SPDAT, prioritization, housing referral, homeless services",
+     "sources": [
+      {
+       "label": "HUD Exchange FAQ: Coordinated entry (CE) process",
+       "url": "https://www.hudexchange.info/faqs/programs/continuum-of-care-coc-program/program-requirements/coordinated-entry/why-should-my-community-develop-a-ce-process-for-youth/"
+      },
+      {
+       "label": "HUD Exchange FAQ: How coordinated entry prioritization works",
+       "url": "https://www.hudexchange.info/faqs/programs/continuum-of-care-coc-program/program-requirements/coordinated-entry/how-does-prioritization-account-for-the-unique-experiences-and/"
+      },
+      {
+       "label": "211 Northeast New York",
+       "url": "https://www.211neny.org/"
+      }
+     ],
+     "related_categories": [
+      "Housing and Shelter",
+      "Crisis Help"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Disability, mental health and young children",
+   "entries": [
+    {
+     "id": "spoa",
+     "q": "What is SPOA (Single Point of Access)?",
+     "a": [
+      "SPOA (Single Point of Access) is the county process for referrals to high-intensity mental health services, such as intensive or supportive case management, residential (housing) programs, and Assertive Community Treatment (ACT) teams. The process is a little different in each county.",
+      "In Warren and Washington Counties, the Office of Community Services for Warren and Washington Counties runs SPOA. Adults must be over 18, have a serious mental illness, and need services because the illness makes it very hard to function in the community. Children and youth with a serious emotional disturbance have their own SPOA committee.",
+      "There, a referral needs the SPOA application, a signed release of information, and a psychosocial or psychiatric assessment. Residential programs need a few more forms.",
+      "For ACT, a referral can come from the person, a family member, a mental health agency, a hospital, police or a court.",
+      "In Saratoga County, SPOA is run by Saratoga County Mental Health. A provider or family fills out the adult or children's SPOA referral form from the county website and sends it with a signed release. Questions: call (518) 584-9030. Both SPOA offices are listed in this directory under Case Management."
+     ],
+     "keywords": "SPOA, single point of access, ACT, assertive community treatment, care management, mental health housing, residential, community residence, SMI, SED, county mental health",
+     "sources": [
+      {
+       "label": "Warren County: Single Point of Access (SPOA), Warren and Washington Counties",
+       "url": "https://www.warrencountyny.gov/mhcs/spoa"
+      },
+      {
+       "label": "NY Office of Mental Health: Assertive Community Treatment (ACT)",
+       "url": "https://omh.ny.gov/omhweb/act/index.html"
+      },
+      {
+       "label": "211 Northeast New York",
+       "url": "https://www.211neny.org/"
+      },
+      {
+       "label": "Saratoga County Mental Health",
+       "url": "https://www.saratogacountyny.gov/departments/mental-health/"
+      }
+     ],
+     "related_categories": [
+      "Mental Health",
+      "Housing and Shelter"
+     ]
+    },
+    {
+     "id": "opwdd-front-door",
+     "q": "How does someone get OPWDD services (the Front Door)?",
+     "a": [
+      "OPWDD (Office for People With Developmental Disabilities) serves people with developmental disabilities, such as intellectual disability. The disability must have started before age 22.",
+      "The \"Front Door\" is how OPWDD connects you to services. Step 1: call the OPWDD Infoline at 866-946-9733 and ask to be transferred to your local Front Door office. Step 2: OPWDD decides if you are eligible. Step 3: if you are, you start planning services with Front Door staff.",
+      "Eligibility usually needs a psychological report with IQ testing, an adaptive behavior assessment, a medical report and social evaluation from the past 12 months, and a history showing the disability began before age 22. A Care Coordination Organization (CCO) can help you through the process.",
+      "Being found eligible does not by itself give you most services. Many services also need Medicaid. If you are found not eligible, you may be able to ask for a fair hearing."
+     ],
+     "keywords": "OPWDD, front door, developmental disability, intellectual disability, IDD, autism, eligibility, CCO, care coordination, DD services",
+     "sources": [
+      {
+       "label": "OPWDD: Eligibility",
+       "url": "https://opwdd.ny.gov/eligibility"
+      },
+      {
+       "label": "OPWDD: The Front Door",
+       "url": "https://opwdd.ny.gov/get-started/front-door"
+      }
+     ],
+     "related_categories": [
+      "Disability Services"
+     ]
+    },
+    {
+     "id": "early-intervention-vs-cpse",
+     "q": "What is the difference between Early Intervention and CPSE?",
+     "a": [
+      "Early Intervention (EI) is for babies and toddlers under age 3 who have a disability or a developmental delay. It is run by the state Department of Health and your county. Services like speech, physical and occupational therapy can happen at home or child care. There is no cost to families.",
+      "To refer a child to EI, call your county Early Intervention program. The Growing Up Healthy Hotline, 1-800-522-5006, can give you the number.",
+      "CPSE (Committee on Preschool Special Education) is for children ages 3 to 5. It is part of your school district. If a child may need special education, a parent or professional can refer the child to the chairperson of the district's CPSE. The evaluation is at no cost to the family.",
+      "If your child is in EI, the EI service coordinator helps you plan the move to CPSE. The CPSE should decide eligibility by the child's third birthday so services can continue. Parents of eligible children can choose to move to preschool special education or stay in EI until the child ages out."
+     ],
+     "keywords": "Early Intervention, EI, CPSE, preschool special education, developmental delay, speech therapy, toddler, age 3 transition, IEP, SEIT, CSE",
+     "sources": [
+      {
+       "label": "NY Department of Health: Early Intervention Program",
+       "url": "https://www.health.ny.gov/community/infants_children/early_intervention/"
+      },
+      {
+       "label": "NY Department of Health: Early Help Makes a Difference!",
+       "url": "https://www.health.ny.gov/community/infants_children/early_intervention/early_help.htm"
+      },
+      {
+       "label": "NYSED: Information for Parents of Preschool Students with Disabilities Ages 3-5",
+       "url": "https://www.nysed.gov/special-education/information-parents-preschool-students-disabilities-ages-3-5"
+      },
+      {
+       "label": "NYSED: Preschool Transition Guide",
+       "url": "https://www.nysed.gov/special-education/preschool-transition-guide"
+      }
+     ],
+     "related_categories": [
+      "Pregnancy and Young Children",
+      "Disability Services",
+      "Youth Programs"
+     ]
+    },
+    {
+     "id": "hopeline",
+     "q": "Where can I get help for alcohol, drug or gambling problems?",
+     "a": [
+      "Call or text the New York State HOPEline any time, 24 hours a day, 7 days a week. Call 1-877-846-7369 (1-877-8-HOPENY) or text HOPENY (467369).",
+      "The HOPEline is free and confidential. It helps with substance use and gambling problems, and services are available regardless of ability to pay.",
+      "For a mental health or suicide crisis, call or text 988, the 988 Suicide & Crisis Lifeline. It is free, confidential and open 24/7."
+     ],
+     "keywords": "HOPEline, OASAS, addiction, substance use, drugs, alcohol, gambling, treatment, recovery, detox",
+     "sources": [
+      {
+       "label": "NY OASAS: HOPEline",
+       "url": "https://oasas.ny.gov/hopeline"
+      },
+      {
+       "label": "988 Suicide & Crisis Lifeline",
+       "url": "https://988lifeline.org/"
+      }
+     ],
+     "related_categories": [
+      "Substance Use and Recovery",
+      "Crisis Help"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Planning ahead and papers",
+   "entries": [
+    {
+     "id": "health-care-proxy-molst",
+     "q": "What is a health care proxy, and what is a MOLST?",
+     "a": [
+      "A health care proxy is a form where you name a health care agent: a person you trust to make medical decisions for you if you can no longer make them. The state says everyone over 18 should have one. You can download the New York Health Care Proxy form from the Department of Health.",
+      "Talk with your agent about what matters to you. Give copies to your agent, your doctor and your family, and keep one in your wallet.",
+      "A MOLST (Medical Orders for Life-Sustaining Treatment) is different. It is a medical order form signed by a doctor, nurse practitioner or physician assistant, for people with serious health conditions. It records choices like whether to have CPR or a breathing tube.",
+      "In New York, the MOLST is the only approved form for a do-not-resuscitate (DNR) and do-not-intubate (DNI) order outside the hospital. It travels with the patient to other care settings."
+     ],
+     "keywords": "health care proxy, health care agent, advance directive, living will, MOLST, DNR, DNI, end of life, CPR, medical decisions",
+     "sources": [
+      {
+       "label": "NY Department of Health: Choosing Your Health Care Agent",
+       "url": "https://www.health.ny.gov/professionals/patients/health_care_proxy/"
+      },
+      {
+       "label": "NY Department of Health: MOLST",
+       "url": "https://www.health.ny.gov/professionals/patients/patient_rights/molst/"
+      }
+     ],
+     "related_categories": [
+      "Hospice and Caregiver Support",
+      "Legal Help"
+     ]
+    },
+    {
+     "id": "ny-id",
+     "q": "How do I get a New York State ID card?",
+     "a": [
+      "Anyone of any age with lawful status in the U.S. can get a New York non-driver ID card. You must apply in person at a DMV office. You get a temporary paper document that day.",
+      "Bring a completed application (form MV-44), the fee, and proofs of identity. DMV uses a point system: your proofs of name must add up to at least 6 points, and you must show proof of your Social Security number, such as your card, or a letter saying you are not eligible for one.",
+      "If you are under 21, a parent or guardian can vouch for your identity by signing form MV-45 at the DMV and showing their own 6 points of proof.",
+      "Check the DMV's document list before you go, because some documents do not count for a REAL ID or Enhanced ID."
+     ],
+     "keywords": "non-driver ID, state ID, photo ID, DMV, identification, 6 points, MV-44, REAL ID, ID card, documents",
+     "sources": [
+      {
+       "label": "NY DMV: Get a Non-Driver ID",
+       "url": "https://dmv.ny.gov/non-driver-id/get-a-non-driver-id"
+      },
+      {
+       "label": "NY DMV: Form ID-44, How to Apply (proofs of identity)",
+       "url": "https://dmv.ny.gov/forms/id44.pdf"
+      }
+     ],
+     "related_categories": [
+      "IDs and Documents"
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Suggest a kind of help: Southern ADK Help</title>
+  <meta name="description" content="Tell us, anonymously, what kind of help you were looking for and couldn't find.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+  <script defer src="/js/nav.js"></script>
+  <script src="/js/turnstile.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&amp;onload=renderTurnstile" async defer></script>
+  <script defer src="/js/suggest.js"></script>
+</head>
+<body data-site-name="Southern ADK Help" data-domain="southernadkhelp.org" data-fallback="call 211 or search 211neny.org">
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <aside class="crisis" aria-label="Crisis help">
+    <div class="crisis-group">
+      <p class="crisis-title">In crisis?</p>
+      <ul class="crisis-list three">
+        <li><a href="tel:988"><strong>988</strong> Call</a></li>
+        <li><a href="sms:988"><strong>988</strong> Text</a></li>
+        <li class="wide-only"><a href="https://988lifeline.org/chat/"><strong>988</strong> Chat online</a></li>
+        <li><a href="tel:911"><strong>911</strong> Emergency</a></li>
+        <li class="wide-only crisis-note">Can't call from this computer? Dial 911 from any phone.</li>
+      </ul>
+    </div>
+    <div class="crisis-group">
+      <p class="crisis-title">Domestic violence, 24 hours:</p>
+      <ul class="crisis-list two">
+        <li><a href="tel:+15187939496"><span class="visually-hidden">Domestic violence hotline, </span><strong>(518) 793-9496</strong> Warren &amp; Washington</a></li>
+        <li><a href="tel:+15185848188"><span class="visually-hidden">Domestic violence hotline, </span><strong>(518) 584-8188</strong> Saratoga</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <header class="site-header">
+    <div class="header-row">
+      <div>
+        <p class="site-name"><a href="/" data-region="siteName">Southern ADK Help</a></p>
+        <p class="tagline" data-region="tagline">Free and low-cost help in Warren, Washington and Saratoga Counties, NY</p>
+      </div>
+      <a class="request-button" href="/request"><span class="rb-long">Run a program? </span><strong>Request a listing or a correction</strong></a>
+    </div>
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="/">Find help</a></li>
+        <li><a href="/learn">Learn</a></li>
+        <li><a href="/needs">Community needs</a></li>
+        <li><a href="/help">Ways to help</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <h1>Don't see the help you need?</h1>
+    <p class="lede">Tell us what kind of help you were looking for. We'll use it to add new categories and listings.</p>
+    <p><strong>This is anonymous.</strong> We don't ask for your name or contact information, so we can't write back. Please don't include names, ages, birth dates, phone numbers, emails or ID numbers.</p>
+    <p>Need help now? <span data-region="fallbackLinks">Call <a href="tel:211">211</a> or search <a href="https://www.211neny.org/">211neny.org</a></span>.</p>
+    <section aria-labelledby="suggest-heading" class="panel">
+      <h2 id="suggest-heading">What were you looking for?</h2>
+      <div id="suggest-summary" class="form-summary" role="alert" tabindex="-1" hidden></div>
+      <form id="suggest-form" class="request-form" novalidate>
+        <div class="field" data-field="looking_for">
+          <label for="looking_for">What kind of help? <span class="req">(required)</span></label>
+          <span class="hint" id="looking_for-hint">For example: "Help paying for hearing aids" or "A ride home after a medical test." Describe the need, not a person. Up to 500 characters.</span>
+          <textarea id="looking_for" name="looking_for" rows="4" maxlength="500" aria-describedby="looking_for-hint looking_for-err"></textarea>
+          <p class="error-text" id="looking_for-err" hidden></p>
+        </div>
+        <div class="field" data-field="county">
+          <label for="county">Which county? (optional)</label>
+          <select id="county" name="county" aria-describedby="county-err" data-region="countyOptions">
+            <option value="">Prefer not to say</option>
+            <option>Warren</option>
+            <option>Washington</option>
+            <option>Saratoga</option>
+            <option>Somewhere else</option>
+          </select>
+          <p class="error-text" id="county-err" hidden></p>
+        </div>
+        <div class="trap" aria-hidden="true">
+          <label for="nickname">Leave this empty</label>
+          <input id="nickname" name="nickname" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="cf-turnstile" data-sitekey="" data-action="suggest" data-size="flexible"></div>
+        <p><button type="submit" id="suggest-submit">Send anonymously</button></p>
+        <p id="suggest-status" class="note" role="status" aria-live="polite" tabindex="-1"></p>
+      </form>
+    </section>
+    <noscript><p class="noscript">This form needs JavaScript. You can also <span data-region="fallbackText">call 211 or search 211neny.org</span>.</p></noscript>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>A listing is not an endorsement.</strong> Details can change. Please call ahead to confirm.</p>
+    <p>Run a program that should be listed, or see something wrong? <a href="/request">Request a listing or a correction</a>.</p>
+  </footer>
+</body>
+</html>
