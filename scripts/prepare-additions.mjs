@@ -35,7 +35,7 @@ const listings = A.ADDITIONS.map((a) => {
     hours: a.hours ?? '', eligibility: a.eligibility ?? '', age_groups: a.ages ?? [], cost: a.cost ?? [],
     medicaid_plans: a.medicaid_plans ?? [], medicaid_notes: a.medicaid_notes ?? '', description,
     private_notes: `Added by research on ${today} (not on the original spreadsheet). Found on: ${a.src}. Not yet confirmed by phone.`,
-    status: a.status ?? 'Active', review_by: a.review_by ?? '', visibility: 'Public', last_verified: '',
+    status: a.status ?? 'Active', review_by: a.review_by ?? '', visibility: 'Public', last_verified: '', last_checked_online: today,
   };
   // confirm_office: the researcher confirmed the address is an office (rule 2), as the admin box does.
   const { value, errors, warnings } = validateListing({ ...input, confirm_office_address: a.confirm_office === true }, { categories, plans });

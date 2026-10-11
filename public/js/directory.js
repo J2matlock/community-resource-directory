@@ -88,7 +88,62 @@
     return isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   }
 
-  function listingUrl(id) { return location.origin + '/listing/' + id; }
+  // Two honest stamps: confirmed with the program itself, or checked online
+  // against its own website or an official source.
+  function checkedLine(l) {
+    if (l.last_verified) return 'Confirmed with the program: ' + formatDate(l.last_verified);
+    if (l.last_checked_online) return 'Checked online: ' + formatDate(l.last_checked_online);
+    return 'Not yet checked';
+  }
+
+  // Domestic violence listings use a neutral address ("h-…") everywhere, so
+  // browser history, shared links and QR codes don't name the program.
+  // Same formula as src/lib/neutral-id.js.
+  var DV = 'Domestic Violence';
+  function neutralId(id) {
+    var h = 0x811c9dc5;
+    for (var i = 0; i < id.length; i++) {
+      h ^= id.charCodeAt(i);
+      h = Math.imul(h, 0x01000193) >>> 0;
+    }
+    return 'h-' + h.toString(36);
+  }
+  function linkId(l) { return l.category === DV ? neutralId(l.id) : l.id; }
+  function findListing(idOrAlias) {
+    return data.listings.filter(function (x) { return x.id === idOrAlias || (x.category === DV && neutralId(x.id) === idOrAlias); })[0];
+  }
+  function listingUrl(l) { return location.origin + '/listing/' + linkId(l); }
+
+  // Plain characters only, so a text message stays in the cheap 160-character
+  // mode and shows correctly on flip phones (curly quotes and dashes force a
+  // long, split message and can show up as boxes).
+  function plainText(s) {
+    return String(s)
+      .replace(/[\u2018\u2019\u201A\u2032]/g, "'")
+      .replace(/[\u201C\u201D\u201E\u2033]/g, '"')
+      .replace(/[\u2010-\u2015\u2212]/g, '-')
+      .replace(/\u2026/g, '...')
+      .replace(/[\u00A0\u2007\u202F]/g, ' ')
+      .replace(/\u00B7/g, '-')
+      .replace(/[^\x00-\x7E\n]/g, '');
+  }
+
+  // What the Text button sends: short and plain. Domestic violence listings
+  // send only the number and hours, with no program name, because someone
+  // else may read the person's messages.
+  function textMessage(l) {
+    if (l.category === 'Domestic Violence') {
+      var safe = ['Number to call: ' + (l.phone || '211')];
+      if (l.hours) safe.push('Hours: ' + l.hours);
+      return plainText(safe.join('\n'));
+    }
+    var lines = [l.name];
+    if (l.phone) lines.push(l.phone);
+    if (l.address) lines.push(l.address);
+    if (l.hours) lines.push(l.hours);
+    if (l.website) lines.push(l.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''));
+    return plainText(lines.join('\n'));
+  }
 
   function shareText(l) {
     var lines = [l.name];
@@ -117,7 +172,11 @@
 
   function writeUrl() {
     var p = new URLSearchParams();
-    Object.keys(PARAMS).forEach(function (key) { if (state[key]) p.set(PARAMS[key], state[key]); });
+    var sensitive = isSensitive();
+    Object.keys(PARAMS).forEach(function (key) {
+      if (sensitive && (key === 'q' || key === 'category')) return;
+      if (state[key]) p.set(PARAMS[key], state[key]);
+    });
     var qs = p.toString();
     var url = '/' + (qs ? '?' + qs : '');
     if (location.pathname + location.search !== url) history.replaceState(null, '', url);
@@ -135,89 +194,47 @@
   }
 
   // ---------- search ----------
-  // Pass 1: every typed word must start a word in the listing ("rent" finds
-  // "rent" and "rental", not "parent"). Pass 2, only if pass 1 finds nothing:
-  // allow small typos, 1 letter off for short words and 2 for long ones
-  // ("dentst" finds "dentist"). Words nowhere close find nothing; 211 is shown.
-  var FIELD_WEIGHTS = { name: 3, tags: 2, category: 1.5, organization: 1, town: 1, description: 0.7, eligibility: 0.5 };
-  var wordIndex = [];
-  var lastSearchWasFuzzy = false;
-
-  function words(text) {
-    var s = String(text).toLowerCase();
-    if (s.normalize) s = s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
-    return s.split(/[^a-z0-9]+/).filter(Boolean);
-  }
-
-  function buildWordIndex() {
-    wordIndex = data.listings.map(function (l) {
-      return {
-        listing: l,
-        fields: Object.keys(FIELD_WEIGHTS).map(function (f) {
-          return [f, words(Array.isArray(l[f]) ? l[f].join(' ') : l[f])];
-        }),
-      };
-    });
-  }
-
-  // Edit distance with swapped neighbours counting as one edit.
-  function editDistance(a, b, max) {
-    if (Math.abs(a.length - b.length) > max) return max + 1;
-    var d = [];
-    for (var i = 0; i <= a.length; i++) { d.push([i]); }
-    for (var j = 1; j <= b.length; j++) d[0][j] = j;
-    for (i = 1; i <= a.length; i++) {
-      var rowMin = Infinity;
-      for (j = 1; j <= b.length; j++) {
-        var cost = a[i - 1] === b[j - 1] ? 0 : 1;
-        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
-        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
-        rowMin = Math.min(rowMin, d[i][j]);
-      }
-      if (rowMin > max) return max + 1;
-    }
-    return d[a.length][b.length];
-  }
-
-  function closeEnough(term, word) {
-    var max = term.length <= 3 ? 0 : term.length <= 6 ? 1 : 2;
-    if (max === 0) return false;
-    return [word, word.slice(0, term.length), word.slice(0, term.length + 1)].some(function (w) {
-      return editDistance(term, w, max) <= max;
-    });
-  }
-
-  function wordSearch(q, fuzzy) {
-    var terms = words(q);
-    if (!terms.length) return [];
-    var hits = [];
-    wordIndex.forEach(function (entry) {
-      var score = 0;
-      for (var t = 0; t < terms.length; t++) {
-        var term = terms[t];
-        var best = 0;
-        entry.fields.forEach(function (pair) {
-          var weight = FIELD_WEIGHTS[pair[0]];
-          if (pair[1].some(function (w) { return w.indexOf(term) === 0; })) best = Math.max(best, weight);
-          else if (fuzzy && pair[1].some(function (w) { return closeEnough(term, w); })) best = Math.max(best, weight * 0.6);
-        });
-        if (!best) return;
-        score += best;
-      }
-      hits.push({ listing: entry.listing, score: score });
-    });
-    hits.sort(function (a, b) { return b.score - a.score || a.listing.name.localeCompare(b.listing.name); });
-    return hits.map(function (h) { return h.listing; });
-  }
+  // The search itself lives in /js/search.js (everyday words from
+  // /content/words.json, ranking, typo tolerance), so it can be tested.
+  var engine = null;
+  var dictionary = null;
+  var lastSearch = { mode: 'all', notes: [], suggestions: [], safety: false };
 
   function searched() {
     var q = state.q.trim();
-    lastSearchWasFuzzy = false;
-    if (!q) return data.listings;
-    var exact = wordSearch(q, false);
-    if (exact.length) return exact;
-    lastSearchWasFuzzy = true;
-    return wordSearch(q, true);
+    if (!q) {
+      lastSearch = { mode: 'all', notes: [], suggestions: [], safety: false };
+      return data.listings;
+    }
+    if (!engine) { // search.js didn't load: plain text match
+      lastSearch = { mode: 'exact', notes: [], suggestions: [], safety: false };
+      var lower = q.toLowerCase();
+      return data.listings.filter(function (l) { return (l.name + ' ' + l.description + ' ' + l.tags.join(' ')).toLowerCase().indexOf(lower) !== -1; });
+    }
+    lastSearch = engine.search(q);
+    return lastSearch.results;
+  }
+
+  // A search or view about domestic violence: show the quick exit and keep the
+  // words out of the page address (and so out of browser history).
+  // Backup list in case search.js didn't load.
+  var DV_WORDS = /\b(abus|beat|hit|hurt|violen|domestic|dv|stalk|rape|assault|batter|restraining|protect|safe ?house|shelter|trafficking|threat|strangl|wellspring)/i;
+  function isSensitive() {
+    if (state.category === DV) return true;
+    if (state.q) {
+      if (!engine) { if (DV_WORDS.test(state.q)) return true; }
+      else {
+        var r = engine.search(state.q);
+        if (r.safety || (r.results[0] && r.results[0].category === DV)) return true;
+      }
+    }
+    if (!data) return false;
+    var single = singleListingId();
+    if (single) {
+      var l = findListing(single);
+      if (l && l.category === DV) return true;
+    }
+    return sharedListIds().some(function (id) { var x = findListing(id); return x && x.category === DV; });
   }
 
   // ---------- filtering ----------
@@ -298,7 +315,7 @@
     var emailValue = l.email ? el('a', { href: 'mailto:' + l.email }, l.email) : null;
     var medicaid = [l.medicaid_plans.join(', '), l.medicaid_notes].filter(Boolean).join('. ');
     var costs = l.cost.map(function (c) { return COST_LABELS[c] || c; }).join(', ');
-    var title = single ? l.name : el('a', { href: '/listing/' + l.id }, l.name);
+    var title = single ? l.name : el('a', { href: '/listing/' + linkId(l) }, l.name);
 
     var box = el('input', {
       type: 'checkbox', id: 'h-' + l.id, checked: handout.has(l.id),
@@ -324,12 +341,12 @@
         detail('Email', emailValue),
         detail('Serves', l.serves_counties.map(function (c) { return c === 'Regional' ? 'Whole region' : c + ' County'; }).join(', '))
       ),
-      el('p', { class: 'verified' }, l.last_verified ? 'Last verified: ' + formatDate(l.last_verified) : 'Not yet verified', ' · ',
-        el('a', { href: '/request?type=correction&listing=' + encodeURIComponent(l.name) + '&id=' + encodeURIComponent(l.id) }, 'Report a change', hidden(who))),
+      el('p', { class: 'verified' }, checkedLine(l), ' · ',
+        el('a', { href: l.category === DV ? '/request?type=correction' : '/request?type=correction&listing=' + encodeURIComponent(l.name) + '&id=' + encodeURIComponent(l.id) }, 'Report a change', hidden(who))),
       el('div', { class: 'actions' },
-        el('button', { type: 'button', onclick: function () { copy(shareText(l), copiedId, 'Copied the details'); } }, 'Copy details', hidden(who)),
+        el('button', { type: 'button', onclick: function () { copy(l.category === DV ? textMessage(l) : shareText(l), copiedId, 'Copied the details'); } }, 'Copy details', hidden(who)),
         el('button', { type: 'button', onclick: function () { textListing(l); } }, 'Text', hidden(' details' + who)),
-        el('button', { type: 'button', onclick: function () { copy(listingUrl(l.id), copiedId, 'Copied the link'); } }, 'Copy link', hidden(who)),
+        el('button', { type: 'button', onclick: function () { copy(listingUrl(l), copiedId, 'Copied the link'); } }, 'Copy link', hidden(who)),
         el('label', { for: 'h-' + l.id }, box, 'Add to handout', hidden(': ' + l.name)),
         el('span', { id: copiedId, class: 'copied', role: 'status' })
       )
@@ -342,7 +359,9 @@
     var list = $('results');
 
     if (single) {
-      var l = data.listings.filter(function (x) { return x.id === single; })[0];
+      var l = findListing(single);
+      // A DV listing opened by its old, named address: swap in the neutral one.
+      if (l && l.category === DV && single !== neutralId(l.id)) history.replaceState(null, '', '/listing/' + neutralId(l.id));
       $('finder').hidden = true;
       $('back-link').hidden = false;
       $('plan-note').hidden = true;
@@ -352,8 +371,10 @@
         setChildren(list, []);
         return;
       }
-      document.title = l.name + ': ' + SITE_NAME;
+      // Domestic violence listings get a neutral tab title (it shows in history).
+      document.title = l.category === 'Domestic Violence' ? 'Local help: ' + SITE_NAME : l.name + ': ' + SITE_NAME;
       $('page-title').textContent = l.name;
+      toggleQuickExit(l.category === 'Domestic Violence');
       $('result-status').textContent = '';
       setChildren(list, [el('li', {}, card(l, true))]);
       return;
@@ -361,9 +382,7 @@
 
     var shared = sharedListIds();
     if (shared.length) {
-      var byId = {};
-      data.listings.forEach(function (x) { byId[x.id] = x; });
-      var picked = shared.map(function (id) { return byId[id]; }).filter(Boolean);
+      var picked = shared.map(findListing).filter(Boolean);
       $('finder').hidden = true;
       $('back-link').hidden = false;
       $('plan-note').hidden = true;
@@ -382,15 +401,53 @@
     var items = results();
     var total = data.listings.length;
     var active = Object.keys(state).some(function (k) { return state[k]; });
-    $('result-status').textContent = items.length
-      ? 'Showing ' + items.length + ' of ' + total + ' resources' + (active ? ' that match' : '')
-        + (lastSearchWasFuzzy ? ' (closest matches for "' + state.q.trim() + '")' : '') + '.'
-      : 'No matches. Try fewer or different words, or clear the filters. Or call 211.';
+    var mode = lastSearch.mode;
+    $('result-status').textContent = !items.length
+      ? 'No matches. Try different words or pick a category below, or ' + HELP_LINE + '.'
+      : mode === 'unsure'
+        ? 'We\'re not sure what you meant by "' + state.q.trim() + '". These are guesses. Try a category below, or ' + HELP_LINE + '.'
+        : mode === 'partial'
+          ? 'Showing ' + items.length + ' resources that match some of your words.'
+          : 'Showing ' + items.length + ' of ' + total + ' resources' + (active ? ' that match' : '') + '.';
+    renderSearchHelp(items.length);
     $('plan-note').hidden = !state.plan;
     $('plan-note').textContent = state.plan
       ? 'Showing places known to take ' + state.plan + '. Some other places take Medicaid but haven\'t said which plans; search "medicaid" to see them. Always call to confirm.'
       : '';
     setChildren(list, items.map(function (x) { return el('li', {}, card(x, false)); }));
+  }
+
+  // Plain explainers ("DSS = your county's Department of Social Services") and,
+  // when the search wasn't understood, category suggestions to tap.
+  function renderSearchHelp(count) {
+    var notes = state.q.trim() ? lastSearch.notes : [];
+    setChildren($('search-note'), notes.map(function (n) { return el('p', {}, withPhoneLinks(n)); }));
+    $('search-note').hidden = !notes.length;
+    var suggest = (lastSearch.mode === 'unsure' || !count) && state.q.trim()
+      ? (lastSearch.suggestions.length ? lastSearch.suggestions : ['Food', 'Rent, Utility and Emergency Help', 'Housing and Shelter', 'Medical'])
+          .filter(function (c) { return data.categories.indexOf(c) !== -1; })
+      : [];
+    setChildren($('search-suggest'), suggest.length ? [
+      el('p', {}, lastSearch.suggestions.length ? 'Did you mean:' : 'Or try a category:'),
+      el('div', { class: 'suggest-buttons' }, suggest.map(function (c) {
+        return el('button', { type: 'button', class: 'secondary', onclick: function () { setState({ q: '', category: c }); $('result-status').focus(); } }, c);
+      })),
+    ] : []);
+    $('search-suggest').hidden = !suggest.length;
+    toggleQuickExit(isSensitive());
+  }
+
+  // Phone numbers inside a note become tap-to-call links (text stays text).
+  function withPhoneLinks(text) {
+    var parts = String(text).split(/(\(\d{3}\) \d{3}-\d{4}|1-\d{3}-\d{3}-\d{4}|\b988\b|\b911\b|\b211\b)/);
+    return parts.map(function (part, i) {
+      if (i % 2 === 0) return part ? document.createTextNode(part) : null;
+      return el('a', { href: 'tel:' + part.replace(/[^\d]/g, '') }, part);
+    });
+  }
+
+  function toggleQuickExit(on) {
+    if (window.SADKSafety) window.SADKSafety.show(on);
   }
 
   function renderFilterControls() {
@@ -404,6 +461,10 @@
   }
 
   function render() {
+    if (!$('search')) return; // page already emptied by "Leave this site"
+    // A domestic-violence view opened from a link: take the words out of the
+    // address so they don't stay in browser history.
+    if (isSensitive() && (location.search.indexOf('q=') !== -1 || location.search.indexOf('category=') !== -1)) writeUrl();
     renderFilterControls();
     updateCategories();
     renderList();
@@ -442,7 +503,7 @@
   }
 
   function textListing(l) {
-    location.href = 'sms:?&body=' + encodeURIComponent(shareText(l));
+    location.href = 'sms:?&body=' + encodeURIComponent(textMessage(l));
   }
 
   // ---------- handout ----------
@@ -486,8 +547,10 @@
   function shareHandout() {
     var chosen = data.listings.filter(function (l) { return handout.has(l.id); });
     if (!chosen.length) return;
-    var url = location.origin + '/?list=' + chosen.map(function (l) { return l.id; }).join(',');
-    var text = 'Resources from ' + SITE_NAME + ':\n' + chosen.map(function (l) { return '- ' + l.name + (l.phone ? ' ' + l.phone : ''); }).join('\n');
+    var url = location.origin + '/?list=' + chosen.map(linkId).join(',');
+    var text = 'Resources from ' + SITE_NAME + ':\n' + chosen.map(function (l) {
+      return l.category === DV ? '- Help line: ' + (l.phone || '211') : '- ' + l.name + (l.phone ? ' ' + l.phone : '');
+    }).join('\n');
     if (navigator.share) {
       navigator.share({ title: 'Resources from ' + SITE_NAME, text: text, url: url }).catch(function () { /* closed */ });
     } else {
@@ -508,7 +571,7 @@
       el('p', { class: 'sub' }, 'From ' + SITE_NAME + (SITE.domain ? ', ' + SITE.domain : '') + '. Printed ' + today + '.'),
       el('ol', {}, chosen.map(function (l) {
         return el('li', {},
-          qrCode(location.origin + '/listing/' + l.id, 'hq'),
+          qrCode(listingUrl(l), 'hq'),
           el('h2', {}, l.name, l.status !== 'Active' ? ' (' + l.status + ')' : ''),
           l.phone ? el('p', {}, 'Phone: ' + l.phone) : null,
           l.address ? el('p', {}, 'Address: ' + l.address) : null,
@@ -574,19 +637,24 @@
     if (!narrow.matches) $('browse').open = true;
     wireControls();
     readUrl();
+    // The everyday-words list is optional: search still works without it.
+    var words = fetch('/content/words.json', { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .catch(function () { return null; });
     fetch('/api/listings', { headers: { Accept: 'application/json' } })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
         if (res.headers.get('X-From-Offline-Copy')) showOfflineNote(res.headers.get('X-Saved-At'));
         return res.json();
       })
+      .then(function (json) { return words.then(function (w) { dictionary = w; return json; }); })
       .then(function (json) {
         data = json;
         fillSelect('f-county', data.counties.filter(function (c) { return c !== 'Regional'; }), function (c) { return c + ' County'; });
         fillSelect('f-plan', data.medicaid_plans.filter(function (p) { return p !== UNSPECIFIED_PLAN; }));
         fillSelect('f-cost', data.costs, function (c) { return COST_LABELS[c] || c; });
         fillSelect('f-age', data.age_groups);
-        buildWordIndex();
+        engine = window.SADKSearch ? window.SADKSearch.create(data.listings, dictionary) : null;
         buildCategories();
         render();
       })

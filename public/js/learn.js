@@ -28,6 +28,26 @@
     try { var url = new URL(u); return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : null; } catch (e) { return null; }
   }
 
+  // Safety answers (domestic violence, orders of protection, using the site
+  // safely) show the "Leave this site" button while one is open.
+  function updateQuickExit() {
+    if (window.SADKSafety) window.SADKSafety.show(!!list.querySelector('details.qa[data-safety][open]:not([hidden])'));
+  }
+
+  function forgetButton() {
+    var status = el('p', { class: 'note', role: 'status' });
+    var b = el('button', { type: 'button', class: 'secondary' }, 'Remove this site from this phone');
+    b.addEventListener('click', function () {
+      b.disabled = true;
+      var done = window.SADKSafety ? window.SADKSafety.forgetThisDevice() : Promise.resolve();
+      done.then(function () {
+        status.textContent = 'Done. This site\'s saved copy and lists are removed from this device. Also clear your browser history, and close this tab.';
+        b.disabled = false;
+      });
+    });
+    return el('div', { class: 'forget-device' }, b, status);
+  }
+
   function render(data) {
     while (list.firstChild) list.removeChild(list.firstChild);
     var tocList = el('ul');
@@ -38,6 +58,7 @@
       section.entries.forEach(function (e) {
         var body = el('div', { class: 'qa-body' });
         (e.a || []).forEach(function (p) { body.appendChild(el('p', {}, p)); });
+        if (e.action === 'forget-device') body.appendChild(forgetButton());
         var srcs = (e.sources || []).map(function (s) {
           var href = safeUrl(s.url);
           return href ? el('li', {}, el('a', { href: href, rel: 'noopener' }, s.label || href)) : null;
@@ -48,6 +69,7 @@
           body.appendChild(el('div', { class: 'sources' }, el('p', {}, 'Sources:'), ul));
         }
         var details = el('details', { class: 'qa', id: e.id }, el('summary', {}, e.q), body);
+        if (e.safety) { details.setAttribute('data-safety', ''); details.addEventListener('toggle', updateQuickExit); }
         wrap.appendChild(details);
         entries.push({ node: details, section: wrap, order: entries.length, q: (e.q || '').toLowerCase(), kw: String(e.keywords || '').toLowerCase(), text: [e.q, (e.a || []).join(' '), e.keywords || ''].join(' ').toLowerCase() });
       });
@@ -58,6 +80,7 @@
     if (data.updated) { note = el('p', { class: 'note' }, 'Last reviewed: ' + data.updated + '. Rules and amounts change; check the linked source.'); list.appendChild(note); }
     openFromHash();
     filter();
+    updateQuickExit();
   }
 
   // While searching, sort answers (and their sections) by how well they match;

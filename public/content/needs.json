@@ -316,7 +316,7 @@
    "summary": "Medicaid now covers more adult dental care, but there are too few dentists who take it, especially in Washington County.",
    "paragraphs": [
     "There are very few dentists in Washington County. The State Comptroller found it has 2.1 dentists for every 10,000 people, compared with 8.3 statewide. In rural areas, people told the Comptroller there is a shortage of dentists who accept Medicaid, and \"extreme wait times\" at the ones that do. The state's own Medicaid provider list shows only two dentists, at three offices in Cambridge, Fort Edward and Granville, with a Washington County office enrolled in regular (fee-for-service) Medicaid, as of October 2026.",
-    "Glens Falls Hospital's assessment notes that Warren and Washington Counties each have a federally designated dental shortage area. In Saratoga County, only 28 percent of people on Medicaid had a dental visit in 2023, lower than before the pandemic. Across the Capital Region, about half of residents on Medicaid (51 percent) said they had not had a routine dental visit in the past year.",
+    "Federal records, as of October 2026, show no county-wide dental shortage area in Warren, Washington or Saratoga County, even though Washington County has very few dentists. (A shortage area for people with low incomes in all three counties was withdrawn in 2012.) In Saratoga County, only 28 percent of people on Medicaid had a dental visit in 2023, lower than before the pandemic. Across the Capital Region, about half of residents on Medicaid (51 percent) said they had not had a routine dental visit in the past year.",
     "Coverage is better than it used to be. Since January 31, 2024, New York Medicaid covers more root canals, crowns, replacement dentures and implants when medically needed. But coverage only helps if people can find a dentist who will see them."
    ],
    "what_would_help": [
@@ -344,6 +344,10 @@
     {
      "label": "NYS Department of Health, Information for Medicaid dental providers (expanded coverage from Jan. 31, 2024)",
      "url": "https://www.health.ny.gov/health_care/medicaid/program/dental/provider/index.htm"
+    },
+    {
+     "label": "HRSA: Health workforce shortage areas data (checked October 2026)",
+     "url": "https://data.hrsa.gov/topics/health-workforce/shortage-areas"
     }
    ]
   },

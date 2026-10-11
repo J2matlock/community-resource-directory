@@ -5,7 +5,7 @@ import { COUNTIES } from '../lib/listing-rules.js';
 import { json, notFound, readJson } from '../http.js';
 import {
   UserError, listAllListings, getListing, getHistory, createListing, updateListing,
-  markVerified, setRetired, dueForRecheck, getManagedList, addListItem, renameListItem, deleteListItem,
+  markVerified, setRetired, dueForRecheck, notYetConfirmed, getManagedList, addListItem, renameListItem, deleteListItem,
   exportSheets, todayLocal, listRequests, markRequestHandled,
 } from '../db/admin.js';
 import { buildXlsx } from '../xlsx.js';
@@ -106,7 +106,7 @@ export async function handleAdminApi(request, env, url, admin) {
     }
 
     if (parts[0] === 'recheck' && parts.length === 1 && method === 'GET') {
-      return json({ listings: await dueForRecheck(db) });
+      return json({ listings: await dueForRecheck(db), unconfirmed: await notYetConfirmed(db) });
     }
 
     if (parts[0] === 'lists' && LIST_KINDS.includes(parts[1])) {

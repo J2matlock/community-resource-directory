@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler dev",
+    "dev": "wrangler dev --local-upstream localhost:8787",
     "deploy": "wrangler deploy",
     "test": "vitest run",
     "check": "vitest run && node scripts/privacy-check.mjs",
@@ -16,7 +16,8 @@
     "medicaid:report": "node scripts/medicaid-providers.mjs",
     "apply-region": "node scripts/apply-region.mjs",
     "publish:public": "node scripts/publish-public.mjs",
-    "link-check": "node scripts/link-check.mjs"
+    "link-check": "node scripts/link-check.mjs",
+    "search-check": "node scripts/search-check.mjs"
   },
   "devDependencies": {
     "@cloudflare/vitest-plugin": "1.3.7",

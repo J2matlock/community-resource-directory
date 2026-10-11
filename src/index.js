@@ -31,7 +31,21 @@ async function route(request, env, url, admin) {
 
   if (path === '/api/listings') {
     if (method !== 'GET' && method !== 'HEAD') return json({ error: 'Not allowed.' }, 405);
-    return json(await getPublicDirectory(env.DB));
+    // Kept for 60 seconds at Cloudflare, so a busy day reads the database
+    // about once a minute instead of on every visit (the free plan allows
+    // 5 million row reads a day). Admin edits show publicly within a minute.
+    const cache = typeof caches !== 'undefined' && env.SITE_PUBLIC === 'true' && env.PUBLIC_CACHE !== 'off' ? caches.default : null;
+    const key = new Request(new URL('/api/listings', url).toString());
+    // Browsers are told to check every time ("no-cache"): Cloudflare would
+    // otherwise stretch a short browser time to 4 hours. Only Cloudflare's
+    // own copy is kept, for 60 seconds.
+    const forBrowser = (r) => { const out = new Response(r.body, r); out.headers.set('Cache-Control', 'no-cache'); return out; };
+    const hit = cache ? await cache.match(key) : null;
+    if (hit) return forBrowser(hit);
+    const res = json(await getPublicDirectory(env.DB));
+    res.headers.set('Cache-Control', 'public, max-age=60');
+    if (cache) await cache.put(key, res.clone());
+    return forBrowser(res);
   }
 
   if (path === '/api/requests') {

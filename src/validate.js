@@ -123,7 +123,7 @@ export function validateListing(input, lists, opts = {}) {
   v.visibility = input.visibility ?? 'Public';
   if (!VISIBILITIES.includes(v.visibility)) errors.visibility = 'Choose Public or Internal.';
 
-  for (const f of ['review_by', 'last_verified']) {
+  for (const f of ['review_by', 'last_verified', 'last_checked_online']) {
     const s = input[f] ?? '';
     if (s !== '' && (typeof s !== 'string' || !DATE.test(s) || Number.isNaN(Date.parse(s)))) {
       errors[f] = 'Use a date like 2027-01-31.';

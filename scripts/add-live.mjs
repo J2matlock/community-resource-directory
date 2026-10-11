@@ -53,7 +53,7 @@ if (!toAdd.length) { console.log(`Nothing to add (${skipped} already there).`); 
 const q = (v) => `'${String(v ?? '').replace(/'/g, "''")}'`;
 const JSON_COLS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans'];
 const COLS = ['id', 'name', 'organization', 'category', ...JSON_COLS, 'phone', 'fax', 'email', 'website', 'address', 'town',
-  'hours', 'eligibility', 'medicaid_notes', 'description', 'private_notes', 'status', 'review_by', 'visibility', 'last_verified', 'retired'];
+  'hours', 'eligibility', 'medicaid_notes', 'description', 'private_notes', 'status', 'review_by', 'visibility', 'last_verified', 'last_checked_online', 'retired'];
 const who = q(`research import ${new Date().toISOString().slice(0, 10)}`);
 const sql = [
   ...newCats.map((c) => `INSERT OR IGNORE INTO categories (name) VALUES (${q(c)});`),

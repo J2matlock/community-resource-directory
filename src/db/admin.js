@@ -7,7 +7,7 @@ const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid
 export const EDITABLE_FIELDS = [
   'name', 'organization', 'category', 'tags', 'phone', 'fax', 'email', 'website', 'address', 'town',
   'serves_counties', 'hours', 'eligibility', 'age_groups', 'cost', 'medicaid_plans', 'medicaid_notes',
-  'description', 'private_notes', 'status', 'review_by', 'visibility', 'last_verified',
+  'description', 'private_notes', 'status', 'review_by', 'visibility', 'last_verified', 'last_checked_online',
 ];
 
 export class UserError extends Error {
@@ -156,16 +156,35 @@ export async function setRetired(db, id, retired, who) {
   return applyChanges(db, existing, { retired }, who);
 }
 
-// "Due for re-check": never verified, verified 11+ months ago, or past a review date.
+// "Due for re-check", in tiers sized for one volunteer. Life-safety and
+// basic-needs categories are checked every 3 months; everything else yearly.
+// A listing counts as checked by the later of its two dates (confirmed with
+// the program, or checked online). Past a "Re-check by" date always counts.
+export const RECHECK_MONTHS_FAST = 3;
+export const RECHECK_MONTHS = 12;
+export const FAST_RECHECK_CATEGORIES = ['Crisis Help', 'Domestic Violence', 'Housing and Shelter', 'Food', 'Rent, Utility and Emergency Help'];
+
+export function recheckDueDate(l) {
+  const checked = [l.last_verified, l.last_checked_online].filter(Boolean).sort().pop();
+  if (!checked) return '';
+  const d = new Date(`${checked}T12:00:00Z`);
+  d.setUTCMonth(d.getUTCMonth() + (FAST_RECHECK_CATEGORIES.includes(l.category) ? RECHECK_MONTHS_FAST : RECHECK_MONTHS));
+  return d.toISOString().slice(0, 10);
+}
+
 export async function dueForRecheck(db, today = todayLocal()) {
-  const elevenMonthsAgo = new Date(`${today}T12:00:00Z`);
-  elevenMonthsAgo.setUTCMonth(elevenMonthsAgo.getUTCMonth() - 11);
-  const cutoff = elevenMonthsAgo.toISOString().slice(0, 10);
-  const { results } = await db.prepare(
-    `SELECT * FROM listings
-     WHERE retired = 0 AND (last_verified = '' OR last_verified <= ? OR (review_by <> '' AND review_by <= ?))
-     ORDER BY CASE WHEN review_by <> '' AND review_by <= ? THEN 0 ELSE 1 END, last_verified, name COLLATE NOCASE`,
-  ).bind(cutoff, today, today).all();
+  const { results } = await db.prepare('SELECT * FROM listings WHERE retired = 0 ORDER BY name COLLATE NOCASE').all();
+  const all = results.map(parseRow).map((l) => ({ ...l, recheck_due: recheckDueDate(l) }));
+  const pastReview = (l) => l.review_by && l.review_by <= today;
+  const due = all.filter((l) => pastReview(l) || !l.recheck_due || l.recheck_due <= today);
+  due.sort((a, b) => (pastReview(b) - pastReview(a)) || (a.recheck_due || '').localeCompare(b.recheck_due || '') || a.name.localeCompare(b.name));
+  return due;
+}
+
+// Listings never confirmed with the program (by phone or email), oldest check first.
+export async function notYetConfirmed(db) {
+  const { results } = await db.prepare(`SELECT * FROM listings WHERE retired = 0 AND last_verified = ''
+    ORDER BY last_checked_online, name COLLATE NOCASE`).all();
   return results.map(parseRow);
 }
 

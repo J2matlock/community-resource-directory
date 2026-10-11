@@ -111,16 +111,27 @@ describe('Admin saves', () => {
     expect(history.map((h) => `${h.field}:${h.new_value}`)).toEqual(['retired:no', 'retired:yes']);
   });
 
-  it('"Due for re-check" lists unverified, old, and past-review listings', async () => {
-    const due = (await dueForRecheck(env.DB, '2026-12-01')).map((l) => l.id);
-    // Never verified (dental, internal), verified over 11 months ago (legal),
-    // review date passed (dental). Retired listings are left out.
-    expect(due).toContain('sample-dental-clinic');
-    expect(due).toContain('sample-legal-help');
-    expect(due).toContain('sample-internal-contacts');
+  it('"Due for re-check" uses tiers: food and shelter every 3 months, others yearly', async () => {
+    // Food pantry confirmed 2026-01-15 (due 2026-04-15); legal help confirmed
+    // 2025-09-01 (due 2026-09-01); dental never checked; review date 2026-11-01.
+    let due = (await dueForRecheck(env.DB, '2026-02-01')).map((l) => l.id);
+    expect(due).toContain('sample-dental-clinic'); // never checked
+    expect(due).toContain('sample-internal-contacts'); // never checked
     expect(due).not.toContain('sample-food-pantry');
+    expect(due).not.toContain('sample-legal-help');
     expect(due).not.toContain('sample-retired-shelter');
-    expect(due[0]).toBe('sample-dental-clinic');
+    due = (await dueForRecheck(env.DB, '2026-05-01')).map((l) => l.id);
+    expect(due).toContain('sample-food-pantry'); // 3-month tier
+    expect(due).not.toContain('sample-legal-help'); // yearly tier
+    due = (await dueForRecheck(env.DB, '2026-12-01')).map((l) => l.id);
+    expect(due).toContain('sample-legal-help');
+    expect(due[0]).toBe('sample-dental-clinic'); // past its re-check-by date comes first
+  });
+
+  it('a recent online check counts as checked', async () => {
+    await env.DB.prepare("UPDATE listings SET last_checked_online = '2026-01-20' WHERE id = 'sample-dental-clinic'").run();
+    const due = (await dueForRecheck(env.DB, '2026-02-01')).map((l) => l.id);
+    expect(due).not.toContain('sample-dental-clinic');
   });
 
   it('renaming a category updates its listings, with history', async () => {

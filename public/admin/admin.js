@@ -97,14 +97,30 @@ function badges(l) {
 // Display only: when a listing was last checked and whether a re-check is due
 // (same rule as the "Due for re-check" view: over 11 months, or a re-check
 // date that has passed). Words carry the meaning; colour only supports it.
+// Re-check tiers, the same rule as the server (src/db/admin.js): basic-needs
+// and safety categories every 3 months, everything else yearly.
+const FAST_RECHECK = ['Crisis Help', 'Domestic Violence', 'Housing and Shelter', 'Food', 'Rent, Utility and Emergency Help'];
+function recheckDue(l) {
+  const checked = [l.last_verified, l.last_checked_online].filter(Boolean).sort().pop();
+  if (!checked) return '';
+  const d = new Date(`${checked}T12:00:00Z`);
+  d.setUTCMonth(d.getUTCMonth() + (FAST_RECHECK.includes(l.category) ? 3 : 12));
+  return d.toISOString().slice(0, 10);
+}
+
+function checkedWords(l) {
+  if (l.last_verified) return `confirmed ${formatDate(l.last_verified)}`;
+  if (l.last_checked_online) return `checked online ${formatDate(l.last_checked_online)}`;
+  return 'never checked';
+}
+
 function verifiedState(l) {
   const today = new Date().toISOString().slice(0, 10);
-  const cutoff = new Date();
-  cutoff.setMonth(cutoff.getMonth() - 11);
   if (l.review_by && l.review_by <= today) return el('span', { class: 'state state-due' }, `Re-check due (${formatDate(l.review_by)})`);
-  if (!l.last_verified) return el('span', { class: 'state state-never' }, 'Not verified yet');
-  if (l.last_verified <= cutoff.toISOString().slice(0, 10)) return el('span', { class: 'state state-due' }, `Re-check due · verified ${formatDate(l.last_verified)}`);
-  return el('span', { class: 'state state-ok' }, `Verified ${formatDate(l.last_verified)}`);
+  const due = recheckDue(l);
+  if (!due) return el('span', { class: 'state state-never' }, 'Not checked yet');
+  if (due <= today) return el('span', { class: 'state state-due' }, `Re-check due · ${checkedWords(l)}`);
+  return el('span', { class: `state ${l.last_verified ? 'state-ok' : 'state-never'}` }, l.last_verified ? `Confirmed ${formatDate(l.last_verified)}` : `Checked online ${formatDate(l.last_checked_online)} · not yet confirmed`);
 }
 
 function emptyState(title, text) {
@@ -242,6 +258,7 @@ function readForm(form) {
     medicaid_notes: v('medicaid_notes'), description: v('description'), private_notes: v('private_notes'),
     status: v('status'), review_by: v('review_by'), visibility: form.querySelector('input[name="visibility"]:checked')?.value ?? 'Public',
     last_verified: v('last_verified'),
+    last_checked_online: v('last_checked_online'),
     confirm_office_address: form.elements.confirm_office_address?.checked === true,
   };
 }
@@ -292,7 +309,7 @@ const FIELD_LABELS = {
   fax: 'Fax', email: 'Email', website: 'Website', address: 'Office address', town: 'Town', serves_counties: 'Counties served',
   hours: 'Hours', eligibility: 'Who can get help', age_groups: 'Age groups', cost: 'Cost', medicaid_plans: 'Insurance accepted',
   medicaid_notes: 'Insurance notes', description: 'Description (public)', private_notes: 'Private notes', status: 'Status',
-  review_by: 'Re-check by', visibility: 'Visibility', last_verified: 'Last verified', retired: 'Retired',
+  review_by: 'Re-check by', visibility: 'Visibility', last_verified: 'Last confirmed with the program', last_checked_online: 'Last checked online', retired: 'Retired',
 };
 
 function whoChanged(by) {
@@ -368,7 +385,7 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
   const l = listing ?? {
     name: '', organization: '', category: lists.categories[0] ?? '', tags: [], phone: '', fax: '', email: '', website: '',
     address: '', town: '', serves_counties: [], hours: '', eligibility: '', age_groups: [], cost: [], medicaid_plans: [],
-    medicaid_notes: '', description: '', private_notes: '', status: 'Active', review_by: '', visibility: 'Public', last_verified: '',
+    medicaid_notes: '', description: '', private_notes: '', status: 'Active', review_by: '', visibility: 'Public', last_verified: '', last_checked_online: '',
     ...(prefill ?? {}),
   };
   document.title = `${id ? `Edit: ${l.name}` : 'Add a listing'}: Directory admin`;
@@ -421,7 +438,9 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
       el('div', { class: 'grid2' },
         selectField('status', 'Status', STATUSES, l.status),
         textField('review_by', 'Re-check by', 'date', 'Optional date to check this listing again.', l.review_by)),
-      textField('last_verified', 'Last verified', 'date', listing ? 'Or press "Verified today" in the bar at the bottom.' : 'The date you last confirmed the details.', l.last_verified)),
+      el('div', { class: 'grid2' },
+        textField('last_verified', 'Last confirmed with the program', 'date', listing ? 'By phone or email. Or press "Verified today" in the bar at the bottom.' : 'The date you last confirmed the details with them.', l.last_verified),
+        textField('last_checked_online', 'Last checked online', 'date', 'Checked against their website or an official source (research sets this).', l.last_checked_online))),
   );
 
   form.addEventListener('input', () => { dirty = true; });
@@ -507,14 +526,14 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
 async function viewRecheck() {
   setNav('recheck');
   document.title = 'Due for re-check: Directory admin';
-  const { listings } = await api('/recheck');
+  const { listings, unconfirmed } = await api('/recheck');
   const today = new Date().toISOString().slice(0, 10);
   const reason = (l) => {
     if (l.review_by && l.review_by <= today) return `Re-check date ${formatDate(l.review_by)} has passed`;
-    if (!l.last_verified) return 'Never verified';
-    return `Last verified ${formatDate(l.last_verified)}`;
+    if (!l.last_verified && !l.last_checked_online) return 'Never checked';
+    return checkedWords(l).replace(/^./, (c) => c.toUpperCase());
   };
-  const list = el('ul', { class: 'items' }, listings.map((l) => {
+  const item = (l) => {
     const li = el('li', { class: `item${l.visibility === 'Internal' ? ' is-internal' : ''}` },
       el('div', { class: 'item-main' },
         el('a', { class: 'item-name', href: `#/edit/${l.id}` }, l.name),
@@ -525,15 +544,20 @@ async function viewRecheck() {
         el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
           await api(`/listings/${encodeURIComponent(l.id)}/verify`, { method: 'POST' });
           li.remove();
-          toast(`${l.name}: verified today.`);
+          toast(`${l.name}: confirmed today.`);
         }) }, 'Verified today', el('span', { class: 'visually-hidden' }, `: ${l.name}`))));
     return li;
-  }));
+  };
+  const weekly = Math.max(1, Math.ceil(unconfirmed.length / 52));
   show(
     pageHead('Due for re-check'),
-    el('p', { class: 'lede' }, `${listings.length} listings were never verified, were last verified over 11 months ago, or have a re-check date that has passed. Call or email them, then press "Verified today" or edit the listing.`),
-    listings.length ? callSheetPanel(listings, reason) : null,
-    listings.length ? list : emptyState('All caught up', 'Every listing has been checked in the last 11 months.'),
+    el('p', { class: 'lede' }, `Due now: ${listings.length}. Food, shelter, rent help, crisis and domestic violence listings are re-checked every 3 months; everything else every 12 months, counted from the last check (by phone, or online by research). Call or email them, then press "Verified today" or edit the listing.`),
+    callSheetPanel(listings.length ? listings : unconfirmed, reason),
+    listings.length ? el('ul', { class: 'items' }, listings.map(item)) : emptyState('All caught up', 'Nothing is due for a re-check right now.'),
+    unconfirmed.length ? el('details', { class: 'unconfirmed' },
+      el('summary', {}, `Not yet confirmed with the program by phone or email (${unconfirmed.length})`),
+      el('p', { class: 'section-intro' }, `These were checked online but nobody has called them yet. About ${weekly} a week gets through all of them in a year. Oldest checks are first.`),
+      el('ul', { class: 'items' }, unconfirmed.map(item))) : null,
   );
 }
 

@@ -8,6 +8,7 @@ const PUBLIC_COLUMNS = [
   'id', 'name', 'organization', 'category', 'tags', 'phone', 'fax', 'email', 'website',
   'address', 'town', 'serves_counties', 'hours', 'eligibility', 'age_groups', 'cost',
   'medicaid_plans', 'medicaid_notes', 'description', 'status', 'review_by', 'last_verified',
+  'last_checked_online',
 ];
 
 const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans'];
@@ -59,10 +60,11 @@ export async function getPublicListing(db, id) {
   return row ? parsePublicRow(row) : null;
 }
 
-// Ids of every public listing, for the sitemap.
+// Id and category of every public listing, for the sitemap and for finding a
+// sensitive listing by its neutral address.
 export async function getPublicListingIds(db) {
-  const { results } = await db.prepare(`SELECT id FROM listings
+  const { results } = await db.prepare(`SELECT id, category FROM listings
     WHERE visibility = 'Public' AND retired = 0 ORDER BY id`).all();
-  return results.map((r) => r.id);
+  return results;
 }
 

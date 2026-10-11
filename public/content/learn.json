@@ -2012,7 +2012,8 @@
      "related_categories": [
       "Crisis Help",
       "Legal Help"
-     ]
+     ],
+     "safety": true
     },
     {
      "id": "domestic-violence-safety",
@@ -2047,6 +2048,30 @@
       "Crisis Help",
       "Legal Help",
       "Housing and Shelter"
+     ],
+     "safety": true
+    },
+    {
+     "id": "use-this-site-safely",
+     "q": "How can I use this site safely if someone checks my phone or computer?",
+     "a": [
+      "If someone may be watching what you do online, be careful. The \"Leave this site\" button (or pressing Esc twice) jumps to a weather page right away and replaces this page in the tab's history. It cannot erase the history of other pages you visited, and it cannot protect you from spying apps on your phone.",
+      "Safer choices: use a phone or computer the other person can't get to, like a library computer or a friend's phone. Use a private or incognito window, and close it when you're done. Don't add this site to your home screen.",
+      "This site can save a copy of itself on your phone so it works without a signal, and it remembers your handout list. Use the button below to remove everything this site saved on this device. Then also clear your browser history.",
+      "The domestic violence hotlines in the red bar answer 24 hours a day. You don't have to give your name. If you are in danger right now, call 911."
+     ],
+     "keywords": "safety, safe, privacy, history, delete history, clear history, incognito, private browsing, spyware, stalkerware, someone checks my phone, abuser, quick exit, leave site, hide",
+     "safety": true,
+     "action": "forget-device",
+     "sources": [
+      {
+       "label": "NNEDV Safety Net: Exit from this website quickly",
+       "url": "https://www.techsafety.org/exit-from-this-website-quickly"
+      },
+      {
+       "label": "NNEDV Safety Net: Technology safety plan",
+       "url": "https://www.techsafety.org/resources-survivors/technology-safety-plan"
+      }
      ]
     },
     {
@@ -2232,6 +2257,220 @@
      ],
      "related_categories": [
       "Legal Help"
+     ]
+    }
+   ]
+  },
+  {
+   "title": "Spot a scam",
+   "entries": [
+    {
+     "id": "scam-real-help-is-free",
+     "q": "Someone says they can get me benefits, a grant or money if I pay a fee first. Is it a scam?",
+     "a": [
+      "Be very careful. The Federal Trade Commission (FTC) says offers of free government grant money are scams, and honest businesses give you time to decide. As other questions in this section explain, there is no fee to get on a Section 8 waiting list, and no one can charge you a fee to renew Medicaid.",
+      "Warning signs: they ask for a fee up front. They tell you to pay with a gift card, a wire transfer (like Western Union or MoneyGram), a payment app or cryptocurrency. They rush you or say something bad will happen if you wait. They ask for personal details, like your Social Security number, bank account, EBT card PIN, or Medicaid or Medicare number.",
+      "What to do: stop and hang up, or don't answer the text or email. Don't click links. Call the office that runs the program yourself, using a number from your card, your letter or the agency's official website, such as your county Department of Social Services (DSS). Talk it over with someone you trust before you pay anyone.",
+      "If you already paid, call your bank, the gift card company or the wire company right away and ask them to stop or refund the payment. Then report the scam to the New York Attorney General at 1-800-771-7755 (ag.ny.gov) and to the FTC at ReportFraud.ftc.gov. Reporting helps stop scammers, even if you did not lose money."
+     ],
+     "keywords": "scam scams scammer fraud fake fee gift card wire transfer western union moneygram zelle cash app crypto grant free money government grant pin ebt pin medicaid number report scam attorney general ftc reportfraud con rip off ripoff",
+     "sources": [
+      {
+       "label": "FTC: How to avoid a scam",
+       "url": "https://consumer.ftc.gov/articles/how-avoid-scam"
+      },
+      {
+       "label": "FTC: Government grant scams",
+       "url": "https://consumer.ftc.gov/articles/government-grant-scams"
+      },
+      {
+       "label": "FTC: What to do if you were scammed",
+       "url": "https://consumer.ftc.gov/articles/what-do-if-you-were-scammed"
+      },
+      {
+       "label": "NY Attorney General: File a complaint",
+       "url": "https://ag.ny.gov/file-complaint"
+      }
+     ]
+    },
+    {
+     "id": "scam-section-8-rental",
+     "q": "How can I tell if a Section 8 waiting list website or an apartment ad is fake?",
+     "a": [
+      "Fake websites copy the look of Section 8 sign-up pages. They often show up at the top of web search results and may use the words \"Section 8\" or an Equal Housing Opportunity logo. They take a fee or your personal information, and you never get on a real list. There is no fee to get on a Section 8 waiting list. Housing authorities do not call or email you to suggest you join a list, and they never ask you to wire money or pay with a prepaid card.",
+      "To get on a real list, contact your local housing authority yourself. Use HUD's list of local housing agencies, not a search ad. New York State Homes and Community Renewal (HCR) also runs Section 8 through local offices in each county and takes applications for its open lists at its official MyHousing Portal, section8.hcr.ny.gov. HCR says it and its local offices will never ask a family to pay them directly for a deposit, rent or any other charge.",
+      "Rental ad scams: a fake landlord may offer low rent, say they can't show you the place, and rush you to pay an application fee, deposit or first month's rent by wire transfer, gift card or cryptocurrency. Never pay for a place you have not seen. Search the address online. If the same home shows up with a different owner's name, or is listed for sale, it is a red flag. Don't send your Social Security number or a copy of your license until you know the landlord is real.",
+      "If you paid a scammer, report it to the Federal Trade Commission (FTC) at ReportFraud.ftc.gov and to the New York Attorney General at 1-800-771-7755."
+     ],
+     "keywords": "section 8 sec 8 waitlist waiting list lottery fake website housing scam rental scam apartment ad craigslist facebook marketplace deposit landlord scam hcr voucher hud housing authority",
+     "sources": [
+      {
+       "label": "FTC: Section 8 scammers cheat people seeking housing",
+       "url": "https://consumer.ftc.gov/consumer-alerts/2015/06/section-8-scammers-cheat-people-seeking-housing"
+      },
+      {
+       "label": "FTC: Rental listing scams",
+       "url": "https://consumer.ftc.gov/articles/rental-listing-scams"
+      },
+      {
+       "label": "NYS Homes and Community Renewal: Section 8 Housing Choice Voucher program",
+       "url": "https://hcr.ny.gov/hcv"
+      },
+      {
+       "label": "HUD: Find your local public housing agency",
+       "url": "https://www.hud.gov/contactus/public-housing-contacts"
+      }
+     ]
+    },
+    {
+     "id": "scam-ebt-skimming-texts",
+     "q": "How do thieves steal EBT benefits, and how do I spot a skimmer or a fake EBT text?",
+     "a": [
+      "Thieves steal EBT benefits two main ways. Skimming: a fake cover (a \"skimmer\") is placed over a store's card reader or an ATM. It copies your card and PIN. Phishing: texts, emails or calls that look official and ask for your card number, PIN or login. New York State, county and EBT staff will never ask for your PIN. If anyone asks for it, assume it is a scam.",
+      "Check the card reader before you swipe. A skimmer may look loose, the wrong color, or a little different from the rest of the machine. It may cover lights or keypad numbers. The easiest check is to gently pull up on the reader; skimmers are flimsy and come right off. If something looks wrong, don't swipe. Tell the store manager, call the police, and tell your county DSS.",
+      "Protect your card with the free ebtEDGE app or ebtEDGE.com. Freeze your card when you are not using it, and unfreeze it at checkout. Block out-of-state and online purchases. Turn on account alerts. Change your PIN often, and cover the keypad when you type it.",
+      "If your benefits were stolen, call EBT Customer Service at 1-888-328-6399 right away to cancel the card and get a new one. Stolen SNAP benefits can no longer be replaced, because federal permission to replace them ended December 20, 2024, and New York stopped taking SNAP claims on October 1, 2025. Stolen cash assistance may still be replaced (see the question on SNAP renewals and stolen benefits).",
+      "New chip EBT cards, which are much harder to copy, are planned to start going out in early 2027. The state says cardholders will be told before their new card is sent."
+     ],
+     "keywords": "ebt skimming skimmer skimmed stolen snap stolen food stamps card cloning phishing text fake text ebtedge freeze card lock card change pin chip card benefits stolen otda",
+     "sources": [
+      {
+       "label": "NYS OTDA: EBT Scam Alert",
+       "url": "https://otda.ny.gov/workingfamilies/EBT-scam-alert.asp"
+      },
+      {
+       "label": "Governor Hochul: New chip-based benefit cards for SNAP recipients (July 2026)",
+       "url": "https://www.governor.ny.gov/news/governor-hochul-announces-new-chip-based-benefit-cards-snap-recipients-be-issued-early-2027"
+      }
+     ]
+    },
+    {
+     "id": "scam-utility-impostor",
+     "q": "Someone called saying they are from National Grid or NYSEG and will shut off my power today unless I pay now. What do I do?",
+     "a": [
+      "Hang up. This is a common scam. The caller ID may even say \"National Grid\" or show the company's real number; scammers can fake that (it is called \"spoofing\"). They often tell you to buy a prepaid card, like Green Dot or MoneyPak, and read them the numbers.",
+      "National Grid says it never demands payment with a prepaid debit card, never accepts those cards, and never threatens to shut you off right away. If it takes a payment by phone, you choose how to pay. A real utility sends written notices before any shutoff.",
+      "To check, call the utility yourself using the number on your bill or its official website, not a number the caller gave you. You can also ask the caller for the last five digits of your account number; a real National Grid worker will know it. Never give your account number, Social Security number or bank information to someone who calls you. If someone comes to your door, ask for a photo ID badge, and don't let them in without one.",
+      "If you paid a scammer, call your local police right away. You can also report it to the NYS Division of Consumer Protection at 1-800-697-1220 and to the Federal Trade Commission (FTC) at ReportFraud.ftc.gov. If you really are behind on your bill, see the question on shutoff protections for your rights and for help paying."
+     ],
+     "keywords": "national grid nyseg utility scam power company scam electric gas shutoff shut off disconnect phone call green dot moneypak prepaid card spoofing caller id fake utility worker door",
+     "sources": [
+      {
+       "label": "National Grid: National Grid warns customers of active scams (Jan. 2025)",
+       "url": "https://www.nationalgrid.com/news/national-grid-warns-customers-active-scams"
+      },
+      {
+       "label": "NYS Division of Consumer Protection and Dept. of Public Service: Scammers pretending to be from utility companies",
+       "url": "https://dos.ny.gov/news/nys-division-consumer-protection-and-nys-department-public-service-alerts-consumers-scammers"
+      },
+      {
+       "label": "NYSEG: Warning about scam attempts",
+       "url": "https://www.nyseg.com/w/nyseg-and-rge-warns-customers-of-new-surge-in-scam-attempts"
+      }
+     ]
+    },
+    {
+     "id": "scam-medicare-medicaid",
+     "q": "How do I spot a Medicare or Medicaid scam, like a call about a new card or free medical equipment?",
+     "a": [
+      "Medicare will never call you to sell you anything or come to your home. It only calls in a few cases, like when you asked for a call back. Don't join a Medicare plan over the phone unless you made the call. Give your Medicare number only to your doctor or people you know should have it, like your insurance plan or HIICAP (New York's free Medicare counseling program).",
+      "Common Medicare scams: a caller, a booth at a health fair or someone at your door offers \"free\" medical care, such as a genetic test or cheek swab, and asks for your Medicare number. Then they bill Medicare for things you didn't need, or use your number for identity theft. If a test kit or equipment you didn't order comes in the mail, refuse it or send it back. Only a doctor you know and trust should order tests or services for you.",
+      "Medicaid scams: callers may say you will lose your Medicaid unless you pay to renew. No one can ever charge a fee to renew Medicaid, Child Health Plus or the Essential Plan. Government agencies will not threaten you, demand money, or ask for credit card information by text, email or phone. If you're not sure, call your county DSS Medicaid office or NY State of Health at 1-855-355-5777.",
+      "Read your Medicare Summary Notice or plan statement and look for services you never got. To report Medicare fraud, call 1-800-MEDICARE (1-800-633-4227). New York's Senior Medicare Patrol, run by the StateWide Senior Action Council, gives free help spotting and reporting fraud at 1-800-333-4374. For free, unbiased help with Medicare questions, call HIICAP at 1-800-701-0501."
+     ],
+     "keywords": "medicare scam medicaid scam medicare card new card renewal scam back brace knee brace genetic test dna cheek swab medical equipment dme senior medicare patrol smp statewide hiicap 1-800-medicare fraud",
+     "sources": [
+      {
+       "label": "Medicare.gov: Reporting Medicare fraud and abuse",
+       "url": "https://www.medicare.gov/basics/reporting-medicare-fraud-and-abuse"
+      },
+      {
+       "label": "HHS Office of Inspector General: Genetic testing scam",
+       "url": "https://oig.hhs.gov/fraud/consumer-alerts/fraud-alert-genetic-testing-scam/"
+      },
+      {
+       "label": "NY State of Health: Health insurance scam alert",
+       "url": "https://info.nystateofhealth.ny.gov/health-insurance-scam-alert-flyer"
+      },
+      {
+       "label": "NY StateWide Senior Action Council (Senior Medicare Patrol)",
+       "url": "https://www.nysenior.org/"
+      }
+     ]
+    },
+    {
+     "id": "scam-addiction-treatment-brokers",
+     "q": "Someone online or on a hotline wants to send me or my family member to rehab in another state. Can I trust them?",
+     "a": [
+      "Be careful. Some people, called \"patient brokers\" or \"body brokers,\" get paid by addiction treatment programs outside New York for every person they send there. The care can cost more and be lower quality than care in New York.",
+      "New York passed a law in 2018 that bans paying or taking a fee in exchange for sending someone to a particular addiction treatment program. The law also protects people who refer someone in good faith without being paid.",
+      "To find real help, call or text New York's free 24/7 HOPEline: call 1-877-8-HOPENY (1-877-846-7369) or text HOPENY (467369). To check that a program is certified by the state, use the state Office of Addiction Services and Supports (OASAS) Provider and Program Search at findaddictiontreatment.ny.gov.",
+      "If someone has approached you, or you think a referral was fraud, report it to the NYS Office of Addiction Services and Supports (OASAS) at 1-800-553-5790 or StopTreatmentFraud@oasas.ny.gov."
+     ],
+     "keywords": "rehab scam patient broker body broker addiction treatment fraud out of state rehab florida rehab hotline detox scam drug treatment alcohol treatment oasas stop treatment fraud hopeline certified program",
+     "sources": [
+      {
+       "label": "OASAS: Stop Treatment Fraud",
+       "url": "https://oasas.ny.gov/treatment/stop-treatment-fraud"
+      },
+      {
+       "label": "OASAS: Treatment (HOPEline and provider search)",
+       "url": "https://oasas.ny.gov/treatment"
+      },
+      {
+       "label": "NYS Assembly: Legislation banning patient brokering signed into law (Aug. 2018)",
+       "url": "https://www.assembly.ny.gov/mem/Linda-B-Rosenthal/story/83452"
+      }
+     ]
+    },
+    {
+     "id": "scam-social-security-irs",
+     "q": "A caller says they are from Social Security or the IRS and I will be arrested or lose my benefits. Is it real?",
+     "a": [
+      "No. These are some of the most common scams. The caller may use a real employee's name, fake the caller ID, or send a picture of a badge. They may say your Social Security number will be suspended, that you owe money, or that you must move your money to a \"safe\" account. They tell you to pay with gift cards, prepaid debit cards, wire transfers, cryptocurrency, gold or cash. Real agencies don't do this.",
+      "The IRS usually contacts people by mail first. It does not call to demand payment right away with a gift card, prepaid card or wire transfer. It does not demand payment without giving you a chance to question or appeal what you owe.",
+      "What to do: hang up or ignore the message. Don't click links. If you want to check, call Social Security or the IRS yourself at a number from their official website or from a letter you got. Report Social Security scams to the Social Security Office of the Inspector General at oig.ssa.gov/report. For help reporting in another language, call the Federal Trade Commission (FTC) at 1-877-382-4357 and press 3.",
+      "If you gave a scammer money or personal information, it is not your fault. Call your local police. Go to IdentityTheft.gov for a recovery plan, and ask the credit bureaus (Equifax, Experian, TransUnion) to put a fraud alert on your credit report. Creating your own my Social Security account at ssa.gov/myaccount can help stop someone else from changing your address or direct deposit."
+     ],
+     "keywords": "social security scam ssa scam irs scam tax scam suspended social security number arrest warrant gift card government impostor imposter spoofing identity theft oig",
+     "sources": [
+      {
+       "label": "Social Security Administration: Protect yourself from scams",
+       "url": "https://www.ssa.gov/scam/"
+      },
+      {
+       "label": "IRS: How to know it's really the IRS calling or knocking on your door",
+       "url": "https://www.irs.gov/newsroom/how-to-know-its-really-the-irs-calling-or-knocking-on-your-door"
+      },
+      {
+       "label": "FTC: Avoiding and reporting gift card scams",
+       "url": "https://consumer.ftc.gov/articles/avoiding-and-reporting-gift-card-scams"
+      }
+     ]
+    },
+    {
+     "id": "scam-debt-relief-credit-repair",
+     "q": "A company says it can wipe out my debt or fix my credit fast. Is it safe?",
+     "a": [
+      "Be very careful. The Federal Trade Commission (FTC) says no one can legally remove information from your credit report if it is correct and current. It is illegal for credit repair companies to lie about what they can do or to charge you before they help you. If a company asks for money first, or offers a \"new credit identity,\" it is a scam, and using a number that isn't yours to get credit can get you in legal trouble.",
+      "Debt settlement companies say they can get your creditors to take less than you owe. This is risky. They often tell you to stop paying your bills, which can lead to more late fees, calls from debt collectors and a lower credit score. By law, a debt settlement company can't collect its fee until it actually settles a debt.",
+      "You can do a lot for free. Call the people you owe and ask for a payment plan you can afford. You can check your credit reports for free at AnnualCreditReport.com, and disputing mistakes on your report is free. For mortgage or housing trouble, a HUD-approved housing counselor can help for free; call 1-800-569-4287 to find one.",
+      "Before you sign up with any company, check it with the New York Attorney General at 1-800-771-7755. If you are being sued or a debt collector is calling, see the question on debt collectors. A free legal aid office can help with your situation."
+     ],
+     "keywords": "debt relief debt settlement credit repair fix my credit credit score consolidation scam student loan forgiveness scam new credit identity cpn upfront fee annualcreditreport",
+     "sources": [
+      {
+       "label": "FTC: How to get out of debt",
+       "url": "https://consumer.ftc.gov/articles/how-get-out-debt"
+      },
+      {
+       "label": "FTC: Fixing your credit FAQs",
+       "url": "https://consumer.ftc.gov/articles/fixing-your-credit-faqs"
+      },
+      {
+       "label": "NY Attorney General: File a complaint",
+       "url": "https://ag.ny.gov/file-complaint"
+      }
      ]
     }
    ]

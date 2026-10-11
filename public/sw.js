@@ -6,11 +6,11 @@
 // - Fresh copies come first (network first); the saved copy is only used when
 //   the network fails, and the page says so.
 
-const VERSION = 'sadk-v3';
+const VERSION = 'sadk-v4';
 const SHELL = [
   '/', '/learn', '/help', '/about', '/needs', '/suggest', '/request',
-  '/css/site.css', '/js/nav.js', '/js/directory.js', '/js/learn.js', '/js/help.js', '/js/qr.js',
-  '/content/learn.json', '/content/help.json', '/content/needs.json',
+  '/css/site.css', '/js/nav.js', '/js/directory.js', '/js/search.js', '/js/safety.js', '/js/learn.js', '/js/help.js', '/js/qr.js',
+  '/content/learn.json', '/content/help.json', '/content/needs.json', '/content/words.json',
   '/api/listings', '/favicon.svg', '/manifest.webmanifest', '/icons/icon-192.png',
 ];
 

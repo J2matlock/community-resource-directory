@@ -526,3 +526,35 @@ main p, main li { overflow-wrap: break-word; }
 .site-notice.urgent strong { color: #8c1c13; }
 @media print { .site-notice { background: none; border: 1px solid #000; } }
 .offline-note { background: #fdf3d8; border-left: 5px solid #b8860b; border-radius: var(--radius); padding: 0.6rem 0.9rem; font-weight: 600; }
+
+/* Search help: plain explainers ("DSS = …") and "Did you mean" categories. */
+.search-note { background: var(--sage); border-radius: var(--radius); padding: 0.55rem 0.85rem; margin: 0.25rem 0 0.75rem; }
+.search-note p { margin: 0.15rem 0; }
+.search-suggest { margin: 0.25rem 0 1rem; }
+.search-suggest p { margin: 0 0 0.35rem; font-weight: 600; }
+.suggest-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+/* "Leave this site" quick exit: fixed at the bottom right, above the handout bar. */
+.quick-exit {
+  position: fixed; right: 0.75rem; bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px)); z-index: 20;
+  display: inline-flex; align-items: center; min-height: 48px; padding: 0.5rem 1.1rem;
+  background: var(--crisis-bg); color: #ffffff; border: 2px solid #ffffff; border-radius: 999px;
+  font-weight: 700; text-decoration: none; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+.quick-exit:hover, .quick-exit:focus-visible { color: #ffffff; text-decoration: underline; }
+.quick-exit:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+body.has-quick-exit:has(.handout-bar:not([hidden])) .quick-exit { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
+body.has-quick-exit { padding-bottom: 4.5rem; }
+@media print { .quick-exit { display: none !important; } }
+.quick-exit[hidden] { display: none; }
+
+/* Small phones: get the search box onto the first screen. The provider
+   button moves to the footer (it's there already); the hills get shorter. */
+@media (max-width: 30rem) {
+  .site-header .request-button { display: none; }
+  .site-header .tagline { margin-bottom: 0.5rem; }
+}
+@media (max-width: 25rem) {
+  .site-header { padding-bottom: calc(0.4rem + 22px); background-size: 100% 22px; }
+  .site-header + main { padding-top: 0.75rem; }
+}

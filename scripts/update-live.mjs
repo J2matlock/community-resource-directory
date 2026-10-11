@@ -50,6 +50,9 @@ for (const [id, raw] of Object.entries(updates)) {
   if (remote && raw._base_updated_at && row.updated_at !== raw._base_updated_at) { report.skippedEdited.push(id); continue; }
   const existing = Object.fromEntries(Object.entries(row).map(([k, v]) => [k, JSON_COLUMNS.includes(k) ? JSON.parse(v || '[]') : v]));
   const fields = Object.fromEntries(Object.entries(raw).filter(([k]) => !k.startsWith('_')));
+  // A researched update (it names its sources, not "owner answer…") means the
+  // listing was just checked against its sources online.
+  if (!('last_checked_online' in fields) && raw._src && !/^owner/i.test(raw._src)) fields.last_checked_online = new Date().toISOString().slice(0, 10);
   const input = { ...Object.fromEntries(EDITABLE_FIELDS.map((f) => [f, existing[f]])), ...fields };
   const opts = { confirmedAddress: isDvListing(existing) && existing.address ? existing.address : undefined };
   const { value, errors, warnings } = validateListing(input, lists, opts);

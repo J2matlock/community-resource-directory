@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { env } from 'cloudflare:test';
 import { call, token, resetDb } from './helpers.js';
 import { PRIVATE_MARKER } from './fixtures/sample-listings.js';
+import { neutralId } from '../src/lib/neutral-id.js';
 
 const page = async (path) => (await call(path, { sitePublic: true })).text();
 const setNotice = async (body) => call('/api/admin/notice', { method: 'PUT', body, as: await token() });
@@ -54,6 +55,42 @@ describe('Link previews and listing pages', () => {
     expect(txt).toContain('Disallow: /admin/');
     expect(txt).toContain('Disallow: /api/');
     expect(txt).toContain('Sitemap: https://directory.example.test/sitemap.xml');
+  });
+});
+
+describe('Domestic violence listings stay discreet', () => {
+  beforeEach(async () => {
+    await resetDb();
+    await env.DB.prepare("INSERT OR IGNORE INTO categories (name) VALUES ('Domestic Violence')").run();
+    await env.DB.prepare(`INSERT INTO listings (id, name, organization, category, tags, phone, fax, email, website, address, town,
+      serves_counties, hours, eligibility, age_groups, cost, medicaid_plans, medicaid_notes, description, private_notes, status, review_by,
+      visibility, last_verified, retired) VALUES ('sample-dv-program', 'Sample Domestic Violence Program', '', 'Domestic Violence', '[]',
+      '(518) 555-0150', '', '', '', '', '', '["Warren"]', '24 hours', '', '[]', '["Free"]', '[]', '', 'Hotline and advocacy.', '', 'Active', '',
+      'Public', '', 0)`).run();
+  });
+
+  it('uses a neutral address in the sitemap, never the named one', async () => {
+    const xml = await (await call('/sitemap.xml', { sitePublic: true })).text();
+    expect(xml).toContain(`/listing/${neutralId('sample-dv-program')}</loc>`);
+    expect(xml).not.toContain('sample-dv-program');
+  });
+
+  it('the neutral address opens the listing with a neutral title and preview', async () => {
+    const html = await page(`/listing/${neutralId('sample-dv-program')}`);
+    expect(html).toContain('<title>Local help: ');
+    expect(html).not.toContain('Sample Domestic Violence Program');
+    expect(html).toContain(`<link rel="canonical" href="https://directory.example.test/listing/${neutralId('sample-dv-program')}">`);
+    expect(html).not.toContain('noindex');
+  });
+
+  it('the old named address still works but shows only neutral text', async () => {
+    const html = await page('/listing/sample-dv-program');
+    expect(html).toContain('<title>Local help: ');
+    expect(html).not.toContain('Sample Domestic Violence Program');
+  });
+
+  it('an unknown neutral address is just "not found"', async () => {
+    expect(await page('/listing/h-zzzzzz')).toContain('noindex');
   });
 });
 

@@ -16,6 +16,8 @@ export default defineConfig({
           TEAM_DOMAIN: 'https://test-team.cloudflareaccess.com',
           POLICY_AUD: 'test-audience-tag',
           SITE_PUBLIC: 'false',
+          // Tests change the database between requests: never reuse a cached copy.
+          PUBLIC_CACHE: 'off',
           // Tests never use local test mode, even though .dev.vars turns it on.
           LOCAL_DEV_ADMIN: 'false',
           TURNSTILE_SECRET_KEY: 'test-turnstile-secret',

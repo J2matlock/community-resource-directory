@@ -11,6 +11,10 @@ import { REGION } from '../region.js';
 import { getPublicListing, getPublicListingIds } from '../db/public.js';
 import { getActiveNotice } from '../db/notice.js';
 import { todayLocal } from '../db/admin.js';
+import { neutralId } from '../lib/neutral-id.js';
+
+// Categories whose listings get neutral titles and link previews.
+export const SENSITIVE_CATEGORIES = ['Domestic Violence'];
 
 const STATIC_PAGES = ['/', '/learn', '/needs', '/help', '/about', '/request', '/suggest', '/flyer'];
 
@@ -65,9 +69,15 @@ export async function decoratePage(response, env, url) {
   let notice = null;
   let listing = null;
   try {
+    // A neutral address ("h-…") belongs to a sensitive listing: find which.
+    let realId = listingId;
+    if (listingId && listingId.startsWith('h-')) {
+      const match = (await getPublicListingIds(env.DB)).find((r) => SENSITIVE_CATEGORIES.includes(r.category) && neutralId(r.id) === listingId);
+      realId = match ? match.id : null;
+    }
     [notice, listing] = await Promise.all([
       getActiveNotice(env.DB, todayLocal()),
-      listingId ? getPublicListing(env.DB, listingId) : null,
+      realId ? getPublicListing(env.DB, realId) : null,
     ]);
   } catch (err) {
     // A database hiccup must never take down the pages (or the crisis bar).
@@ -80,8 +90,11 @@ export async function decoratePage(response, env, url) {
   let description = '';
   const rw = new HTMLRewriter();
   if (listingId) {
-    title = listing ? `${listing.name}: ${REGION.siteName}` : `Listing not found: ${REGION.siteName}`;
-    description = listing ? listingDescription(listing) : '';
+    // Domestic violence listings get a neutral title and preview: a shared
+    // link's preview, and the browser history, may be seen by an abuser.
+    const sensitive = listing && SENSITIVE_CATEGORIES.includes(listing.category);
+    title = !listing ? `Listing not found: ${REGION.siteName}` : sensitive ? `Local help: ${REGION.siteName}` : `${listing.name}: ${REGION.siteName}`;
+    description = !listing ? '' : sensitive ? 'Free local help. Open the link for the phone number and details.' : listingDescription(listing);
     rw.on('title', { element: (e) => e.setInnerContent(title) });
     if (listing) rw.on('meta[name="description"]', { element: (e) => e.setAttribute('content', description) });
   } else {
@@ -90,7 +103,8 @@ export async function decoratePage(response, env, url) {
   rw.on('meta[name="description"]', { element: (e) => { if (!description) description = decodeEntities(e.getAttribute('content') || ''); } });
   rw.on('head', {
     element: (e) => e.onEndTag((end) => {
-      end.before(metaTags({ title: title.trim(), description, url: `${origin}${path}`, image, noindex: listingId && !listing }), { html: true });
+      const pagePath = listing && SENSITIVE_CATEGORIES.includes(listing.category) ? `/listing/${neutralId(listing.id)}` : path;
+      end.before(metaTags({ title: title.trim(), description, url: `${origin}${pagePath}`, image, noindex: listingId && !listing }), { html: true });
     }),
   });
   if (notice) rw.on('aside.crisis', { element: (e) => e.after(noticeHtml(notice), { html: true }) });
@@ -106,7 +120,9 @@ export async function sitemap(env, url) {
   const ids = await getPublicListingIds(env.DB);
   const loc = (p) => `  <url><loc>${escapeHtml(`${url.origin}${p}`)}</loc></url>`;
   const body = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...STATIC_PAGES.map(loc), ...ids.map((id) => loc(`/listing/${id}`)), '</urlset>', ''].join('\n');
+    ...STATIC_PAGES.map(loc),
+    ...ids.map((r) => loc(`/listing/${SENSITIVE_CATEGORIES.includes(r.category) ? neutralId(r.id) : r.id}`)),
+    '</urlset>', ''].join('\n');
   return new Response(body, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
 }
 

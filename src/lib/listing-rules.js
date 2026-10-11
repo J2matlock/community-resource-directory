@@ -16,6 +16,7 @@ export const PUBLIC_FIELDS = [
   'id', 'name', 'organization', 'category', 'tags', 'phone', 'fax', 'email', 'website',
   'address', 'town', 'serves_counties', 'hours', 'eligibility', 'age_groups', 'cost',
   'medicaid_plans', 'medicaid_notes', 'description', 'status', 'review_by', 'last_verified',
+  'last_checked_online',
 ];
 export const PRIVATE_FIELDS = ['private_notes', 'visibility', 'retired'];
 export const ALL_FIELDS = [...PUBLIC_FIELDS, ...PRIVATE_FIELDS];
