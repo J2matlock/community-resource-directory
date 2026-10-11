@@ -336,6 +336,141 @@
    "donate_url": "https://www.salvationarmyusa.org/ny/saratoga-springs/woodlawn-avenue-corps/",
    "volunteer_url": "https://www.salvationarmyusa.org/usa-eastern-territory/volunteer/",
    "wishlist_url": ""
+  },
+  {
+   "name": "WAIT House",
+   "what_it_funds": "Gifts help WAIT House give shelter and support to homeless and at-risk youth in Warren, Washington and northern Saratoga Counties.",
+   "donate_url": "https://hycwaithouse.org/individual-corporate-giving/",
+   "wishlist_url": "https://hycwaithouse.org/wish-list/",
+   "listing_id": "wait-house"
+  },
+  {
+   "name": "CAPTAIN Community Human Services",
+   "what_it_funds": "Gifts support CAPTAIN's food pantry, youth shelter and other help for families in southern Saratoga County.",
+   "donate_url": "https://captaincares.org/",
+   "listing_id": "captain-community-human-services"
+  },
+  {
+   "name": "Regional Food Bank of Northeastern New York",
+   "what_it_funds": "Gifts help the food bank supply food to local pantries and meal programs across 23 counties, including ours.",
+   "donate_url": "https://regionalfoodbank.net/"
+  },
+  {
+   "name": "Saratoga Center for the Family",
+   "what_it_funds": "Gifts help children and families heal from abuse and trauma through advocacy, education and counseling.",
+   "donate_url": "https://saratogacff.org/donate",
+   "listing_id": "saratoga-center-for-the-family"
+  },
+  {
+   "name": "Alliance for Positive Health",
+   "what_it_funds": "Gifts support HIV prevention, testing and care, including emergency housing for clients.",
+   "donate_url": "https://www.allianceforpositivehealth.org/get-involved/donate/",
+   "listing_id": "alliance-for-positive-health-glens-falls"
+  },
+  {
+   "name": "The Legal Project",
+   "what_it_funds": "Gifts help provide free civil legal help to low-income people, including crime victims, domestic violence survivors, older adults and immigrants.",
+   "donate_url": "https://legalproject.org/donate/",
+   "listing_id": "the-legal-project"
+  },
+  {
+   "name": "Saratoga Bridges / The Arc Columbia-Saratoga",
+   "what_it_funds": "Gifts support people with intellectual and developmental disabilities and their families in Saratoga County.",
+   "donate_url": "https://give.saratogabridges.org/",
+   "listing_id": "saratoga-bridges-the-arc-saratoga-county"
+  },
+  {
+   "name": "CWI (Community, Work & Independence)",
+   "what_it_funds": "Gifts support jobs and services for people with disabilities and other barriers in the Glens Falls area.",
+   "donate_url": "https://cwinc.org/make-a-donation/",
+   "listing_id": "cwi-community-work-and-independence-employment-services"
+  },
+  {
+   "name": "Sacred Heart (Lake George) Food Pantry",
+   "what_it_funds": "Parish online giving; call the parish office to ask about giving to the food pantry.",
+   "donate_url": "https://www.sacredheartlg.org/electronic-giving/",
+   "listing_id": "sacred-heart-food-pantry"
+  },
+  {
+   "name": "Calvary Assemblies of God (Bread of Life Food Pantry)",
+   "what_it_funds": "Pick 'Bread of Life Food Pantry' on the church's giving form to support the Tuesday food pantry.",
+   "donate_url": "https://agcalvary.com/give",
+   "listing_id": "bread-of-life-food-pantry"
+  },
+  {
+   "name": "Saratoga Pride",
+   "what_it_funds": "Gifts go to the Pride Center of the Capital Region, set aside for Saratoga Pride's LGBTQ+ events and support in Saratoga County.",
+   "donate_url": "https://capitalpridecenter.app.neoncrm.com/forms/saratoga-pride-donation-form-2024",
+   "listing_id": "saratoga-pride-adult-lgbtq-support-group"
+  },
+  {
+   "name": "Northern Rivers Family of Services",
+   "what_it_funds": "Gifts support Northern Rivers' services for children, adults and families, including mental health care and foster care.",
+   "donate_url": "https://www.northernrivers.org/giving/make-a-donation",
+   "volunteer_url": "https://www.northernrivers.org/get-involved/volunteer",
+   "listing_id": "mobile-crisis-team-northern-rivers"
+  },
+  {
+   "name": "Behavioral Health Services North (BHSN)",
+   "what_it_funds": "Gifts support BHSN's counseling, addiction recovery, youth and family programs; you can name a program, such as STOP Domestic Violence.",
+   "donate_url": "https://www.bhsn.org/donate",
+   "listing_id": "bhsn"
+  },
+  {
+   "name": "North Shore Animal League America, Adirondack Region Cat Adoption Center",
+   "what_it_funds": "Gifts support the Glens Falls cat adoption center, its spay and neuter program and help for stray and feral cats.",
+   "donate_url": "https://takeaction.animalleague.org/site/Donation2?df_id=7081&7081.donation=form1",
+   "volunteer_url": "https://www.animalleague.org/adirondack-region-adoption-center/volunteer/",
+   "wishlist_url": "https://a.co/6MUK8vL",
+   "listing_id": "north-shore-animal-league"
+  },
+  {
+   "name": "Glens Falls Hospital Foundation",
+   "what_it_funds": "Gifts help Glens Falls Hospital care for everyone, whether or not they can pay.",
+   "donate_url": "https://www.albanymed.org/glensfalls/glens-falls-hospital-foundation-donations/"
+  },
+  {
+   "name": "Saratoga Hospital Foundation",
+   "what_it_funds": "Gifts support Saratoga Hospital; you can pick the area of greatest need, the Cancer Patient Fund or the Saratoga Community Health Center.",
+   "donate_url": "https://saratogahospital.app.neoncrm.com/forms/default-donation-form-individual"
+  },
+  {
+   "name": "Hudson Headwaters Health Network",
+   "what_it_funds": "Gifts support Hudson Headwaters' community health centers; you can name a program or health center, or give to dental care access.",
+   "donate_url": "https://www.hhhn.org/support/",
+   "listing_id": "glens-falls-family-health-hhhn"
+  },
+  {
+   "name": "Planned Parenthood of Greater New York",
+   "what_it_funds": "Gifts support Planned Parenthood of Greater New York, which runs the Queensbury and Saratoga Springs health centers.",
+   "donate_url": "https://www.plannedparenthood.org/planned-parenthood-greater-new-york/get-involved/donor-info",
+   "listing_id": "planned-parenthood-queensbury-health-center"
+  },
+  {
+   "name": "Alzheimer's Association, Northeastern New York Chapter",
+   "what_it_funds": "Gifts support Alzheimer's research and free care and support for people with dementia and their caregivers.",
+   "donate_url": "https://www.alz.org/northeasternny",
+   "volunteer_url": "https://www.alz.org/northeasternny/volunteers",
+   "listing_id": "alzheimer-s-association-helpline-and-caregiver-support"
+  },
+  {
+   "name": "Friends of the Saratoga Springs Public Library",
+   "what_it_funds": "Gifts help the Friends pay for library programs, reading events and the Saratoga Book Festival.",
+   "donate_url": "https://secure.lglforms.com/form_engine/s/_iZQJlN6Vyx5JFpC1A1NgA",
+   "volunteer_url": "https://friends.sspl.org/",
+   "listing_id": "saratoga-springs-public-library"
+  },
+  {
+   "name": "Queensbury United Methodist Church Food Pantry",
+   "what_it_funds": "Pick 'Food Pantry' on the church's online giving page to support the pantry.",
+   "donate_url": "https://secure.myvanco.com/L-ZENP/home",
+   "listing_id": "queensbury-umc-food-pantry"
+  },
+  {
+   "name": "Christ Episcopal Church Food Pantry (Ballston Spa)",
+   "what_it_funds": "Pick 'Food Pantry' on the church's online giving form to support the pantry.",
+   "donate_url": "https://christepiscopalballstonspa.com/pledge/",
+   "listing_id": "christ-episcopal-church-food-pantry-ballston-spa"
   }
  ],
  "no_online_page": [
@@ -348,24 +483,16 @@
    "how": "See the 'Food Pantry Needs' and 'Current Volunteer Opportunities' sections on the parish Outreach page."
   },
   {
-   "name": "Christ Episcopal Church Food Pantry (Ballston Spa)",
-   "how": "Contact the church office to ask how to give food or money to the pantry."
-  },
-  {
-   "name": "Queensbury UMC Food Pantry",
-   "how": "Call the church to ask what the pantry needs."
-  },
-  {
-   "name": "Pine Knolls Alliance Church Food Pantry",
-   "how": "Call the church to ask what the pantry needs."
-  },
-  {
    "name": "Cambridge Valley Senior Center",
    "how": "Donate goods to the center's Thrift Shop, Monday–Friday, 10 AM–2 PM."
   },
   {
    "name": "Mechanicville Area Community Services Center",
    "how": "Their homepage says 'Donate time, money, food or goods!' and has a Donate > Money menu, but we could not read the link (bot-check page)."
+  },
+  {
+   "name": "Friends of Crandall Public Library (Glens Falls)",
+   "how": "Mail a check to Friends of Crandall Public Library, P.O. Box 330, Glens Falls, NY 12801, or give gently used books for their book sales (up to 2 boxes or bags, in the bins inside the Glen Street lobby during library hours)."
   }
  ]
 }
