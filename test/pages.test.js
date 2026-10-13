@@ -3,7 +3,7 @@
 // never shows up in a title, preview or sitemap. Rule 3: only the owner can
 // change the notice. Rule 5: the notice is written into pages as plain text.
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { env } from 'cloudflare:test';
 import { call, token, resetDb } from './helpers.js';
 import { PRIVATE_MARKER } from './fixtures/sample-listings.js';
@@ -16,7 +16,9 @@ describe('Link previews and listing pages', () => {
   beforeEach(resetDb);
 
   it('a public listing page gets its own title, description and preview tags', async () => {
-    const html = await page('/listing/sample-food-pantry');
+    const res = await call('/listing/sample-food-pantry', { sitePublic: true });
+    expect(res.status).toBe(200);
+    const html = await res.text();
     expect(html).toContain('<title>Sample Food Pantry: ');
     expect(html).toMatch(/<meta property="og:title" content="Sample Food Pantry: [^"]+">/);
     expect(html).toContain('emergency groceries once a month');
@@ -25,13 +27,16 @@ describe('Link previews and listing pages', () => {
     expect(html).not.toContain('noindex');
   });
 
-  it('Internal and retired listings never show their name or details, and are not indexed', async () => {
-    for (const id of ['sample-internal-contacts', 'sample-retired-shelter']) {
-      const html = await page(`/listing/${id}`);
+  it('Internal, retired and unknown listings never show a name or details, are not indexed, and answer 404', async () => {
+    for (const id of ['sample-internal-contacts', 'sample-retired-shelter', 'no-such-listing']) {
+      const res = await call(`/listing/${id}`, { sitePublic: true });
+      expect(res.status).toBe(404);
+      const html = await res.text();
       expect(html).not.toContain('Sample Internal Contacts');
       expect(html).not.toContain('Sample Retired Program');
       expect(html).not.toContain(PRIVATE_MARKER);
       expect(html).toContain('<meta name="robots" content="noindex">');
+      expect(html).toContain('<title>Listing not found: '); // the directory page still loads and says so
     }
   });
 
@@ -90,7 +95,9 @@ describe('Domestic violence listings stay discreet', () => {
   });
 
   it('an unknown neutral address is just "not found"', async () => {
-    expect(await page('/listing/h-zzzzzz')).toContain('noindex');
+    const res = await call('/listing/h-zzzzzz', { sitePublic: true });
+    expect(res.status).toBe(404);
+    expect(await res.text()).toContain('noindex');
   });
 });
 
@@ -138,5 +145,29 @@ describe('Site notice', () => {
     }
     const row = await env.DB.prepare('SELECT message FROM site_notice WHERE id = 1').first();
     expect(row.message).toBe('');
+  });
+
+  it('refuses a last day that is not a real date, like the 45th of month 13 or February 30', async () => {
+    for (const ends_on of ['2026-13-45', '2026-02-30']) {
+      const res = await setNotice({ message: 'ok', level: 'info', ends_on });
+      expect(res.status).toBe(422);
+      expect((await res.json()).errors.ends_on).toBeTruthy();
+    }
+  });
+
+  it('two page views in a row read the notice from the database only once (kept for 30 seconds)', async () => {
+    const spy = vi.spyOn(env.DB, 'prepare');
+    await page('/');
+    await page('/learn');
+    const noticeReads = spy.mock.calls.filter(([sql]) => /FROM site_notice/.test(sql) && /message/.test(sql)).length;
+    spy.mockRestore();
+    expect(noticeReads).toBe(1);
+  });
+
+  it('the admin panel always reads the notice fresh', async () => {
+    await page('/'); // fills the 30-second memo with "no notice"
+    await env.DB.prepare("UPDATE site_notice SET message = 'Changed behind the scenes' WHERE id = 1").run();
+    const res = await call('/api/admin/notice', { as: await token() });
+    expect((await res.json()).notice.message).toBe('Changed behind the scenes');
   });
 });

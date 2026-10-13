@@ -8,7 +8,7 @@
 import { buildXlsx } from './xlsx.js';
 import { exportSheets, todayLocal } from './db/admin.js';
 
-const TABLES = ['categories', 'medicaid_plans', 'listings', 'listing_history', 'provider_requests', 'barrier_reports', 'help_suggestions', 'review_items', 'listing_reports'];
+const TABLES = ['categories', 'medicaid_plans', 'listings', 'listing_history', 'provider_requests', 'barrier_reports', 'help_suggestions', 'review_items', 'listing_reports', 'site_notice'];
 
 function toBase64(bytes) {
   let binary = '';

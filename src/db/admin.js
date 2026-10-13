@@ -171,8 +171,13 @@ export function recheckDueDate(l) {
   const checked = [l.last_verified, l.last_checked_online].filter(Boolean).sort().pop();
   if (!checked) return '';
   const d = new Date(`${checked}T12:00:00Z`);
-  d.setUTCMonth(d.getUTCMonth() + (FAST_RECHECK_CATEGORIES.includes(l.category) ? RECHECK_MONTHS_FAST : RECHECK_MONTHS));
-  return d.toISOString().slice(0, 10);
+  const months = FAST_RECHECK_CATEGORIES.includes(l.category) ? RECHECK_MONTHS_FAST : RECHECK_MONTHS;
+  // Same day of the month, or the last day if that month is shorter
+  // (Jan 31 + 3 months is Apr 30, not May 1).
+  const first = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + months, 1, 12));
+  const lastDay = new Date(Date.UTC(first.getUTCFullYear(), first.getUTCMonth() + 1, 0, 12)).getUTCDate();
+  first.setUTCDate(Math.min(d.getUTCDate(), lastDay));
+  return first.toISOString().slice(0, 10);
 }
 
 export async function dueForRecheck(db, today = todayLocal()) {
@@ -308,9 +313,11 @@ export async function markRequestHandled(db, id, rawNote) {
 
 // One-tap visitor reports from the last 90 days, one row per listing, most
 // reported first. Reports never change a listing; they only flag it here.
+// The listing's own number comes back as `listing_phone`: `phone` is the
+// count of "phone didn't work" taps, and a row can't hold both under one name.
 export async function visitorReports(db, days = 90) {
   const since = new Date(Date.now() - days * 86_400_000).toISOString();
-  const { results } = await db.prepare(`SELECT r.listing_id AS id, l.name, l.phone, COUNT(*) AS total,
+  const { results } = await db.prepare(`SELECT r.listing_id AS id, l.name, l.phone AS listing_phone, COUNT(*) AS total,
       SUM(r.reason = 'phone') AS phone, SUM(r.reason = 'closed') AS closed, SUM(r.reason = 'full') AS full, MAX(r.created_at) AS latest
     FROM listing_reports r JOIN listings l ON l.id = r.listing_id
     WHERE r.created_at > ? AND l.retired = 0

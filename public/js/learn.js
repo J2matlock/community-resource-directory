@@ -78,8 +78,10 @@
     });
     toc.appendChild(tocList);
     if (data.updated) { note = el('p', { class: 'note' }, 'Last reviewed: ' + data.updated + '. Rules and amounts change; check the linked source.'); list.appendChild(note); }
-    openFromHash();
+    // Sort first: reorder() re-attaches every answer, which would drop the
+    // keyboard focus openFromHash() puts on the linked question.
     filter();
+    openFromHash();
     updateQuickExit();
   }
 

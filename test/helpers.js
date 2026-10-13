@@ -1,7 +1,7 @@
 // Test helpers: fake Cloudflare Access tokens, a fake key server, and a
 // database reset with the made-up sample listings.
 
-import { forgetPauseMemo } from '../src/db/notice.js';
+import { forgetPauseMemo, forgetNoticeMemo } from '../src/db/notice.js';
 import { env } from 'cloudflare:test';
 import { vi } from 'vitest';
 import { SignJWT, exportJWK, generateKeyPair } from 'jose';
@@ -57,6 +57,7 @@ export async function call(path, { method = 'GET', body, as = null, origin = ORI
 
 export async function resetDb() {
   forgetPauseMemo();
+  forgetNoticeMemo();
   const db = env.DB;
   await db.batch([
     db.prepare('DELETE FROM listing_history'),

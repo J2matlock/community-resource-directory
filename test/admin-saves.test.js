@@ -38,6 +38,14 @@ describe('Admin saves', () => {
     expect(Object.keys(errors).sort()).toEqual(['category', 'name', 'phone', 'serves_counties', 'status', 'website']);
   });
 
+  it('refuses a date that is not on the calendar, like April 31', async () => {
+    const bad = await call('/api/admin/listings', { method: 'POST', as: t, body: validListing({ last_verified: '2026-04-31' }) });
+    expect(bad.status).toBe(422);
+    expect((await bad.json()).errors.last_verified).toBeTruthy();
+    const ok = await call('/api/admin/listings', { method: 'POST', as: t, body: validListing({ last_verified: '2026-04-30' }) });
+    expect(ok.status).toBe(201);
+  });
+
   it('refuses a huge request body even without a size header', async () => {
     const { default: worker } = await import('../src/index.js');
     const big = new ReadableStream({

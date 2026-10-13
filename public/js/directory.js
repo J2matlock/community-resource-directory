@@ -301,6 +301,18 @@
   var engine = null;
   var dictionary = null;
   var lastSearch = { mode: 'all', notes: [], suggestions: [], safety: false };
+  // One search per distinct query: the same words are asked for several times
+  // per render (results, category counts, the sensitive check), so the last
+  // answer is kept until the words change.
+  var searchCache = { q: null, result: null };
+
+  function runSearch(q) {
+    if (searchCache.q !== q) {
+      searchCache.q = q;
+      searchCache.result = engine.search(q);
+    }
+    return searchCache.result;
+  }
 
   function searched() {
     var q = state.q.trim();
@@ -313,7 +325,7 @@
       var lower = q.toLowerCase();
       return data.listings.filter(function (l) { return (l.name + ' ' + l.description + ' ' + l.tags.join(' ')).toLowerCase().indexOf(lower) !== -1; });
     }
-    lastSearch = engine.search(q);
+    lastSearch = runSearch(q);
     return lastSearch.results;
   }
 
@@ -323,10 +335,11 @@
   var DV_WORDS = /\b(abus|beat|hit|hurt|violen|domestic|dv|stalk|rape|assault|batter|restraining|protect|safe ?house|shelter|trafficking|threat|strangl|wellspring)/i;
   function isSensitive() {
     if (state.category === DV) return true;
-    if (state.q) {
-      if (!engine) { if (DV_WORDS.test(state.q)) return true; }
+    var q = state.q.trim();
+    if (q) {
+      if (!engine) { if (DV_WORDS.test(q)) return true; }
       else {
-        var r = engine.search(state.q);
+        var r = runSearch(q);
         if (r.safety || (r.results[0] && r.results[0].category === DV)) return true;
       }
     }
@@ -457,12 +470,161 @@
     );
   }
 
+  // Each card is built once and kept, so a new search or filter only moves
+  // cards around instead of rebuilding them. A kept card remembers its
+  // "Did something not work?" state, which is fine.
+  var cardNodes = {};
+  function cardFor(l, single) {
+    var key = l.id + (single ? '|single' : '');
+    var node = cardNodes[key];
+    if (!node) {
+      node = card(l, single);
+      cardNodes[key] = node;
+    }
+    var box = node.querySelector('.actions input[type="checkbox"]');
+    if (box) box.checked = handout.has(l.id);
+    return node;
+  }
+
   // ---------- rendering ----------
+  // Results are drawn a page at a time: the first 24, then more when the
+  // visitor presses "Show more" or scrolls near the end.
+  var PAGE = 24;
+  // Scrolling draws at most this many extra pages per list; after that only
+  // the button does, so the page can't run away from the 211 line below it.
+  var AUTO_PAGES = 2;
+  var pageItems = [];
+  var shown = 0;
+  var autoAppends = 0;
+  var showMoreButton = null;
+  var moreWatcher = null;
+
+  // How many cards are drawn for this search, so that coming Back from a
+  // listing (a full page load on older phones) redraws the same amount and
+  // the browser can land where the visitor was.
+  function drawnKey() { return 'drawn:' + location.search; }
+  function saveDrawn() {
+    try { sessionStorage.setItem(drawnKey(), String(shown)); } catch (e) { /* private mode: start small */ }
+  }
+  function loadDrawn() {
+    try { return parseInt(sessionStorage.getItem(drawnKey()), 10) || 0; } catch (e) { return 0; }
+  }
+  function forgetDrawn() {
+    try { sessionStorage.removeItem(drawnKey()); } catch (e) { /* nothing stored */ }
+  }
+
+  // Draws the next "count" cards (one page unless told otherwise). "focus" is
+  // 'new' (the button: move to the first new card so a screen reader isn't
+  // dropped), 'auto' (scrolling: stay put, unless the button just disappeared
+  // under the keyboard user's focus) or 'none' (printing: never move it).
+  function appendPage(focus, count) {
+    var list = $('results');
+    var next = pageItems.slice(shown, shown + (count || PAGE));
+    var first = null;
+    next.forEach(function (x) {
+      var li = el('li', {}, cardFor(x, false));
+      if (!first) first = li;
+      list.appendChild(li);
+    });
+    shown += next.length;
+    if (focus !== 'none') saveDrawn();
+    var hadFocus = document.activeElement === showMoreButton;
+    renderShowMore();
+    if (first && (focus === 'new' || (focus === 'auto' && hadFocus && $('show-more').hidden))) {
+      var link = first.querySelector('h2 a');
+      if (link) link.focus();
+    }
+  }
+
+  function renderShowMore() {
+    var box = $('show-more');
+    var left = pageItems.length - shown;
+    if (!showMoreButton) {
+      showMoreButton = el('button', { type: 'button', class: 'secondary', onclick: function () {
+        appendPage('new');
+        // Say the new count too, since focus alone only reads out one link.
+        $('list-live').textContent = 'Showing ' + shown + ' of ' + pageItems.length;
+      } });
+      box.appendChild(showMoreButton);
+    }
+    showMoreButton.textContent = 'Show more (' + left + ' left)';
+    box.hidden = left <= 0;
+    if (left > 0 && autoAppends < AUTO_PAGES) watchShowMore(); else unwatchShowMore();
+  }
+
+  function hideShowMore() {
+    pageItems = [];
+    shown = 0;
+    $('show-more').hidden = true;
+    unwatchShowMore();
+  }
+
+  // Scrolling near the button draws the next page by itself where the
+  // browser can watch for that; the button stays for keyboards and old phones.
+  function watchShowMore() {
+    if (!window.IntersectionObserver) return;
+    var box = $('show-more');
+    if (!moreWatcher) {
+      moreWatcher = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting && shown < pageItems.length && autoAppends < AUTO_PAGES) {
+            autoAppends++;
+            appendPage('auto');
+          }
+        }
+      }, { rootMargin: '300px 0px' });
+    }
+    // Watch afresh, so a re-render that leaves the button on screen still fires.
+    moreWatcher.unobserve(box);
+    moreWatcher.observe(box);
+  }
+
+  function unwatchShowMore() {
+    if (moreWatcher) moreWatcher.unobserve($('show-more'));
+  }
+
+  // The browser's own Print (not the handout) should print every match, not
+  // just the cards drawn so far.
+  window.addEventListener('beforeprint', function () {
+    if (document.body.classList.contains('print-handout')) return;
+    if (shown < pageItems.length) appendPage('none', pageItems.length - shown);
+  });
+
+  // One visible way to start over when a search, category or filter is on
+  // (the filters panel, with its own clear button, is usually closed).
+  var clearButton = null;
+  function renderClear(show) {
+    var box = $('result-clear');
+    if (!box) return;
+    if (!show) { box.hidden = true; return; }
+    var onlySearch = state.q.trim() && !Object.keys(state).some(function (k) { return k !== 'q' && state[k]; });
+    if (!clearButton) {
+      // Focus lands on the result line, not the search box: on a phone the
+      // box would pop the keyboard up over the freshly cleared list.
+      clearButton = el('button', { type: 'button', class: 'secondary', onclick: function () { clearAll('result-status'); } });
+      box.appendChild(clearButton);
+    }
+    clearButton.textContent = onlySearch ? 'Clear search' : 'Clear all';
+    box.hidden = false;
+  }
+
+  // "focusId" is where focus goes afterwards: the search box from the filters
+  // panel, the result line from the button in the results.
+  function clearAll(focusId) {
+    // Forget the drawn count for the old search, and for the fresh full list.
+    forgetDrawn();
+    setState({ q: '', category: '', county: '', plan: '', cost: '', age: '' });
+    forgetDrawn();
+    $(focusId || 'search').focus();
+  }
+
   function renderList() {
     var single = singleListingId();
     var list = $('results');
 
     if (single) {
+      hideShowMore();
+      renderClear(false);
       var l = findListing(single);
       // A DV listing opened by its old, named address: swap in the neutral one.
       if (l && l.category === DV && single !== neutralId(l.id)) history.replaceState(null, '', '/listing/' + neutralId(l.id));
@@ -480,12 +642,14 @@
       $('page-title').textContent = l.name;
       toggleQuickExit(l.category === 'Domestic Violence');
       $('result-status').textContent = '';
-      setChildren(list, [el('li', {}, card(l, true))]);
+      setChildren(list, [el('li', {}, cardFor(l, true))]);
       return;
     }
 
     var shared = sharedListIds();
     if (shared.length) {
+      hideShowMore();
+      renderClear(false);
       var picked = shared.map(findListing).filter(Boolean);
       $('finder').hidden = true;
       $('back-link').hidden = false;
@@ -496,7 +660,7 @@
         ? 'Someone shared ' + picked.length + (picked.length === 1 ? ' resource' : ' resources') + ' with you.'
           + (picked.length < shared.length ? ' Some on the list are no longer listed.' : '')
         : 'These resources are no longer listed. Search all resources, or call 211.';
-      setChildren(list, picked.map(function (x) { return el('li', {}, card(x, false)); }));
+      setChildren(list, picked.map(function (x) { return el('li', {}, cardFor(x, false)); }));
       return;
     }
 
@@ -504,7 +668,7 @@
     $('back-link').hidden = true;
     var items = results();
     var total = data.listings.length;
-    var active = Object.keys(state).some(function (k) { return state[k]; });
+    var active = Object.keys(state).some(function (k) { return k === 'q' ? state.q.trim() : state[k]; });
     var mode = lastSearch.mode;
     $('result-status').textContent = !items.length
       ? 'No matches. Try different words or pick a category below, or ' + HELP_LINE + '.'
@@ -514,11 +678,21 @@
           ? 'Showing ' + items.length + ' resources that match some of your words.'
           : 'Showing ' + items.length + ' of ' + total + ' resources' + (active ? ' that match' : '') + '.';
     renderSearchHelp(items.length);
+    renderClear(active);
     $('plan-note').hidden = !state.plan;
     $('plan-note').textContent = state.plan
       ? 'Showing places known to take ' + state.plan + '. Some other places take Medicaid but haven\'t said which plans; search "medicaid" to see them. Always call to confirm.'
       : '';
-    setChildren(list, items.map(function (x) { return el('li', {}, card(x, false)); }));
+    // Start again from the first page (the count above reports every match),
+    // or from as many cards as were drawn before, when coming Back to this
+    // same search.
+    setChildren(list, []);
+    $('list-live').textContent = '';
+    pageItems = items;
+    shown = 0;
+    autoAppends = 0;
+    var drawn = loadDrawn();
+    appendPage('auto', drawn > PAGE ? Math.min(drawn, pageItems.length) : PAGE);
   }
 
   // Plain explainers ("DSS = your county's Department of Social Services") and,
@@ -648,12 +822,29 @@
     $('handout-bar').hidden = n === 0;
     $('handout-count').textContent = n + ' on your handout';
     // Short labels on phones keep the pinned bar to one short row.
-    $('handout-print').textContent = (narrow.matches ? 'Print (' : 'Print handout (') + n + ')';
+    if (!preparingPrint) $('handout-print').textContent = (narrow.matches ? 'Print (' : 'Print handout (') + n + ')';
     $('handout-share').textContent = narrow.matches ? 'Share' : 'Share list';
   }
 
+  // The QR code maker (/js/qr.js) is only needed for printing, so it is
+  // fetched the first time someone prints, not on every visit.
+  var qrLoading = null;
+  function loadQr() {
+    if (window.QR) return Promise.resolve();
+    if (qrLoading) return qrLoading;
+    qrLoading = new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = '/js/qr.js';
+      s.async = true;
+      s.onload = resolve;
+      s.onerror = function () { qrLoading = null; reject(new Error('load')); };
+      document.head.appendChild(s);
+    });
+    return qrLoading;
+  }
+
   // A small QR code (print only, so hidden from screen readers). Made by
-  // /js/qr.js on this page; if that didn't load, the handout simply has none.
+  // /js/qr.js; if that didn't load, the handout simply has none.
   function qrCode(url, cls) {
     if (!window.QR) return null;
     try {
@@ -683,9 +874,38 @@
     }
   }
 
+  // Print straight away when the QR maker is here. Otherwise the button says
+  // "Preparing…" while it is fetched, for at most 3 seconds; then the handout
+  // prints with codes if the maker arrived and without them if not. A second
+  // tap while preparing does nothing, so only one print dialog opens.
+  var preparingPrint = false;
   function printHandout() {
+    if (preparingPrint) return;
     var chosen = data.listings.filter(function (l) { return handout.has(l.id); });
     if (!chosen.length) return;
+    var btn = $('handout-print');
+    var done = false;
+    function go() {
+      if (done) return;
+      done = true;
+      preparingPrint = false;
+      btn.disabled = false;
+      renderHandoutBar();
+      // A disabled button drops keyboard focus; give it back.
+      if (document.activeElement === document.body) btn.focus();
+      buildHandout(chosen);
+      document.body.classList.add('print-handout');
+      window.print();
+    }
+    if (window.QR) { go(); return; }
+    preparingPrint = true;
+    btn.disabled = true;
+    btn.textContent = 'Preparing…';
+    setTimeout(go, 3000);
+    loadQr().then(go, go);
+  }
+
+  function buildHandout(chosen) {
     var today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     setChildren($('handout'), [
       el('h1', {}, 'Local resources'),
@@ -704,8 +924,6 @@
         el('p', {}, 'Scan for these and more: ' + (SITE.domain || location.host))),
       el('p', { class: 'foot' }, 'Can\'t find it? ' + HELP_LINE.charAt(0).toUpperCase() + HELP_LINE.slice(1) + '. A listing is not an endorsement; call ahead to confirm. In crisis: call or text 988, or call 911.'),
     ]);
-    document.body.classList.add('print-handout');
-    window.print();
   }
 
   window.addEventListener('afterprint', function () { document.body.classList.remove('print-handout'); });
@@ -736,10 +954,7 @@
         setState(patch);
       });
     });
-    $('clear-filters').addEventListener('click', function () {
-      setState({ q: '', category: '', county: '', plan: '', cost: '', age: '' });
-      $('search').focus();
-    });
+    $('clear-filters').addEventListener('click', function () { clearAll('search'); });
     $('handout-print').addEventListener('click', printHandout);
     $('handout-share').addEventListener('click', shareHandout);
     $('handout-clear').addEventListener('click', function () {
@@ -771,11 +986,15 @@
       .then(function (json) { return words.then(function (w) { dictionary = w; return json; }); })
       .then(function (json) {
         data = json;
+        // Fresh data means fresh cards and a fresh search.
+        cardNodes = {};
+        searchCache = { q: null, result: null };
         fillSelect('f-county', data.counties.filter(function (c) { return c !== 'Regional'; }), function (c) { return c + ' County'; });
         fillSelect('f-plan', data.medicaid_plans.filter(function (p) { return p !== UNSPECIFIED_PLAN; }));
         fillSelect('f-cost', data.costs, function (c) { return COST_LABELS[c] || c; });
         fillSelect('f-age', data.age_groups);
         engine = window.SADKSearch ? window.SADKSearch.create(data.listings, dictionary) : null;
+        searchCache = { q: null, result: null };
         buildCategories();
         render();
       })

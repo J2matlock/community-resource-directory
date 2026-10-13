@@ -6,11 +6,11 @@
 // - No third-party scripts in pages besides the vendored Fuse.js and Turnstile (rule 7).
 
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 
 const failures = [];
 const tracked = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { encoding: 'utf8' })
-  .split('\n').filter(Boolean).filter((f) => existsSync(f));
+  .split('\n').filter(Boolean).filter((f) => existsSync(f) && statSync(f).isFile());
 
 // Rule 8: these must never be tracked.
 for (const f of tracked) {
@@ -48,6 +48,15 @@ const crisisOf = (f) => { const t = readFileSync(f, 'utf8'); const i = t.indexOf
 const crisis = crisisOf('public/index.html');
 for (const f of tracked.filter((x) => /^public\/[^/]+\.html$/.test(x))) {
   if (crisisOf(f) !== crisis) failures.push(`${f} is missing the crisis bar, or it differs from public/index.html.`);
+}
+// ...and it is exactly the bar built from src/region.js, which the error
+// pages (src/routes/error-pages.js) build with the same code.
+{
+  const { REGION } = await import('../src/region.js');
+  const { crisisBarHtml } = await import('../src/lib/crisis-bar.js');
+  if (!readFileSync('public/index.html', 'utf8').includes(crisisBarHtml(REGION))) {
+    failures.push('public/index.html crisis bar differs from the one built from src/region.js. Run `npm run apply-region`.');
+  }
 }
 
 // The anonymous barrier form's checkboxes must match the server's fixed list.

@@ -115,7 +115,11 @@ export async function decoratePage(response, env, url) {
   headers.delete('ETag');
   headers.delete('Last-Modified');
   headers.set('Cache-Control', 'no-cache');
-  return new Response(out.body, { status: out.status, statusText: out.statusText, headers });
+  // A listing link that goes nowhere (unknown, hidden or retired) answers 404:
+  // the page still shows "not found", but search engines and the offline
+  // copy on a visitor's phone don't keep it.
+  const missing = Boolean(listingId) && !listing;
+  return new Response(out.body, { status: missing ? 404 : out.status, statusText: missing ? 'Not Found' : out.statusText, headers });
 }
 
 export async function sitemap(env, url) {

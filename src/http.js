@@ -1,5 +1,7 @@
 // Response helpers and security headers shared by every route.
 
+import { errorPage } from './routes/error-pages.js';
+
 export const MAX_JSON_BYTES = 100_000;
 
 const CSP = [
@@ -24,6 +26,8 @@ export function withSecurityHeaders(response, { privateResponse }) {
   headers.set('X-Frame-Options', 'DENY');
   headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
   headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+  // Browsers that have visited once keep using https for a year.
+  headers.set('Strict-Transport-Security', 'max-age=31536000');
   if (privateResponse) {
     headers.set('Cache-Control', 'no-store');
     headers.set('X-Robots-Tag', 'noindex, nofollow');
@@ -38,14 +42,37 @@ export function json(data, status = 200, extraHeaders = {}) {
   });
 }
 
+// Data addresses answer JSON; page addresses get a small friendly page.
 export function notAvailable(path) {
   if (path.startsWith('/api/')) return json({ error: 'Not available.' }, 403);
-  return new Response('Not available.', { status: 403, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  return errorPage(403);
 }
 
 export function notFound(path) {
   if (path.startsWith('/api/')) return json({ error: 'Not found.' }, 404);
-  return new Response('Page not found.', { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
+  return errorPage(404);
+}
+
+export function serverError(path) {
+  if (path.startsWith('/api/')) return json({ error: 'Something went wrong.' }, 500);
+  return errorPage(500);
+}
+
+// A short fingerprint of a response body, so a browser that already has this
+// exact copy can be told "not changed" instead of downloading it again.
+export async function weakEtag(text) {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+  const hex = [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  return `W/"${hex.slice(0, 16)}"`;
+}
+
+// Does the browser's If-None-Match header name this ETag? Compared loosely:
+// "W/" and quotes are ignored, and the header may list several, or "*".
+export function etagMatches(ifNoneMatch, etag) {
+  if (!ifNoneMatch || !etag) return false;
+  const bare = (s) => s.trim().replace(/^W\//, '').replace(/^"|"$/g, '');
+  const want = bare(etag);
+  return ifNoneMatch.split(',').some((s) => s.trim() === '*' || bare(s) === want);
 }
 
 // Writes must come from a page on this same site (blocks cross-site forms).

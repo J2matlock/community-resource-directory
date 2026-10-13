@@ -11,7 +11,7 @@ import { handleAdminApi } from './routes/admin-api.js';
 import { handleProviderRequest } from './routes/provider-form.js';
 import { handleBarrierReport, barrierSummary } from './routes/barriers.js';
 import { handleListingReport } from './routes/listing-reports.js';
-import { withSecurityHeaders, json, notAvailable, notFound, isSameOrigin } from './http.js';
+import { withSecurityHeaders, json, notAvailable, notFound, serverError, isSameOrigin, weakEtag, etagMatches } from './http.js';
 import { decoratePage, sitemap, robots } from './routes/pages.js';
 import { emailWeeklyBackup } from './backup.js';
 import { isPaused } from './db/notice.js';
@@ -50,12 +50,24 @@ async function route(request, env, url, admin) {
     const key = new Request(new URL('/api/listings', url).toString());
     // Browsers are told to check every time ("no-cache"): Cloudflare would
     // otherwise stretch a short browser time to 4 hours. Only Cloudflare's
-    // own copy is kept, for 60 seconds.
-    const forBrowser = (r) => { const out = new Response(r.body, r); out.headers.set('Cache-Control', 'no-cache'); return out; };
+    // own copy is kept, for 60 seconds. Each copy carries a fingerprint
+    // (ETag); a browser that sends it back and already has this exact copy
+    // gets a tiny "not changed" (304) reply instead of the whole list again.
+    const forBrowser = (r) => {
+      const etag = r.headers.get('ETag');
+      if (etagMatches(request.headers.get('If-None-Match'), etag)) {
+        return new Response(null, { status: 304, headers: { ETag: etag, 'Cache-Control': 'no-cache' } });
+      }
+      const out = new Response(r.body, r);
+      out.headers.set('Cache-Control', 'no-cache');
+      return out;
+    };
     const hit = cache ? await cache.match(key) : null;
     if (hit) return forBrowser(hit);
-    const res = json(await getPublicDirectory(env.DB));
-    res.headers.set('Cache-Control', 'public, max-age=60');
+    const body = JSON.stringify(await getPublicDirectory(env.DB));
+    const res = new Response(body, {
+      headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'public, max-age=60', ETag: await weakEtag(body) },
+    });
     if (cache) await cache.put(key, res.clone());
     return forBrowser(res);
   }
@@ -145,7 +157,7 @@ export default {
     } catch (err) {
       // Log the error type only, never request contents (rule 1).
       console.error('Unhandled error:', err?.name, err?.message);
-      response = path.startsWith('/api/') ? json({ error: 'Something went wrong.' }, 500) : new Response('Something went wrong.', { status: 500 });
+      response = serverError(path);
     }
     return withSecurityHeaders(response, { privateResponse: ownerOnly });
   },

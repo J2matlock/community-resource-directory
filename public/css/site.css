@@ -290,6 +290,7 @@ button.secondary:hover { background: var(--sage); color: var(--accent-dark); }
   .site-name a::before { display: none; }
   .crisis { position: static; border-bottom: 1px solid #000; }
   .skip-link, .search, .browse, .filters, .handout-bar, .actions, .back-link, .note { display: none !important; }
+  .show-more, .result-clear { display: none !important; }
   .card { break-inside: avoid; border: 1px solid #000; box-shadow: none; }
   .card .meta { padding: 0; }
   .site-footer { border-top: 1px solid #000; }
@@ -570,3 +571,12 @@ body.has-quick-exit { padding-bottom: 4.5rem; }
 .report-check { margin-top: 0.5rem; }
 .report-status { margin: 0.4rem 0 0; }
 @media print { .report-box { display: none; } }
+
+/* Directory performance and clear control (2026-10-13) */
+/* "Show more" under the list: results are drawn 24 at a time. */
+.show-more { display: flex; justify-content: center; margin: 1rem 0 0; }
+.show-more[hidden] { display: none; }
+/* One visible "Clear search" / "Clear all" under the result count. */
+.result-clear { margin: -0.25rem 0 0.75rem; }
+.result-clear[hidden] { display: none; }
+.result-clear button { display: inline-flex; align-items: center; margin-top: 0.25rem; padding: 0.35rem 0.9rem; font-size: 0.95rem; }

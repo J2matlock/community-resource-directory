@@ -64,9 +64,22 @@ async function runAction(button, fn) {
   }
 }
 
+// Replaces the page. A new page starts at the top with focus on <main>.
 function show(...nodes) {
   main.replaceChildren(...nodes.flat().filter(Boolean));
   main.focus();
+}
+
+// Replaces the page but keeps the owner's place: same scroll position, and
+// focus on the element matching `focus` (a CSS selector, e.g. the button they
+// pressed) instead of jumping to the top. Used after Save, Verified today,
+// Retire, Restore and Mark handled.
+function showKeepingPlace({ focus }, ...nodes) {
+  const top = window.scrollY;
+  main.replaceChildren(...nodes.flat().filter(Boolean));
+  window.scrollTo(0, top);
+  const target = focus ? main.querySelector(focus) : null;
+  if (target) target.focus({ preventScroll: true }); else main.focus({ preventScroll: true });
 }
 
 function showError(err) {
@@ -85,6 +98,28 @@ function formatDateTime(iso) {
   return Number.isNaN(d.getTime()) ? iso : d.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 }
 
+// Today's date where the owner works (upstate NY), as YYYY-MM-DD. The server
+// uses the same zone, so a re-check never looks due a day early in the evening.
+function todayLocal() {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+}
+
+// A tap-to-call link, the same way the public site makes them: tel:+1 and the
+// 10 digits, with an extension after a comma; short codes (211, 988) as they
+// are. Anything else (a count, odd formatting) gets no link.
+function telHref(phone) {
+  const p = String(phone ?? '').trim();
+  if (/^\d{3}$/.test(p)) return `tel:${p}`;
+  const m = p.match(/^\((\d{3})\) (\d{3})-(\d{4})(?: x(\d+))?$/);
+  if (!m) return null;
+  return `tel:+1${m[1]}${m[2]}${m[3]}${m[4] ? `,${m[4]}` : ''}`;
+}
+
+function phoneLink(phone) {
+  const href = telHref(phone);
+  return href ? el('a', { class: 'item-phone', href }, phone) : null;
+}
+
 function badges(l) {
   return [
     l.visibility === 'Internal' ? el('span', { class: 'badge internal' }, 'Internal') : null,
@@ -100,12 +135,18 @@ function badges(l) {
 // Re-check tiers, the same rule as the server (src/db/admin.js): basic-needs
 // and safety categories every 3 months, everything else yearly.
 const FAST_RECHECK = ['Crisis Help', 'Domestic Violence', 'Housing and Shelter', 'Food', 'Rent, Utility and Emergency Help'];
+// Adds whole months and keeps the same day of the month, or the last day of the
+// target month when it is shorter (Jan 31 + 3 months = Apr 30, not May 1).
+// Must give the same date as recheckDueDate in src/db/admin.js.
 function recheckDue(l) {
   const checked = [l.last_verified, l.last_checked_online].filter(Boolean).sort().pop();
   if (!checked) return '';
-  const d = new Date(`${checked}T12:00:00Z`);
-  d.setUTCMonth(d.getUTCMonth() + (FAST_RECHECK.includes(l.category) ? 3 : 12));
-  return d.toISOString().slice(0, 10);
+  const [y, m, day] = checked.split('-').map(Number);
+  const total = y * 12 + (m - 1) + (FAST_RECHECK.includes(l.category) ? 3 : 12);
+  const ty = Math.floor(total / 12), tm = total % 12;
+  const lastDay = new Date(Date.UTC(ty, tm + 1, 0)).getUTCDate();
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${ty}-${pad(tm + 1)}-${pad(Math.min(day, lastDay))}`;
 }
 
 function checkedWords(l) {
@@ -115,7 +156,7 @@ function checkedWords(l) {
 }
 
 function verifiedState(l) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayLocal();
   if (l.review_by && l.review_by <= today) return el('span', { class: 'state state-due' }, `Re-check due (${formatDate(l.review_by)})`);
   const due = recheckDue(l);
   if (!due) return el('span', { class: 'state state-never' }, 'Not checked yet');
@@ -385,7 +426,9 @@ function historyList(history) {
     el('ul', { class: 'changes' }, g.rows.map(changeRow)))));
 }
 
-async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = false } = {}) {
+// `again` is set when the page is rebuilt after Save, Verified today, Retire or
+// Restore: the scroll position is kept and focus goes to that button.
+async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = false, again = null } = {}) {
   setNav('listings');
   let listing = null;
   let history = [];
@@ -470,7 +513,7 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
       if (fromRequest) sessionStorage.removeItem('prefill');
       toast(fromRequest ? 'Saved. The request is marked handled.' : 'Saved.');
       location.hash = `#/edit/${res.listing.id}`;
-      if (listing) await viewEdit(res.listing.id);
+      if (listing) await viewEdit(res.listing.id, { again: '.actions-bar .save' });
     } catch (err) {
       if (err.status === 422 && err.data) showProblems(form, err.data, () => save(true));
       else if (err.status === 409) showProblems(form, { error: err.message, errors: {} });
@@ -490,7 +533,7 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
         runAction(e.currentTarget, async () => {
           await api(`/listings/${encodeURIComponent(listing.id)}/verify`, { method: 'POST' });
           toast('Marked as verified today.');
-          await viewEdit(listing.id);
+          await viewEdit(listing.id, { again: '.actions-bar .secondary' });
         });
       } }, 'Verified today') : null,
       el('p', { class: 'actions-note' }, id ? 'Changes go live as soon as you save.' : 'New listings go live when saved as Public.')),
@@ -507,7 +550,7 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
       runAction(e.currentTarget, async () => {
         await api(`/listings/${encodeURIComponent(listing.id)}/${listing.retired ? 'restore' : 'retire'}`, { method: 'POST' });
         toast(listing.retired ? 'Restored. It shows on the public site again.' : 'Retired. It no longer shows on the public site.');
-        await viewEdit(listing.id);
+        await viewEdit(listing.id, { again: '.retire-zone button' });
       });
     } }, listing.retired ? 'Restore' : 'Retire')) : null;
 
@@ -532,7 +575,8 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
   ] : [];
 
   dirty = false;
-  show(...head, form, retireZone, ...historySection);
+  if (again) showKeepingPlace({ focus: again }, ...head, form, retireZone, ...historySection);
+  else show(...head, form, retireZone, ...historySection);
 }
 
 // ---------- Due for re-check ----------
@@ -540,7 +584,7 @@ async function viewRecheck() {
   setNav('recheck');
   document.title = 'Due for re-check: Directory admin';
   const { listings, unconfirmed, reported = [] } = await api('/recheck');
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayLocal();
   const reason = (l) => {
     if (l.review_by && l.review_by <= today) return `Re-check date ${formatDate(l.review_by)} has passed`;
     if (!l.last_verified && !l.last_checked_online) return 'Never checked';
@@ -551,7 +595,7 @@ async function viewRecheck() {
       el('div', { class: 'item-main' },
         el('a', { class: 'item-name', href: `#/edit/${l.id}` }, l.name),
         el('p', { class: 'item-meta' }, el('span', { class: `state ${(l.review_by && l.review_by <= today) || l.last_verified ? 'state-due' : 'state-never'}` }, reason(l)),
-          l.phone ? ' · ' : '', l.phone ? el('a', { class: 'item-phone', href: `tel:${l.phone.replace(/[^\d+]/g, '').replace(/^(\d{10}).*/, '$1')}` }, l.phone) : '')),
+          telHref(l.phone) ? [' · ', phoneLink(l.phone)] : l.phone ? ` · ${l.phone}` : '')),
       el('div', { class: 'item-side' },
         el('span', { class: 'item-badges' }, badges(l)),
         el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
@@ -573,7 +617,8 @@ async function viewRecheck() {
           el('p', { class: 'item-meta' },
             el('span', { class: `state ${r.total >= 2 ? 'state-due' : 'state-never'}` }, `${r.total} report${r.total === 1 ? '' : 's'}`),
             ` · ${[r.phone ? `number didn't work: ${r.phone}` : '', r.closed ? `closed or moved: ${r.closed}` : '', r.full ? `not taking new people: ${r.full}` : ''].filter(Boolean).join(', ')} · latest ${formatDate(r.latest)}`,
-            r.phone ? [' · ', el('a', { class: 'item-phone', href: `tel:${String(r.phone).replace(/[^\d+]/g, '').replace(/^(\d{10}).*/, '$1')}` }, r.phone)] : null))))))
+            // `phone` is a count; the listing's own number is `listing_phone`.
+            telHref(r.listing_phone) ? [' · ', phoneLink(r.listing_phone)] : null))))))
       : null,
     el('p', { class: 'lede' }, `Due now: ${listings.length}. Food, shelter, rent help, crisis and domestic violence listings are re-checked every 3 months; everything else every 12 months, counted from the last check (by phone, or online by research). Call or email them, then press "Verified today" or edit the listing.`),
     callSheetPanel(listings.length ? listings : unconfirmed, reason),
@@ -613,7 +658,7 @@ function printCallSheet(chosen, reason, withPrivate) {
   const row = (label, value) => (value ? el('p', {}, el('strong', {}, `${label}: `), value) : null);
   sheet.replaceChildren(
     el('h1', {}, 'Verification calls'),
-    el('p', { class: 'cs-sub' }, `Printed ${formatDate(new Date().toISOString().slice(0, 10))} · ${chosen.length} listings. Ask: are the phone, hours, address, who can get help, cost and insurance still right?`),
+    el('p', { class: 'cs-sub' }, `Printed ${formatDate(todayLocal())} · ${chosen.length} listings. Ask: are the phone, hours, address, who can get help, cost and insurance still right?`),
     el('ol', {}, chosen.map((l) => el('li', {},
       el('div', { class: 'cs-head' }, el('h2', {}, l.name), el('span', { class: 'cs-phone' }, l.phone || 'No phone listed')),
       el('p', { class: 'cs-meta' }, [l.category, l.town, reason(l)].filter(Boolean).join(' · ')),
@@ -701,7 +746,7 @@ async function viewNotice() {
   const msgErr = el('p', { class: 'error-text', id: 'n-message-err', hidden: true });
   const endErr = el('p', { class: 'error-text', id: 'n-ends-err', hidden: true });
   const status = el('p', { class: 'notice-status' });
-  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+  const today = todayLocal();
   const showStatus = (n) => {
     status.textContent = !n.message ? 'No notice is showing on the public site.'
       : n.ends_on && n.ends_on < today ? `Not showing: its last day (${formatDate(n.ends_on)}) has passed.`
@@ -795,18 +840,23 @@ function updatePauseBanner(paused) {
   document.querySelector('.admin-header')?.after(b);
 }
 
+// The "Don't see the help you need?" form has been removed from the public
+// site; this view only keeps the messages it collected. The menu item is hidden
+// at startup when there are none (the page still opens from #/suggestions).
 async function viewSuggestions() {
   setNav('suggestions');
-  document.title = 'Help suggestions: Directory admin';
+  // The page is open, so its menu item shows even if it started hidden.
+  document.querySelector('[data-nav="suggestions"]')?.closest('li')?.removeAttribute('hidden');
+  document.title = 'Old help suggestions: Directory admin';
   const { suggestions } = await api('/suggestions');
   show(
-    pageHead('Help suggestions'),
-    el('p', { class: 'lede' }, `${suggestions.length} anonymous messages from "Don't see the help you need?". Only you see these. Ideas for new categories or listings.`),
+    pageHead('Old help suggestions'),
+    el('p', { class: 'lede' }, `${suggestions.length} old anonymous messages from the "Don't see the help you need?" form, which has been removed from the public site; only you see these.`),
     suggestions.length
       ? el('ul', { class: 'note-list' }, suggestions.map((r) => el('li', { class: 'note-card' },
         el('p', { class: 'note-meta' }, `${formatDateTime(r.created_at)}${r.county ? ` · ${r.county}` : ''}`),
         el('p', { class: 'note-text' }, r.looking_for))))
-      : emptyState('No messages yet', 'Messages from "Don\'t see the help you need?" will show here.'),
+      : emptyState('No messages', 'The form that collected these has been removed, so nothing new will arrive.'),
   );
 }
 
@@ -926,17 +976,15 @@ async function viewLists() {
           const r = await api(`/lists/${kind}/${encodeURIComponent(item.name)}`, { method: 'PUT', body: { name: input.value } });
           draw(r.items); await loadLists(); toast('Renamed. Listings using it were updated.');
         }) }, 'Rename', el('span', { class: 'visually-hidden' }, `: ${item.name}`)),
-        el('button', { type: 'button', class: 'danger', onclick: (e) => {
-          if (item.used > 0) {
-            e.currentTarget.parentNode.querySelector(':scope > .action-error')?.remove();
-            e.currentTarget.after(el('p', { class: 'action-error', role: 'alert' }, `In use by ${item.used} listing${item.used === 1 ? '' : 's'}. Rename it instead, or change those listings first.`));
-            return;
-          }
+        // Remove only works when nothing uses the item; otherwise the button is
+        // disabled and the "N listings" count beside it says why. The server
+        // refuses too, and runAction shows its reason if that ever happens.
+        el('button', { type: 'button', class: 'danger', disabled: item.used > 0, onclick: (e) => {
           runAction(e.currentTarget, async () => {
             const r = await api(`/lists/${kind}/${encodeURIComponent(item.name)}`, { method: 'DELETE' });
             draw(r.items); await loadLists(); toast('Removed.');
           });
-        } }, 'Remove', el('span', { class: 'visually-hidden' }, `: ${item.name}`)));
+        } }, 'Remove', el('span', { class: 'visually-hidden' }, `${item.used > 0 ? ' (in use)' : ''}: ${item.name}`)));
     }));
     draw(items);
     const addInput = el('input', { type: 'text', id: `add-${kind}`, 'aria-describedby': `add-${kind}-err` });
@@ -1003,7 +1051,10 @@ export function listingFromRequest(r) {
   };
 }
 
-async function viewRequests() {
+// `again` is set when the page is rebuilt after Mark handled: the scroll
+// position is kept and focus goes to the next new request's heading (or the
+// "Handled" summary when none are left) instead of the top of the page.
+async function viewRequests({ again = null } = {}) {
   setNav('requests');
   document.title = 'Requests: Directory admin';
   let data;
@@ -1021,12 +1072,16 @@ async function viewRequests() {
     const note = el('input', { type: 'text', id: `note-${r.id}`, placeholder: 'e.g. Declined: outside our area' });
     const isCorrection = r.fields.request_type === 'correction';
     const isNew = r.status === 'New';
+    // The request below this one (or above, for the last) gets focus after
+    // Mark handled, so the owner can carry on down the list.
+    const i = open.indexOf(r);
+    const next = open[i + 1] ?? open[i - 1];
     return el('article', { class: `request ${isCorrection ? 'is-correction' : 'is-new-listing'}${isNew ? '' : ' is-handled'}`, 'aria-labelledby': `req-kind-${r.id} req-${r.id}` },
       el('div', { class: 'request-top' },
         el('span', { class: `req-kind ${isCorrection ? 'correction' : 'new-listing'}`, id: `req-kind-${r.id}` }, isCorrection ? 'Correction to a listing' : 'New listing request'),
         el('span', { class: 'req-id' }, `Request #${r.id}`),
         isNew ? null : el('span', { class: 'req-handled' }, 'Handled')),
-      el('h2', { id: `req-${r.id}` }, r.fields.organization || '(no name)'),
+      el('h2', { id: `req-${r.id}`, tabindex: '-1' }, r.fields.organization || '(no name)'),
       el('p', { class: 'meta-line' }, `Received ${formatDateTime(r.created_at)}`,
         r.status !== 'New' ? ` · Handled ${formatDateTime(r.handled_at)}${r.handled_note ? `: ${r.handled_note}` : ''}` : ''),
       r.email_sent ? null : el('p', { class: 'inline-warn' }, 'Email was not sent; this copy is the only record.'),
@@ -1047,17 +1102,19 @@ async function viewRequests() {
           el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
             await api(`/requests/${encodeURIComponent(r.id)}/handled`, { method: 'POST', body: { note: note.value } });
             toast('Marked handled.');
-            viewRequests();
+            await viewRequests({ again: next ? `#req-${next.id}` : '.handled summary' });
           }) }, 'Mark handled', el('span', { class: 'visually-hidden' }, `: ${r.fields.organization || 'request'}`)))) : null,
     );
   };
 
-  show(
+  const page = [
     pageHead('Provider requests'),
     open.length ? el('p', { class: 'lede' }, `${open.length} new. Call or email the provider to confirm details before creating a listing.`) : null,
     open.length ? open.map(card) : emptyState('No new requests', 'When a provider fills in the request form, it shows here and in your email.'),
     handled.length ? el('details', { class: 'handled' }, el('summary', {}, `Handled (${handled.length})`), ...handled.map(card)) : null,
-  );
+  ];
+  if (again) showKeepingPlace({ focus: again }, ...page);
+  else show(...page);
 }
 
 // ---------- router ----------
@@ -1106,6 +1163,14 @@ window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault()
       const badge = document.querySelector('[data-nav="review"] .count');
       if (badge) badge.textContent = n ? String(n) : '';
     }).catch(() => { /* the count is a convenience */ });
+    // The old "Help suggestions" menu item starts hidden (so the menu doesn't
+    // jump) and only appears while there are still messages, or when the page
+    // itself was opened by its address.
+    const suggestionsItem = document.querySelector('[data-nav="suggestions"]')?.closest('li');
+    if (suggestionsItem && location.hash.startsWith('#/suggestions')) suggestionsItem.hidden = false;
+    api('/suggestions').then(({ suggestions }) => {
+      if (suggestionsItem && suggestions.length > 0) suggestionsItem.hidden = false;
+    }).catch(() => { /* leave the menu item hidden */ });
     await route();
   } catch (err) {
     showError(err);

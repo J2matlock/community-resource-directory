@@ -19,6 +19,14 @@ const PUBLIC_TEXT = ['name', 'organization', 'phone', 'fax', 'email', 'website',
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+// A real calendar date as YYYY-MM-DD. Date.parse alone lets "2026-02-30"
+// through (it rolls over to March 2), so the date is rebuilt and compared.
+function isRealDate(s) {
+  if (typeof s !== 'string' || !DATE.test(s) || Number.isNaN(Date.parse(s))) return false;
+  const d = new Date(`${s}T12:00:00Z`);
+  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
+}
+
 // Rule 1: things that are real client details, not templates.
 const CLIENT_INFO = [
   { re: /\b\d{3}-\d{2}-\d{4}\b/, what: 'a Social Security number' },
@@ -108,7 +116,7 @@ export function cleanSources(raw, errors) {
     if (!parsed || parsed.protocol !== 'https:' || parsed.username || parsed.password) {
       errors.sources = `"${url || label}" needs a full web address starting with https://`; return [];
     }
-    if (seen && (!DATE.test(seen) || Number.isNaN(Date.parse(seen)))) { errors.sources = 'Use a date like 2026-10-11 for when you saw a source.'; return []; }
+    if (seen && !isRealDate(seen)) { errors.sources = 'Use a date like 2026-10-11 for when you saw a source.'; return []; }
     out.push({ url: u, label, seen });
   }
   if (out.length > 3) { errors.sources = 'Up to 3 sources.'; return []; }
@@ -181,7 +189,7 @@ export function validateListing(input, lists, opts = {}) {
 
   for (const f of ['review_by', 'last_verified', 'last_checked_online']) {
     const s = input[f] ?? '';
-    if (s !== '' && (typeof s !== 'string' || !DATE.test(s) || Number.isNaN(Date.parse(s)))) {
+    if (s !== '' && !isRealDate(s)) {
       errors[f] = 'Use a date like 2027-01-31.';
       v[f] = '';
     } else {
@@ -423,7 +431,7 @@ export function validateNotice(input) {
   const level = input.level ?? 'info';
   if (!['info', 'urgent'].includes(level)) errors.level = 'Please choose from the list.';
   const endsOn = input.ends_on ?? '';
-  if (typeof endsOn !== 'string' || (endsOn && !/^\d{4}-\d{2}-\d{2}$/.test(endsOn))) errors.ends_on = 'Please use a date like 2026-12-31.';
+  if (typeof endsOn !== 'string' || (endsOn && !isRealDate(endsOn))) errors.ends_on = 'Please use a date like 2026-12-31.';
   const value = { message: message ?? '', level, ends_on: endsOn };
   return { value: Object.keys(errors).length ? null : value, errors };
 }

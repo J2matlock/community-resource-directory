@@ -13,8 +13,9 @@ describe('Weekly backup', () => {
 
   it('includes every table, private notes too', async () => {
     const b = await buildBackup(env.DB);
-    expect(Object.keys(b.tables).sort()).toEqual(['barrier_reports', 'categories', 'help_suggestions', 'listing_history', 'listing_reports', 'listings', 'medicaid_plans', 'provider_requests', 'review_items']);
+    expect(Object.keys(b.tables).sort()).toEqual(['barrier_reports', 'categories', 'help_suggestions', 'listing_history', 'listing_reports', 'listings', 'medicaid_plans', 'provider_requests', 'review_items', 'site_notice']);
     expect(b.tables.listings).toHaveLength(5);
+    expect(b.tables.site_notice).toHaveLength(1); // the notice and pause switch
     expect(JSON.stringify(b)).toContain(PRIVATE_MARKER);
   });
 

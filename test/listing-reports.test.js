@@ -63,4 +63,12 @@ describe('One-tap listing reports', () => {
     const { reported } = await (await call('/api/admin/recheck', { as: await token() })).json();
     expect(reported[0]).toMatchObject({ id: 'sample-food-pantry', total: 2, phone: 2 });
   });
+
+  it('keeps the listing\'s own phone number next to the counts (the count must not overwrite it)', async () => {
+    await report({ reason: 'phone' });
+    const { reported } = await (await call('/api/admin/recheck', { as: await token() })).json();
+    expect(reported[0].listing_phone).toBe('(518) 555-0101');
+    expect(reported[0].phone).toBe(1); // how many "phone didn't work" taps
+    expect(reported[0]).toMatchObject({ id: 'sample-food-pantry', total: 1, closed: 0, full: 0 });
+  });
 });

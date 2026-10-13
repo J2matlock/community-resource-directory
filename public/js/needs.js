@@ -35,8 +35,11 @@
     if (!COUNTIES.length && s.barriers.length) {
       var all = Object.keys(s.barriers[0].by_county);
       COUNTIES = all.filter(function (c) { return !/^Other/.test(c); });
+      // The county choices are written into the page itself, so the form works
+      // even when the totals fail to load. An old cached page may still have
+      // only the "Choose…" line; fill it from the totals in that case.
       var sel = form.elements.county;
-      all.forEach(function (c) { sel.appendChild(el('option', {}, c)); });
+      if (sel.options.length <= 1) all.forEach(function (c) { sel.appendChild(el('option', {}, c)); });
     }
     while (totals.firstChild) totals.removeChild(totals.firstChild);
     if (s.reports == null) {

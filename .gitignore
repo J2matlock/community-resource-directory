@@ -22,3 +22,6 @@ CLAUDE.local.md
 .DS_Store
 Thumbs.db
 *.log
+
+# Agent worktrees (Claude Code)
+.claude/worktrees/

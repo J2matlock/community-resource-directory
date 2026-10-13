@@ -10,9 +10,23 @@ export async function getNotice(db) {
 }
 
 // The notice to show today, or null. `today` is YYYY-MM-DD in New York time.
+// The row is kept for 30 seconds (about one read every 30 seconds per running
+// copy of the Worker, instead of one per page view); saving refreshes it, and
+// a database error keeps the last answer. The admin panel uses getNotice()
+// directly, which is always fresh.
+let noticeMemo = { value: null, at: 0 };
+/** Forget the remembered notice (tests, and the pause switch). */
+export function forgetNoticeMemo() { noticeMemo = { value: null, at: 0 }; }
 export async function getActiveNotice(db, today) {
-  const n = await getNotice(db);
-  if (!n.message) return null;
+  if (Date.now() - noticeMemo.at >= 30_000) {
+    try {
+      noticeMemo = { value: await getNotice(db), at: Date.now() };
+    } catch {
+      noticeMemo.at = Date.now();
+    }
+  }
+  const n = noticeMemo.value;
+  if (!n || !n.message) return null;
   if (n.ends_on && n.ends_on < today) return null;
   return n;
 }
@@ -21,7 +35,9 @@ export async function saveNotice(db, { message, level, ends_on }) {
   await db.prepare(`INSERT INTO site_notice (id, message, level, ends_on, updated_at) VALUES (1, ?, ?, ?, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
     ON CONFLICT(id) DO UPDATE SET message = excluded.message, level = excluded.level, ends_on = excluded.ends_on, updated_at = excluded.updated_at`)
     .bind(message, level, ends_on).run();
-  return getNotice(db);
+  const n = await getNotice(db);
+  noticeMemo = { value: n, at: Date.now() };
+  return n;
 }
 
 // Emergency pause (admin switch). The SITE_PAUSED setting is a backup switch
@@ -48,5 +64,6 @@ export async function setPaused(db, paused) {
     ON CONFLICT(id) DO UPDATE SET paused = excluded.paused, updated_at = excluded.updated_at`).bind(paused ? 1 : 0).run();
   const row = await db.prepare('SELECT paused FROM site_notice WHERE id = 1').first();
   pauseMemo = { value: Boolean(row?.paused), at: Date.now() };
+  forgetNoticeMemo(); // same row: read it fresh next time
   return pauseMemo.value;
 }

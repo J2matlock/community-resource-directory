@@ -10,7 +10,6 @@
   <script defer src="/js/nav.js"></script>
   <script defer src="/js/safety.js"></script>
   <script defer src="/js/search.js"></script>
-  <script defer src="/js/qr.js"></script>
   <script defer src="/js/directory.js"></script>
 </head>
 <body data-site-name="Southern ADK Help" data-domain="southernadkhelp.org" data-fallback="call 211 or search 211neny.org">
@@ -104,6 +103,7 @@
     <p id="back-link" class="back-link" hidden><a href="/">← All resources</a></p>
 
     <p id="result-status" class="result-status" role="status" aria-live="polite" tabindex="-1">Loading resources… If nothing appears, <span data-region="fallbackText">call 211 or search 211neny.org</span>.</p>
+    <p id="result-clear" class="result-clear" hidden></p>
     <div id="search-note" class="search-note" aria-live="polite" hidden></div>
     <div id="category-note" class="search-note" hidden></div>
     <div id="search-suggest" class="search-suggest" hidden></div>
@@ -111,6 +111,8 @@
     <p id="plan-note" class="note" hidden></p>
 
     <ol id="results" class="results" aria-labelledby="page-title"></ol>
+    <div id="show-more" class="show-more" hidden></div>
+    <p id="list-live" class="visually-hidden" aria-live="polite"></p>
 
     <aside class="fallback" aria-label="More help">
       <p><strong>Can't find it?</strong> <span data-region="fallbackLinks">Call <a href="tel:211">211</a> or search <a href="https://www.211neny.org/">211neny.org</a></span>.</p>

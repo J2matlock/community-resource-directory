@@ -90,8 +90,12 @@
         </fieldset>
         <div class="field" data-field="county">
           <label for="county">Which county? <span class="req">(required)</span></label>
-          <select id="county" name="county" aria-describedby="county-err">
+          <select id="county" name="county" aria-describedby="county-err" data-region="barrierCounties">
             <option value="">Choose…</option>
+            <option>Warren</option>
+            <option>Washington</option>
+            <option>Saratoga</option>
+            <option>Other or prefer not to say</option>
           </select>
           <p class="error-text" id="county-err" hidden></p>
         </div>
