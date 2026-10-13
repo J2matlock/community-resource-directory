@@ -2,12 +2,14 @@
 // Every change to a listing writes one history row per changed field.
 
 import { validateListing, makeListingId, validateListName, isDvListing } from '../validate.js';
+import { sourcesText } from '../lib/listing-rules.js';
 
-const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans'];
+const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans', 'sources'];
 export const EDITABLE_FIELDS = [
   'name', 'organization', 'category', 'tags', 'phone', 'fax', 'email', 'website', 'address', 'town',
   'serves_counties', 'hours', 'eligibility', 'age_groups', 'cost', 'medicaid_plans', 'medicaid_notes',
   'description', 'private_notes', 'status', 'review_by', 'visibility', 'last_verified', 'last_checked_online',
+  'sources',
 ];
 
 export class UserError extends Error {
@@ -39,6 +41,7 @@ function toDb(field, value) {
 }
 
 function historyValue(field, value) {
+  if (field === 'sources') return sourcesText(value);
   if (JSON_COLUMNS.includes(field)) return (value ?? []).join(', ');
   if (typeof value === 'boolean') return value ? 'yes' : 'no';
   return String(value ?? '');
@@ -268,7 +271,7 @@ export async function exportSheets(db) {
   ]);
   const cols = ['id', ...EDITABLE_FIELDS, 'retired', 'created_at', 'updated_at'];
   const listingRows = listings.results.map(parseRow).map((l) =>
-    cols.map((c) => (Array.isArray(l[c]) ? l[c].join(', ') : typeof l[c] === 'boolean' ? (l[c] ? 'yes' : 'no') : l[c])));
+    cols.map((c) => (c === 'sources' ? sourcesText(l[c]) : Array.isArray(l[c]) ? l[c].join(', ') : typeof l[c] === 'boolean' ? (l[c] ? 'yes' : 'no') : l[c])));
   const requestRows = requests.results.map((r) => {
     let f = {};
     try { f = JSON.parse(r.fields); } catch { /* keep empty */ }
@@ -301,4 +304,16 @@ export async function markRequestHandled(db, id, rawNote) {
   const res = await db.prepare("UPDATE provider_requests SET status = 'Handled', handled_note = ?, handled_at = ? WHERE id = ? AND status = 'New'")
     .bind(note, now(), Number(id)).run();
   if (res.meta.changes !== 1) throw new UserError(409, 'That request was not found or was already handled.');
+}
+
+// One-tap visitor reports from the last 90 days, one row per listing, most
+// reported first. Reports never change a listing; they only flag it here.
+export async function visitorReports(db, days = 90) {
+  const since = new Date(Date.now() - days * 86_400_000).toISOString();
+  const { results } = await db.prepare(`SELECT r.listing_id AS id, l.name, l.phone, COUNT(*) AS total,
+      SUM(r.reason = 'phone') AS phone, SUM(r.reason = 'closed') AS closed, SUM(r.reason = 'full') AS full, MAX(r.created_at) AS latest
+    FROM listing_reports r JOIN listings l ON l.id = r.listing_id
+    WHERE r.created_at > ? AND l.retired = 0
+    GROUP BY r.listing_id ORDER BY total DESC, latest DESC LIMIT 200`).bind(since).all();
+  return results;
 }

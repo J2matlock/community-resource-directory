@@ -72,6 +72,9 @@
         also: (e.also || []).map(words).reduce(function (a, b) { return a.concat(b); }, []),
         note: e.note || '',
         safety: e.safety === true,
+        // by_word: a listing with these words in its name or tags counts as
+        // the right kind of help even if it's filed in another category.
+        byWord: e.by_word === true,
       };
     });
 
@@ -147,10 +150,11 @@
             var dictWords = e.also.concat(h.phrase.split(' ')).filter(function (t) { return t.length > 2 && !filler[t]; });
             // A dictionary word in the listing's name counts more than one in its description.
             var wordWeight = fuzzy ? 0 : dictWords.reduce(function (m, t) { return Math.max(m, weightFor(entry, t, false, true)); }, 0);
+            var byWord = e.byWord && wordWeight >= FIELD_WEIGHTS.tags;
             if (catAt !== -1 || wordWeight) {
               met++;
-              if (catAt !== -1) byCategory++;
-              score += (catAt !== -1 ? 3 - Math.min(catAt, 2) * 0.5 : 0) + (wordWeight ? 1 + wordWeight : 0);
+              if (catAt !== -1 || byWord) byCategory++;
+              score += (catAt !== -1 ? 3 - Math.min(catAt, 2) * 0.5 : byWord ? 3 : 0) + (wordWeight ? 1 + wordWeight : 0);
             }
           });
           terms.forEach(function (t) {

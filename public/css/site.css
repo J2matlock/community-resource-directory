@@ -215,6 +215,11 @@ button.secondary:hover { background: var(--sage); color: var(--accent-dark); }
 .details .phone a::before { content: "\2706\FE0E\00a0"; content: "\2706\FE0E\00a0" / ""; }
 .details .phone a:hover { background: #cbd9bb; text-decoration: underline; }
 .verified { font-size: 0.9rem; color: var(--muted); margin: 0.75rem 0 0; }
+.card-sources { font-size: 0.9rem; color: var(--muted); margin: 0.25rem 0 0; }
+.card-sources p { margin: 0; }
+.card-sources ul { list-style: none; margin: 0; padding: 0; }
+.card-sources li { overflow-wrap: anywhere; }
+.card-sources a { display: inline-flex; align-items: center; min-height: 44px; }
 .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; padding-top: 0.75rem; border-top: 1px solid var(--line); align-items: center; }
 .actions button { background: var(--surface); color: var(--accent); }
 .actions button:hover { background: var(--sage); color: var(--accent-dark); }
@@ -290,7 +295,6 @@ button.secondary:hover { background: var(--sage); color: var(--accent-dark); }
   .site-footer { border-top: 1px solid #000; }
   .details { border-top-color: #999; }
   .fallback { border-left: 0; padding: 0; }
-  .fallback .suggest-button { display: none !important; }
   a { color: inherit; text-decoration: none; }
   h1, h2, h3 { font-family: Georgia, serif; }
 
@@ -359,7 +363,7 @@ button.secondary:hover { background: var(--sage); color: var(--accent-dark); }
   .crisis-list li > a { flex: 1; }
 }
 
-/* "Request a listing" button in the header */
+/* "Report a correction" button in the header */
 .header-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.5rem; margin-bottom: 1rem; }
 .header-row .tagline { margin-bottom: 0; }
 .request-button {
@@ -370,23 +374,6 @@ button.secondary:hover { background: var(--sage); color: var(--accent-dark); }
 .request-button:hover { background: #f6e7dc; color: #7d3519; text-decoration: underline; }
 @media (max-width: 30rem) { .request-button { border-width: 1.5px; padding: 0.3rem 0.9rem; font-size: 0.9rem; } }
 @media print { .request-button { display: none; } }
-.suggest-top { margin: 0.9rem 0 0; }
-/* "Don't see the help you need?": a sage button with a speech bubble, distinct
-   from the pine Search button and the clay provider button. */
-.fallback a.suggest-button, .suggest-button {
-  display: inline-flex; align-items: center; gap: 0.5rem; min-height: 48px; padding: 0.5rem 1.15rem;
-  background: var(--sage); color: var(--accent-dark); border: 2px solid var(--accent); border-radius: 1.4rem;
-  font-weight: 600; line-height: 1.25; text-decoration: none; box-shadow: 0 1px 2px rgba(60, 45, 20, 0.1);
-}
-.suggest-button::before {
-  content: ""; flex: none; width: 1.25em; height: 1.25em;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%232b5a3a' d='M4 3h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-8l-5 4v-4H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm3 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm5 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm5 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z'/%3E%3C/svg%3E") no-repeat center / contain;
-}
-.suggest-button strong { color: var(--accent-dark); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
-.suggest-button:hover { background: #cbd9bb; border-color: var(--accent-dark); }
-@media (max-width: 30rem) { .suggest-button, .fallback a.suggest-button { display: flex; width: 100%; justify-content: center; text-align: left; padding: 0.55rem 1rem; } }
-@media print { .suggest-button { display: none !important; } }
-.fallback .suggest-bottom { margin-top: 0.75rem; }
 .verified a { display: inline-flex; align-items: center; min-height: 44px; }
 .crisis-note { font-size: 0.9rem; opacity: 0.9; align-self: center; }
 
@@ -423,7 +410,7 @@ main h2 { font-size: 1.4rem; }
 .checks.stacked { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
 .checks label { display: flex; align-items: center; gap: 0.5rem; min-height: 44px; font-weight: 400; }
 .checks input { width: 1.4rem; height: 1.4rem; flex: none; accent-color: var(--accent); }
-#barrier-form select, #barrier-form textarea, #suggest-form select, #suggest-form textarea { width: 100%; min-height: 48px; padding: 0.5rem 0.75rem; border: 2px solid var(--input-line); border-radius: var(--radius); font: inherit; background: var(--surface); color: var(--text); }
+#barrier-form select { width: 100%; min-height: 48px; padding: 0.5rem 0.75rem; border: 2px solid var(--input-line); border-radius: var(--radius); font: inherit; background: var(--surface); color: var(--text); }
 #barrier-form fieldset { border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--surface); padding: 0.5rem 0.9rem 0.5rem; margin: 0 0 1.1rem; min-width: 0; }
 #barrier-form legend { font-weight: 700; float: left; width: 100%; padding: 0.35rem 0 0.4rem; }
 #barrier-form legend + * { clear: both; }
@@ -431,7 +418,7 @@ main h2 { font-size: 1.4rem; }
 #barrier-form label { font-weight: 600; }
 #barrier-form .checks label { font-weight: 400; }
 #barrier-form .hint { display: block; }
-#barrier-form .invalid select, #barrier-form .invalid textarea, #suggest-form .invalid select, #suggest-form .invalid textarea { border-color: var(--error); border-width: 3px; }
+#barrier-form .invalid select { border-color: var(--error); border-width: 3px; }
 .totals { width: 100%; border-collapse: collapse; margin: 0.5rem 0 1rem; background: var(--surface); border-radius: var(--radius); }
 .totals th, .totals td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
 .totals thead th { background: var(--panel); color: var(--accent-dark); }
@@ -449,7 +436,10 @@ main h2 { font-size: 1.4rem; }
 .filter-row input { flex: 1; min-width: 0; min-height: 48px; padding: 0.5rem 0.75rem; border: 2px solid var(--input-line); border-radius: var(--radius); font: inherit; background: var(--surface); color: var(--text); }
 @media print { .site-nav { display: none; } }
 .site-name a { display: inline-flex; align-items: center; min-height: 44px; }
-@media print { .verified a { display: none; } }
+@media print {
+  .verified a, .verified .sep { display: none; }
+  .card-sources a { min-height: 0; display: inline; }
+}
 /* Phones: the main menu is one row you can swipe, so search stays near the top. */
 @media (max-width: 40rem) {
   .site-nav ul { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 0.45rem 0.45rem 0.5rem; margin: -0.45rem -0.45rem 0; }
@@ -558,3 +548,25 @@ body.has-quick-exit { padding-bottom: 4.5rem; }
   .site-header { padding-bottom: calc(0.4rem + 22px); background-size: 100% 22px; }
   .site-header + main { padding-top: 0.75rem; }
 }
+
+/* Emergency pause page: crisis numbers and 211 only */
+.paused-page { max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }
+.paused-page h1 { margin-top: 0; }
+.paused-list { list-style: none; margin: 0 0 1.25rem; padding: 0; display: grid; gap: 0.5rem; }
+.paused-list a { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem 0.6rem; min-height: 48px; padding: 0.5rem 1rem; border: 2px solid var(--crisis-bg, #8c1c13);
+  border-radius: 0.75rem; color: inherit; text-decoration: none; font-size: 1.1rem; }
+.paused-list a strong { font-size: 1.25rem; white-space: nowrap; }
+.paused-note { margin: -0.5rem 0 1.25rem; }
+
+/* One-tap "Did something not work?" on listing cards */
+.report-box { margin: 0.25rem 0 0; font-size: 0.95rem; }
+.report-box > summary { min-height: 44px; display: inline-flex; align-items: center; gap: 0.3rem; cursor: pointer; color: var(--muted); text-decoration: underline; }
+.report-box > summary::before { content: "▸"; content: "▸" / ""; color: var(--accent); text-decoration: none; }
+.report-box[open] > summary::before { content: "▾"; content: "▾" / ""; }
+.report-buttons button[aria-disabled="true"] { opacity: 0.6; cursor: progress; }
+.report-box .note { margin: 0.25rem 0 0.5rem; }
+.report-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.report-buttons button { min-height: 44px; }
+.report-check { margin-top: 0.5rem; }
+.report-status { margin: 0.4rem 0 0; }
+@media print { .report-box { display: none; } }

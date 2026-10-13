@@ -23,16 +23,26 @@ describe('Rule 5: provider form input is untrusted', () => {
     expect(res.status).toBe(201);
     expect(await countRows('provider_requests')).toBe(1);
     const row = await env.DB.prepare('SELECT * FROM provider_requests').first();
-    expect(JSON.parse(row.fields)).toMatchObject({ organization: 'Practice Pantry Program', phone: '(518) 555-0130', website: 'https://example.org' });
+    expect(JSON.parse(row.fields)).toEqual({ request_type: 'correction', organization: 'Practice Pantry Program', correction: 'New hours: Fridays 10 AM to noon.' });
     expect(row.email_sent).toBe(1);
     expect(email.sent).toHaveLength(1);
     const msg = email.sent[0];
     expect(msg.to).toBe(env.FORWARD_TO);
     expect(msg.html).toBeUndefined();
     expect(msg.from).toBe('requests@example.test');
-    expect(msg.subject).toBe('Listing request #' + row.id + ': Practice Pantry Program');
-    expect(msg.text).toContain('Free groceries once a month.');
-    expect(msg.text).toContain('https[:]//example[.]org');
+    expect(msg.subject).toBe('Correction request #' + row.id + ': Practice Pantry Program');
+    expect(msg.text).toContain('New hours: Fridays 10 AM to noon.');
+  });
+
+  it('never stores a name, contact details or any field besides the correction', async () => {
+    const { res, email } = await send(validRequest({ correction: 'See https://example.org/new-hours', submitter_name: 'Sam Provider', submitter_contact: 'sam@example.org', services: 'Groceries', phone: '518-555-0130' }));
+    expect(res.status).toBe(201);
+    const row = await env.DB.prepare('SELECT fields FROM provider_requests').first();
+    expect(Object.keys(JSON.parse(row.fields)).sort()).toEqual(['correction', 'organization', 'request_type']);
+    expect(row.fields).not.toContain('Sam Provider');
+    expect(row.fields).not.toContain('sam@example.org');
+    expect(email.sent[0].text).not.toContain('Sam Provider');
+    expect(email.sent[0].text).toContain('https[:]//example[.]org');
   });
 
   it('keeps the request even if the email fails', async () => {
@@ -43,9 +53,9 @@ describe('Rule 5: provider form input is untrusted', () => {
   });
 
   it('refuses missing required answers and saves nothing', async () => {
-    const { res, email } = await send(validRequest({ organization: '', services: '  ', submitter_name: '', ok_to_publish: false }));
+    const { res, email } = await send(validRequest({ organization: '', correction: '  ' }));
     expect(res.status).toBe(422);
-    expect(Object.keys((await res.json()).errors).sort()).toEqual(['ok_to_publish', 'organization', 'services', 'submitter_name']);
+    expect(Object.keys((await res.json()).errors).sort()).toEqual(['correction', 'organization']);
     expect(await countRows('provider_requests')).toBe(0);
     expect(email.sent).toHaveLength(0);
   });
@@ -53,13 +63,10 @@ describe('Rule 5: provider form input is untrusted', () => {
   it('refuses wrong types, unknown choices and over-long answers', async () => {
     for (const bad of [
       { organization: { evil: true } },
-      { counties: ['Mars'] },
-      { cost: 'Free' },
-      { age_groups: [1, 2] },
-      { services: 'x'.repeat(3001) },
-      { phone: 'call me' },
-      { website: 'javascript:alert(1)' },
-      { email: 'not-an-email' },
+      { correction: ['a list'] },
+      { correction: 'x'.repeat(3001) },
+      { organization: 'x'.repeat(201) },
+      { request_type: 'new' },
     ].entries()) {
       // A different sender each time: rejected attempts count toward the hourly limit too.
       const { res } = await send(validRequest(bad[1]), { ip: `192.0.2.${bad[0] + 1}` });
@@ -69,7 +76,7 @@ describe('Rule 5: provider form input is untrusted', () => {
   });
 
   it('refuses a huge request', async () => {
-    const { res } = await send(validRequest({ services: 'x'.repeat(30_000) }));
+    const { res } = await send(validRequest({ correction: 'x'.repeat(30_000) }));
     expect(res.status).toBe(413);
   });
 
@@ -115,10 +122,10 @@ describe('Rule 5: provider form input is untrusted', () => {
     expect(await countRows('provider_requests')).toBe(0);
   });
 
-  it('accepts a correction request without full program details, and labels it', async () => {
+  it('accepts a correction with just the listing and what to fix, and labels it', async () => {
     const { res, email } = await send({
       request_type: 'correction', organization: 'Practice Pantry Program', correction: 'New phone is 518-555-0199.',
-      submitter_name: 'Sam Provider', submitter_contact: 'sam@example.org', nickname: '', turnstile_token: 'pass-token',
+      nickname: '', turnstile_token: 'pass-token',
     });
     expect(res.status).toBe(201);
     const row = await env.DB.prepare('SELECT fields FROM provider_requests').first();
@@ -127,19 +134,21 @@ describe('Rule 5: provider form input is untrusted', () => {
     expect(email.sent[0].text).toContain('What needs to be corrected');
   });
 
-  it('a correction must say what to correct, and the request type must be known', async () => {
-    const base = { organization: 'X', submitter_name: 'Sam', submitter_contact: 'sam@example.org', nickname: '', turnstile_token: 'pass-token' };
+  it('a correction must say what to correct, and new-listing requests are refused', async () => {
+    const base = { organization: 'X', nickname: '', turnstile_token: 'pass-token' };
     const a = await send({ ...base, request_type: 'correction', correction: '' }, { ip: '203.0.113.21' });
     expect(a.res.status).toBe(422);
     expect((await a.res.json()).errors.correction).toBeTruthy();
     const b = await send({ ...validRequest(), request_type: 'delete everything' }, { ip: '203.0.113.22' });
     expect(b.res.status).toBe(422);
+    const c = await send({ ...validRequest(), request_type: 'new' }, { ip: '203.0.113.23' });
+    expect(c.res.status).toBe(422);
     expect(await countRows('provider_requests')).toBe(0);
   });
 
   it('a correction never accepts a shelter location', async () => {
     const { res } = await send({ request_type: 'correction', organization: 'Wellspring', correction: 'The shelter is located at 12 Elm Street now.',
-      submitter_name: 'Sam', submitter_contact: 'sam@example.org', nickname: '', turnstile_token: 'pass-token' }, { ip: '203.0.113.31' });
+      nickname: '', turnstile_token: 'pass-token' }, { ip: '203.0.113.31' });
     expect(res.status).toBe(422);
     expect(await countRows('provider_requests')).toBe(0);
   });
@@ -150,15 +159,15 @@ describe('Rule 5: provider form input is untrusted', () => {
   });
 
   it('stores typed HTML as plain text and the admin inbox returns it as data', async () => {
-    await send(validRequest({ organization: '<img src=x onerror=alert(1)>', services: '<script>alert(1)</script>' }));
+    await send(validRequest({ organization: '<img src=x onerror=alert(1)>', correction: '<script>alert(1)</script>' }));
     const res = await call('/api/admin/requests', { as: await token() });
     expect(res.headers.get('Content-Type')).toMatch(/application\/json/);
     const { requests } = await res.json();
-    expect(requests[0].fields.services).toBe('<script>alert(1)</script>');
+    expect(requests[0].fields.correction).toBe('<script>alert(1)</script>');
   });
 
   it('refuses client information', async () => {
-    const { res } = await send(validRequest({ services: 'Our client DOB: 1/2/1960 needs help' }));
+    const { res } = await send(validRequest({ correction: 'Our client DOB: 1/2/1960 needs help' }));
     expect(res.status).toBe(422);
   });
 

@@ -42,7 +42,7 @@
         <p class="site-name"><a href="/" data-region="siteName">Southern ADK Help</a></p>
         <p class="tagline" data-region="tagline">Free and low-cost help in Warren, Washington and Saratoga Counties, NY</p>
       </div>
-      <a class="request-button" href="/request"><span class="rb-long">Run a program? </span><strong>Request a listing or a correction</strong></a>
+      <a class="request-button" href="/request"><span class="rb-long">See a mistake? </span><strong>Report a correction</strong></a>
     </div>
     <nav class="site-nav" aria-label="Main">
       <ul>
@@ -99,13 +99,13 @@
         <button type="button" id="clear-filters" class="secondary">Clear search and filters</button>
       </details>
 
-      <p class="suggest-top"><a class="suggest-button" href="/suggest"><span>Don't see the help you need? <strong>Tell us</strong></span></a></p>
     </div>
 
     <p id="back-link" class="back-link" hidden><a href="/">← All resources</a></p>
 
     <p id="result-status" class="result-status" role="status" aria-live="polite" tabindex="-1">Loading resources… If nothing appears, <span data-region="fallbackText">call 211 or search 211neny.org</span>.</p>
     <div id="search-note" class="search-note" aria-live="polite" hidden></div>
+    <div id="category-note" class="search-note" hidden></div>
     <div id="search-suggest" class="search-suggest" hidden></div>
     <p id="offline-note" class="offline-note" role="status" hidden></p>
     <p id="plan-note" class="note" hidden></p>
@@ -114,10 +114,10 @@
 
     <aside class="fallback" aria-label="More help">
       <p><strong>Can't find it?</strong> <span data-region="fallbackLinks">Call <a href="tel:211">211</a> or search <a href="https://www.211neny.org/">211neny.org</a></span>.</p>
-      <p class="suggest-bottom"><a class="suggest-button" href="/suggest"><span>Don't see the help you need? <strong>Tell us anonymously</strong></span></a></p>
     </aside>
 
     <p id="handout-live" class="visually-hidden" aria-live="polite"></p>
+    <div id="turnstile-key" data-sitekey="" hidden></div>
     <div id="handout-bar" class="handout-bar" hidden>
       <p id="handout-count"></p>
       <p class="handout-hint">About 5 fit on one page.</p>
@@ -128,9 +128,9 @@
   </main>
 
   <footer class="site-footer">
-    <p class="scam-line"><strong>Real help is free.</strong> No real program asks for gift cards, wire transfers or a fee to apply or join a waiting list. <a href="/learn#scam-real-help-is-free">How to spot a scam</a>.</p>
-    <p><strong>A listing is not an endorsement.</strong> Details can change. Please call ahead to confirm.</p>
-    <p>Run a program that should be listed, or see something wrong? <a href="/request">Request a listing or a correction</a>.</p>
+    <p class="scam-line"><strong>Watch for scams.</strong> No real program asks you to pay with gift cards or wire transfers, and it's free to apply for government benefits, Section 8 or public housing. <a href="/learn#scam-real-help-is-free">How to spot a scam</a>.</p>
+    <p><strong>A listing is not an endorsement.</strong> Details can change. Please call ahead to confirm. <a href="/terms">Terms of use</a>.</p>
+    <p>See something wrong in a listing? <a href="/request">Report a correction</a>. Run a program that should be listed? See <a href="/about#who-gets-listed">who gets listed</a>.</p>
   </footer>
 
   <section id="handout" class="handout" aria-hidden="true"></section>

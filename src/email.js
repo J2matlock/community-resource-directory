@@ -3,12 +3,13 @@
 
 import { BARRIERS } from './validate.js';
 
+// Older requests (before 2026-10-12) also had program details and the
+// sender's contact; the form now takes only these two fields.
 const LABELS = [
   ['organization', 'Organization'], ['correction', 'What needs to be corrected'], ['services', 'Services'], ['eligibility', 'Who can get help, and ages'],
   ['age_groups', 'Age groups'], ['cost', 'Cost'], ['medicaid', 'Insurance accepted'], ['counties', 'Counties served'],
   ['address', 'Address'], ['hours', 'Hours'], ['phone', 'Phone'], ['email', 'Email'], ['website', 'Website'],
-  ['how_to_start', 'How clients start'], ['submitter_name', 'Submitted by'], ['submitter_contact', 'Submitter contact'],
-  ['ok_to_publish', 'OK to publish'],
+  ['how_to_start', 'How clients start'],
 ];
 
 // One line, no control characters: safe for an email subject.
@@ -34,7 +35,7 @@ export function requestEmail(id, f, adminUrl) {
   const lines = [
     `${kind} #${id}`,
     '',
-    'Typed by the provider. Not checked yet: call or email them to confirm before listing.',
+    'Typed by a site visitor (no name or contact is collected). Not checked yet: confirm with the program before changing the listing.',
     'Web addresses below are broken up on purpose so they can\'t be clicked.',
     '',
   ];
@@ -70,15 +71,3 @@ export function barrierEmail(id, f) {
   return { subject: `Barrier report #${id}: ${oneLine(f.county, 40)}`, text: lines.join('\n') };
 }
 
-// Anonymous "Don't see the help you need?" message: plain text only.
-export function suggestionEmail(id, f) {
-  const lines = [
-    `Help suggestion #${id} (anonymous)`,
-    '',
-    `County: ${f.county || 'Not given'}`,
-    '',
-    'What they were looking for (web addresses broken up on purpose):',
-    ...defang(f.looking_for).split('\n').map((l) => `  ${l}`),
-  ];
-  return { subject: `Help suggestion #${id}: ${oneLine(defang(f.looking_for), 60)}`, text: lines.join('\n') };
-}

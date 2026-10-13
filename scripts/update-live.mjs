@@ -12,7 +12,8 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { validateListing, isDvListing } from '../src/validate.js';
-import { EDITABLE_FIELDS } from '../src/db/admin.js';
+import { EDITABLE_FIELDS, todayLocal } from '../src/db/admin.js';
+import { sourcesText } from '../src/lib/listing-rules.js';
 
 const [file] = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const remote = process.argv.includes('--remote');
@@ -28,9 +29,9 @@ const where = remote ? '--remote' : '--local';
 const wrangler = (args) => execFileSync('npx', ['wrangler', ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
 const query = (sql) => JSON.parse(wrangler(['d1', 'execute', 'DB', where, '--json', '--command', sql]))[0].results;
 
-const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans'];
+const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans', 'sources'];
 const toDb = (f, v) => (JSON_COLUMNS.includes(f) ? JSON.stringify(v ?? []) : v ?? '');
-const historyValue = (f, v) => (JSON_COLUMNS.includes(f) ? (v ?? []).join(', ') : String(v ?? ''));
+const historyValue = (f, v) => (f === 'sources' ? sourcesText(v) : JSON_COLUMNS.includes(f) ? (v ?? []).join(', ') : String(v ?? ''));
 const q = (v) => `'${String(v ?? '').replace(/'/g, "''")}'`;
 
 const { updates = {}, retire = [] } = JSON.parse(readFileSync(file, 'utf8'));
@@ -52,7 +53,7 @@ for (const [id, raw] of Object.entries(updates)) {
   const fields = Object.fromEntries(Object.entries(raw).filter(([k]) => !k.startsWith('_')));
   // A researched update (it names its sources, not "owner answer…") means the
   // listing was just checked against its sources online.
-  if (!('last_checked_online' in fields) && raw._src && !/^owner/i.test(raw._src)) fields.last_checked_online = new Date().toISOString().slice(0, 10);
+  if (!('last_checked_online' in fields) && raw._src && !/^owner/i.test(raw._src)) fields.last_checked_online = todayLocal();
   const input = { ...Object.fromEntries(EDITABLE_FIELDS.map((f) => [f, existing[f]])), ...fields };
   const opts = { confirmedAddress: isDvListing(existing) && existing.address ? existing.address : undefined };
   const { value, errors, warnings } = validateListing(input, lists, opts);

@@ -71,6 +71,13 @@ const CASES = [
   ['winter coat', ['Clothing']],
   ['pet food', ['Pet Help']],
   ['urgent care', ['Urgent Care']],
+  ['needle exchange', ['Substance Use and Recovery', 'Medical']],
+  ['test strips', ['Substance Use and Recovery', 'Medical']],
+  ['methadone clinic', ['Substance Use and Recovery']],
+  ['bad trip', ['Substance Use and Recovery', 'Crisis Help']],
+  ['using alone', ['Substance Use and Recovery', 'Crisis Help']],
+  ['spend down', ['Disability Services', 'Legal Help']],
+  ['pooled trust', ['Disability Services', 'Legal Help']],
 ];
 
 let pass = 0;

@@ -96,6 +96,108 @@
     return 'Not yet checked';
   }
 
+  // Where the listing's details come from: up to 3 links, one per line, each
+  // with the month it was checked ("Info from: wahacaa.org (October 2026)").
+  function sourcesBlock(l, single) {
+    var srcs = (l.sources || []).filter(function (s) { return s && s.url && safeWebsite(s.url); });
+    if (!srcs.length) return null;
+    var hosts = srcs.map(function (s) { return websiteLabel(s.url); });
+    var forWho = single ? ' (source for this listing)' : ' (source for ' + l.name + ')';
+    var items = srcs.map(function (s, i) {
+      var href = safeWebsite(s.url);
+      var text = hosts[i];
+      // Two sources on the same site: add the start of the page path so they differ.
+      if (hosts.indexOf(text) !== hosts.lastIndexOf(text)) {
+        try {
+          var first = new URL(href).pathname.split('/').filter(Boolean)[0] || '';
+          if (first) text += '/' + (first.length > 20 ? first.slice(0, 20) + '…' : first);
+        } catch (e) { /* keep host */ }
+      }
+      var d = s.seen ? new Date(s.seen + 'T12:00:00') : null;
+      var when = d && !isNaN(d.getTime()) ? ' (' + d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) + ')' : '';
+      return el('li', {}, el('a', { href: href, rel: 'noopener noreferrer nofollow' }, text, hidden(forWho)), when);
+    });
+    return el('div', { class: 'card-sources' }, el('p', {}, 'Info from:'), el('ul', {}, items));
+  }
+
+  // One-tap "This didn't work" reports: anonymous and tap-only. The visitor
+  // picks one of three reasons; Cloudflare's "are you human" check loads only
+  // then. Reports go to the owner's re-check list and never change a listing.
+  var REPORT_REASONS = [['phone', 'The phone number didn\u2019t work'], ['closed', 'Closed or moved'], ['full', 'Not taking new people']];
+  var turnstileLoading = null;
+  function loadTurnstile() {
+    if (window.turnstile) return Promise.resolve();
+    if (turnstileLoading) return turnstileLoading;
+    turnstileLoading = new Promise(function (resolve, reject) {
+      window.sadkTurnstileReady = resolve;
+      var s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=sadkTurnstileReady';
+      s.async = true;
+      s.onerror = function () { turnstileLoading = null; reject(new Error('load')); };
+      document.head.appendChild(s);
+    });
+    return turnstileLoading;
+  }
+
+  function reportBlock(l, who) {
+    var keyEl = document.getElementById('turnstile-key');
+    var sitekey = keyEl ? keyEl.getAttribute('data-sitekey') : '';
+    if (!sitekey) return null;
+    var status = el('p', { class: 'report-status', role: 'status', tabindex: '-1' });
+    var hint = el('p', { class: 'note' }, 'Tap one. It\u2019s anonymous: we only learn which listing and which button.');
+    var sending = false;
+    var check = el('div', { class: 'report-check' });
+    var buttons = el('div', { class: 'report-buttons' });
+    var widgetId = null;
+    // aria-disabled (not disabled) while sending, so keyboard focus stays on the button.
+    function busy(on) {
+      sending = on;
+      Array.prototype.forEach.call(buttons.querySelectorAll('button'), function (b) { if (on) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled'); });
+    }
+    function fail(msg) {
+      status.textContent = msg + ' You can also use "Report a correction".';
+      busy(false);
+    }
+    function send(reason) {
+      if (sending) return;
+      busy(true);
+      status.textContent = 'Checking you\u2019re human\u2026 If a box appears, tick it.';
+      loadTurnstile().then(function () {
+        if (widgetId !== null) { try { window.turnstile.remove(widgetId); } catch (e) { /* already gone */ } }
+        while (check.firstChild) check.removeChild(check.firstChild);
+        widgetId = window.turnstile.render(check, {
+          sitekey: sitekey, action: 'report', size: check.clientWidth < 300 ? 'compact' : 'flexible',
+          callback: function (token) {
+            status.textContent = 'Sending\u2026';
+            fetch('/api/listing-reports', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ listing_id: l.id, reason: reason, nickname: '', turnstile_token: token }) })
+              .then(function (res) {
+                if (res.ok) {
+                  status.textContent = 'Thanks. We\u2019ll check this listing.';
+                  status.focus();
+                  while (buttons.firstChild) buttons.removeChild(buttons.firstChild);
+                  while (check.firstChild) check.removeChild(check.firstChild);
+                  hint.hidden = true;
+                } else {
+                  fail(res.status === 429 ? 'Too many reports right now. Please try again later.' : 'That didn\u2019t send.');
+                }
+              })
+              .catch(function () { fail('That didn\u2019t send. Please check your connection.'); });
+          },
+          'error-callback': function () { fail('The \u201care you human\u201d check didn\u2019t work.'); },
+          'expired-callback': function () { fail('The \u201care you human\u201d check ran out of time. Please tap again.'); },
+          'timeout-callback': function () { fail('The \u201care you human\u201d check ran out of time. Please tap again.'); },
+        });
+      }).catch(function () { fail('The \u201care you human\u201d check didn\u2019t load.'); });
+    }
+    REPORT_REASONS.forEach(function (r) {
+      buttons.appendChild(el('button', { type: 'button', class: 'secondary', onclick: function () { send(r[0]); } }, r[1], hidden(who)));
+    });
+    return el('details', { class: 'report-box' },
+      el('summary', {}, 'Did something not work?', hidden(who)),
+      hint, buttons, check, status);
+  }
+
   // Domestic violence listings use a neutral address ("h-…") everywhere, so
   // browser history, shared links and QR codes don't name the program.
   // Same formula as src/lib/neutral-id.js.
@@ -341,8 +443,10 @@
         detail('Email', emailValue),
         detail('Serves', l.serves_counties.map(function (c) { return c === 'Regional' ? 'Whole region' : c + ' County'; }).join(', '))
       ),
-      el('p', { class: 'verified' }, checkedLine(l), ' · ',
-        el('a', { href: l.category === DV ? '/request?type=correction' : '/request?type=correction&listing=' + encodeURIComponent(l.name) + '&id=' + encodeURIComponent(l.id) }, 'Report a change', hidden(who))),
+      el('p', { class: 'verified' }, checkedLine(l), el('span', { class: 'sep', 'aria-hidden': 'true' }, ' · '),
+        el('a', { href: l.category === DV ? '/request?type=correction' : '/request?type=correction&listing=' + encodeURIComponent(l.name) + '&id=' + encodeURIComponent(l.id) }, 'Report a correction', hidden(who))),
+      sourcesBlock(l, single),
+      reportBlock(l, who),
       el('div', { class: 'actions' },
         el('button', { type: 'button', onclick: function () { copy(l.category === DV ? textMessage(l) : shareText(l), copiedId, 'Copied the details'); } }, 'Copy details', hidden(who)),
         el('button', { type: 'button', onclick: function () { textListing(l); } }, 'Text', hidden(' details' + who)),
@@ -419,10 +523,27 @@
 
   // Plain explainers ("DSS = your county's Department of Social Services") and,
   // when the search wasn't understood, category suggestions to tap.
+  // Categories where people choose among many providers: point to the full
+  // official list too, so this directory never looks like the only choice.
+  var CARE_COMPARE = ['Home Care', 'Senior Living and Nursing Homes', 'Hospice and Caregiver Support'];
+  function careCompareNote() {
+    return el('p', {}, 'Choosing a nursing home, home health agency or hospice? Medicare\u2019s ',
+      el('a', { href: 'https://www.medicare.gov/care-compare/', rel: 'noopener' }, 'Care Compare'),
+      ' lists every Medicare-approved option near you, with ratings. This directory lists only some of them.');
+  }
+
   function renderSearchHelp(count) {
     var notes = state.q.trim() ? lastSearch.notes : [];
-    setChildren($('search-note'), notes.map(function (n) { return el('p', {}, withPhoneLinks(n)); }));
-    $('search-note').hidden = !notes.length;
+    var nodes = notes.map(function (n) { return el('p', {}, withPhoneLinks(n)); });
+    setChildren($('search-note'), nodes);
+    $('search-note').hidden = !nodes.length;
+    // Not a live region, and only rebuilt when it changes, so screen readers don't repeat it.
+    var wantCare = CARE_COMPARE.indexOf(state.category) !== -1;
+    var catNote = $('category-note');
+    if (catNote && catNote.hidden === wantCare) {
+      setChildren(catNote, wantCare ? [careCompareNote()] : []);
+      catNote.hidden = !wantCare;
+    }
     var suggest = (lastSearch.mode === 'unsure' || !count) && state.q.trim()
       ? (lastSearch.suggestions.length ? lastSearch.suggestions : ['Food', 'Rent, Utility and Emergency Help', 'Housing and Shelter', 'Medical'])
           .filter(function (c) { return data.categories.indexOf(c) !== -1; })

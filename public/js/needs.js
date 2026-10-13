@@ -119,7 +119,7 @@
     var tokenInput = form.querySelector('[name="cf-turnstile-response"]');
     var body = {
       barriers: picked, county: form.elements.county.value, reporter: form.elements.reporter.value,
-      comment: form.elements.comment.value, nickname: form.elements.nickname.value,
+      nickname: form.elements.nickname.value,
       turnstile_token: tokenInput ? tokenInput.value : '',
     };
     var missing = {};

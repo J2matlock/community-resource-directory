@@ -10,10 +10,12 @@ import { getPublicDirectory } from './db/public.js';
 import { handleAdminApi } from './routes/admin-api.js';
 import { handleProviderRequest } from './routes/provider-form.js';
 import { handleBarrierReport, barrierSummary } from './routes/barriers.js';
-import { handleSuggestion } from './routes/suggestions.js';
+import { handleListingReport } from './routes/listing-reports.js';
 import { withSecurityHeaders, json, notAvailable, notFound, isSameOrigin } from './http.js';
 import { decoratePage, sitemap, robots } from './routes/pages.js';
 import { emailWeeklyBackup } from './backup.js';
+import { isPaused } from './db/notice.js';
+import { pausedPage } from './routes/paused.js';
 
 function isAdminPath(path) {
   return path === '/admin' || path.startsWith('/admin/') || path.startsWith('/api/admin/');
@@ -28,6 +30,16 @@ async function route(request, env, url, admin) {
   }
 
   if (path.startsWith('/api/admin/')) return handleAdminApi(request, env, url, admin);
+
+  // Emergency pause: every public address shows only the crisis numbers and
+  // 211; forms take nothing. The admin panel (above and isAdminPath) still works.
+  // The pause page's own style and cleanup script always load.
+  const pauseExempt = path === '/robots.txt' || path === '/css/site.css' || path === '/js/paused.js';
+  if (!isAdminPath(path) && !pauseExempt && (await isPaused(env))) {
+    if (path.startsWith('/api/')) return json({ error: 'The directory is paused for now. Call 211 for help finding services.', paused: true }, 503, { 'Cache-Control': 'no-store' });
+    if (method !== 'GET' && method !== 'HEAD') return json({ error: 'Not allowed.' }, 405);
+    return pausedPage();
+  }
 
   if (path === '/api/listings') {
     if (method !== 'GET' && method !== 'HEAD') return json({ error: 'Not allowed.' }, 405);
@@ -53,15 +65,20 @@ async function route(request, env, url, admin) {
     return handleProviderRequest(request, env, url);
   }
 
+  if (path === '/api/listing-reports') {
+    if (method !== 'POST') return json({ error: 'Not allowed.' }, 405);
+    return handleListingReport(request, env, url);
+  }
+
   if (path === '/api/barriers') {
     if (method !== 'POST') return json({ error: 'Not allowed.' }, 405);
     return handleBarrierReport(request, env, url);
   }
 
-  if (path === '/api/suggestions') {
-    if (method !== 'POST') return json({ error: 'Not allowed.' }, 405);
-    return handleSuggestion(request, env, url);
-  }
+  // The "Don't see the help you need?" form was removed (owner decision,
+  // 2026-10-12). Old links go to the directory; the form address takes nothing.
+  if (path === '/api/suggestions') return json({ error: 'This form has been removed.' }, 410);
+  if (path === '/suggest') return Response.redirect(new URL('/', url).toString(), 302);
 
   if (path === '/api/barriers/summary') {
     if (method !== 'GET' && method !== 'HEAD') return json({ error: 'Not allowed.' }, 405);
@@ -96,14 +113,14 @@ async function route(request, env, url, admin) {
   if (/^\/listing\/[a-z0-9-]{1,80}$/.test(path)) {
     // Each listing has its own link, served by the directory page.
     res = await env.ASSETS.fetch(new Request(new URL('/', url), request));
-  } else if (path === '/request' || path === '/needs' || path === '/suggest') {
-    // Pages with a form get the Turnstile site key from the settings.
+  } else if (path === '/request' || path === '/needs' || path === '/about' || path === '/terms') {
+    // Pages with a form get the Turnstile site key, and the support address is filled in.
     const page = await env.ASSETS.fetch(request);
     const support = env.SUPPORT_EMAIL || '';
     res = new HTMLRewriter()
       .on('.cf-turnstile', { element: (e) => e.setAttribute('data-sitekey', env.TURNSTILE_SITE_KEY || '') })
-      .on('#support-email', { element: (e) => { if (support) { e.setAttribute('href', `mailto:${support}`); e.setInnerContent(support); } } })
-      .on('#support-line', { element: (e) => { if (support) e.removeAttribute('hidden'); } })
+      .on('.support-email', { element: (e) => { if (support) { e.setAttribute('href', `mailto:${support}`); e.setInnerContent(support); } } })
+      .on('.support-line', { element: (e) => { if (support) e.removeAttribute('hidden'); } })
       .transform(page);
   } else {
     res = await env.ASSETS.fetch(request);

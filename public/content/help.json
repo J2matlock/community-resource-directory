@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-10",
+ "updated": "2026-10-12",
  "orgs": [
   {
    "name": "Comfort Food Community",
@@ -36,7 +36,7 @@
   {
    "name": "Wellspring",
    "listing_id": "wellspring",
-   "what_it_funds": "Gifts keep Wellspring's domestic violence and sexual assault services free for survivors in Saratoga and Washington Counties.",
+   "what_it_funds": "Gifts keep Wellspring's services free for survivors of domestic violence and sexual assault in Saratoga County, and of sexual assault in Washington County.",
    "donate_url": "https://www.wellspringcares.org/ways-to-donate/",
    "volunteer_url": "https://www.wellspringcares.org/make-a-change/",
    "wishlist_url": "https://www.wellspringcares.org/wishlist/"
@@ -276,7 +276,7 @@
   {
    "name": "Rural Law Center of New York",
    "listing_id": "rural-law-center-of-new-york",
-   "what_it_funds": "Gifts support free legal help for people in rural northern New York.",
+   "what_it_funds": "Gifts support free civil legal help for low-income people in rural New York.",
    "donate_url": "https://rurallawcenter.org/donate/",
    "volunteer_url": "https://rurallawcenter.org/volunteer/",
    "wishlist_url": ""
@@ -369,7 +369,7 @@
   },
   {
    "name": "The Legal Project",
-   "what_it_funds": "Gifts help provide free civil legal help to low-income people, including crime victims, domestic violence survivors, older adults and immigrants.",
+   "what_it_funds": "Gifts help provide free civil legal help to low-income people, including crime victims, domestic violence survivors and immigrants.",
    "donate_url": "https://legalproject.org/donate/",
    "listing_id": "the-legal-project"
   },
@@ -405,7 +405,7 @@
   },
   {
    "name": "Northern Rivers Family of Services",
-   "what_it_funds": "Gifts support Northern Rivers' services for children, adults and families, including mental health care and foster care.",
+   "what_it_funds": "Gifts support Northern Rivers' services for children, adults and families.",
    "donate_url": "https://www.northernrivers.org/giving/make-a-donation",
    "volunteer_url": "https://www.northernrivers.org/get-involved/volunteer",
    "listing_id": "mobile-crisis-team-northern-rivers"
@@ -426,12 +426,12 @@
   },
   {
    "name": "Glens Falls Hospital Foundation",
-   "what_it_funds": "Gifts help Glens Falls Hospital care for everyone, whether or not they can pay.",
+   "what_it_funds": "Gifts support Glens Falls Hospital's patient care and programs.",
    "donate_url": "https://www.albanymed.org/glensfalls/glens-falls-hospital-foundation-donations/"
   },
   {
    "name": "Saratoga Hospital Foundation",
-   "what_it_funds": "Gifts support Saratoga Hospital; you can pick the area of greatest need, the Cancer Patient Fund or the Saratoga Community Health Center.",
+   "what_it_funds": "Gifts support Saratoga Hospital and its programs. To give to a certain fund, call the Foundation at (518) 583-8340.",
    "donate_url": "https://saratogahospital.app.neoncrm.com/forms/default-donation-form-individual"
   },
   {
@@ -442,7 +442,7 @@
   },
   {
    "name": "Planned Parenthood of Greater New York",
-   "what_it_funds": "Gifts support Planned Parenthood of Greater New York, which runs the Queensbury and Saratoga Springs health centers.",
+   "what_it_funds": "Gifts support Planned Parenthood of Greater New York and its health centers. (Upper Hudson Planned Parenthood is taking over care in Saratoga County, announced August 2026.)",
    "donate_url": "https://www.plannedparenthood.org/planned-parenthood-greater-new-york/get-involved/donor-info",
    "listing_id": "planned-parenthood-queensbury-health-center"
   },
@@ -471,6 +471,19 @@
    "what_it_funds": "Pick 'Food Pantry' on the church's online giving form to support the pantry.",
    "donate_url": "https://christepiscopalballstonspa.com/pledge/",
    "listing_id": "christ-episcopal-church-food-pantry-ballston-spa"
+  },
+  {
+   "name": "Bikeatoga",
+   "listing_id": "bikeatoga-community-bike-workshop",
+   "what_it_funds": "Gifts support the volunteer bike workshop in Saratoga Springs, which fixes up donated bikes for people who need a way to get around, plus free kids' bike giveaways. You can also donate adult or kids' bikes and parts in working condition (not badly rusted or needing repair): text (518) 290-0746 or email first, then drop off during open hours. Volunteers of any skill level are welcome.",
+   "donate_url": "https://www.bikeatoga.org/donate",
+   "volunteer_url": "https://www.bikeatoga.org/workshop"
+  },
+  {
+   "name": "Mechanicville Area Community Services Center",
+   "listing_id": "mechanicville-area-community-services-center",
+   "what_it_funds": "Gifts support the center's food pantry and community programs in the Mechanicville area. You can also call or stop by to ask how to give food or goods.",
+   "donate_url": "https://www.mechanicvilleacsc.org/donate/"
   }
  ],
  "no_online_page": [
@@ -485,10 +498,6 @@
   {
    "name": "Cambridge Valley Senior Center",
    "how": "Donate goods to the center's Thrift Shop, Monday–Friday, 10 AM–2 PM."
-  },
-  {
-   "name": "Mechanicville Area Community Services Center",
-   "how": "Their homepage says 'Donate time, money, food or goods!' and has a Donate > Money menu, but we could not read the link (bot-check page)."
   },
   {
    "name": "Friends of Crandall Public Library (Glens Falls)",

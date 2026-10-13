@@ -1,6 +1,7 @@
 // Test helpers: fake Cloudflare Access tokens, a fake key server, and a
 // database reset with the made-up sample listings.
 
+import { forgetPauseMemo } from '../src/db/notice.js';
 import { env } from 'cloudflare:test';
 import { vi } from 'vitest';
 import { SignJWT, exportJWK, generateKeyPair } from 'jose';
@@ -55,16 +56,20 @@ export async function call(path, { method = 'GET', body, as = null, origin = ORI
 }
 
 export async function resetDb() {
+  forgetPauseMemo();
   const db = env.DB;
   await db.batch([
     db.prepare('DELETE FROM listing_history'),
+    db.prepare('DELETE FROM review_items'),
+    db.prepare('DELETE FROM listing_reports'),
+    db.prepare('DELETE FROM report_rate'),
     db.prepare('DELETE FROM provider_requests'),
     db.prepare('DELETE FROM request_rate'),
     db.prepare('DELETE FROM barrier_reports'),
     db.prepare('DELETE FROM barrier_rate'),
     db.prepare('DELETE FROM help_suggestions'),
     db.prepare('DELETE FROM suggestion_rate'),
-    db.prepare("UPDATE site_notice SET message = '', level = 'info', ends_on = ''"),
+    db.prepare("UPDATE site_notice SET message = '', level = 'info', ends_on = '', paused = 0"),
     db.prepare('DELETE FROM listings'),
     db.prepare('DELETE FROM categories'),
     db.prepare('DELETE FROM medicaid_plans'),
@@ -99,11 +104,9 @@ export function validListing(overrides = {}) {
 
 /** A complete, valid provider request. */
 export function validRequest(overrides = {}) {
+  // The public form takes corrections only: which listing, and what to fix.
   return {
-    organization: 'Practice Pantry Program', services: 'Free groceries once a month.', eligibility: 'Warren County residents',
-    age_groups: ['Adults'], cost: ['Free'], medicaid: '', counties: ['Warren'], address: '5 Example Street, Glens Falls, NY',
-    no_public_address: false, hours: 'Fridays 10–12', phone: '518-555-0130', email: 'info@example.org', website: 'example.org',
-    how_to_start: 'Walk in.', submitter_name: 'Sam Provider', submitter_contact: 'sam@example.org', ok_to_publish: true,
+    request_type: 'correction', organization: 'Practice Pantry Program', correction: 'New hours: Fridays 10 AM to noon.',
     nickname: '', turnstile_token: 'pass-token',
     ...overrides,
   };

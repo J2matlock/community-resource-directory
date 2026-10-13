@@ -18,6 +18,8 @@ const listings = [
   L('clinic', 'Medical', 'Family Doctor Office', { description: 'Primary care doctor.' }),
   L('dentist', 'Dental', 'Smile Dentist', { medicaid_plans: ['Straight Medicaid (fee-for-service)'] }),
   L('office', 'Senior Centers and Social', 'Senior Office', { description: 'Office hours for seniors.' }),
+  L('recovery', 'Substance Use and Recovery', 'Recovery Center', { description: 'Peer support.' }),
+  L('hiv', 'Medical', 'Health Alliance', { tags: ['hiv testing', 'syringe exchange'] }),
 ];
 const engine = globalThis.SADKSearch.create(listings, words);
 const top = (q) => engine.search(q).results.map((l) => l.id);
@@ -31,6 +33,11 @@ describe('Search', () => {
 
   it('lets the longest phrase win ("ride to doctor" is a ride)', () => {
     expect(top('ride to doctor')[0]).toBe('ride');
+  });
+
+  it('finds a syringe program filed under another category by its tags', () => {
+    const r = top('needle exchange');
+    expect(r.indexOf('hiv')).toBeLessThan(r.indexOf('recovery'));
   });
 
   it('puts domestic violence help first and flags the search as sensitive', () => {

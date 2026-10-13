@@ -16,7 +16,7 @@ import { neutralId } from '../lib/neutral-id.js';
 // Categories whose listings get neutral titles and link previews.
 export const SENSITIVE_CATEGORIES = ['Domestic Violence'];
 
-const STATIC_PAGES = ['/', '/learn', '/needs', '/help', '/about', '/request', '/suggest', '/flyer'];
+const STATIC_PAGES = ['/', '/learn', '/needs', '/help', '/about', '/terms', '/request', '/flyer'];
 
 export function escapeHtml(s) {
   return String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -89,6 +89,8 @@ export async function decoratePage(response, env, url) {
   let title = '';
   let description = '';
   const rw = new HTMLRewriter();
+  // The "Did something not work?" buttons need the Turnstile site key.
+  rw.on('#turnstile-key', { element: (e) => e.setAttribute('data-sitekey', env.TURNSTILE_SITE_KEY || '') });
   if (listingId) {
     // Domestic violence listings get a neutral title and preview: a shared
     // link's preview, and the browser history, may be seen by an abuser.

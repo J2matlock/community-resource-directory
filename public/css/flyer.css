@@ -60,7 +60,11 @@ main.flyer-main { max-width: calc(8.5in + 2rem); padding: 1rem 1rem 2.5rem; }
   border-radius: 12px 12px 0 0;
   text-align: center;
 }
-.flyer-hills { position: absolute; left: 0; bottom: 0; width: 100%; height: 0.6in; }
+.flyer-hills { position: absolute; left: 0; bottom: 0; width: 100%; height: 0.62in; }
+.flyer-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+/* The site's pine mark beside the name, as in the site header. */
+.flyer-title { position: relative; display: flex; justify-content: center; align-items: center; gap: 0.08in; }
+.flyer-pine { width: 0.62in; height: 0.62in; flex: none; margin-top: -0.04in; }
 .flyer .flyer-name {
   position: relative;
   margin: 0;
@@ -171,6 +175,7 @@ main.flyer-main { max-width: calc(8.5in + 2rem); padding: 1rem 1rem 2.5rem; }
   .flyer { padding: 0.75rem; font-size: 1rem; }
   .flyer-head { padding: 1rem 0.75rem 4.5rem; }
   .flyer-hills { height: 4.5rem; }
+  .flyer-pine { width: 2.4rem; height: 2.4rem; }
   .flyer .flyer-name { font-size: clamp(2rem, 10vw, 3.5rem); }
   .flyer-tagline { font-size: 1.15rem; }
   .flyer-body { grid-template-columns: 1fr; padding: 1rem 0.25rem 0.5rem; gap: 1.25rem; }
@@ -197,6 +202,11 @@ main.flyer-main { max-width: calc(8.5in + 2rem); padding: 1rem 1rem 2.5rem; }
 }
 
 /* ---------- Print: exactly one Letter page ---------- */
+
+/* On the smallest phones the name needs the whole width. */
+@media screen and (max-width: 25rem) {
+  .flyer-pine { display: none; }
+}
 
 @media print {
   /* The web-only bars: crisis bar (the flyer has its own box), any dated

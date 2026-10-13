@@ -21,23 +21,22 @@ describe('Barrier reports', () => {
   beforeEach(resetDb);
 
   it('saves an anonymous report and emails the owner plain text', async () => {
-    const { res, email } = await report({ barriers: ['transportation', 'procedure_escort'], comment: 'Bus stops at 6 PM.' });
+    const { res, email } = await report({ barriers: ['transportation', 'procedure_escort'] });
     expect(res.status).toBe(201);
     const row = await env.DB.prepare('SELECT * FROM barrier_reports').first();
-    expect(row).toMatchObject({ county: 'Warren', comment: 'Bus stops at 6 PM.' });
+    expect(row).toMatchObject({ county: 'Warren', comment: '' });
     expect(Object.keys(row).sort()).toEqual(['barriers', 'comment', 'county', 'created_at', 'email_sent', 'id', 'reporter']);
     expect(email.sent).toHaveLength(1);
     expect(email.sent[0].html).toBeUndefined();
     expect(email.sent[0].text).toContain('anesthesia');
   });
 
-  it('refuses phone numbers, emails, dates of birth and ID numbers in the comment', async () => {
-    for (const comment of ['call me at 518-555-1234', 'email me jo@example.org', 'DOB 01/02/1960', 'my SSN is 123-45-6789',
-      'my client John Smith, born 3/4/1958', 'he is 67 years old', 'age 45 and alone', 'Mrs. Jones needs a ride', 'seen on 10/02/2026']) {
-      const { res } = await report({ comment });
-      expect(res.status).toBe(422);
-    }
-    expect(await countRows('barrier_reports')).toBe(0);
+  it('takes no free text: a comment sent anyway is never stored or emailed', async () => {
+    const { res, email } = await report({ comment: 'call me at 518-555-1234, my client John Smith' });
+    expect(res.status).toBe(201);
+    const row = await env.DB.prepare('SELECT comment FROM barrier_reports').first();
+    expect(row.comment).toBe('');
+    expect(email.sent[0].text).not.toContain('John Smith');
   });
 
   it('refuses unknown counties, barriers and reporter types', async () => {
@@ -79,10 +78,10 @@ describe('Barrier reports', () => {
     expect(s.barriers.find((b) => b.id === 'food').count).toBeNull();
   });
 
-  it('comments are only visible to the owner', async () => {
-    await report({ comment: 'only the owner sees this' });
+  it('reports are only visible to the owner', async () => {
+    await report({});
     expect((await call('/api/admin/barriers', { sitePublic: true })).status).not.toBe(200);
     const res = await call('/api/admin/barriers', { as: await token() });
-    expect((await res.json()).reports[0].comment).toBe('only the owner sees this');
+    expect((await res.json()).reports).toHaveLength(1);
   });
 });

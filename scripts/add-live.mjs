@@ -9,6 +9,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { validateListing } from '../src/validate.js';
+import { todayLocal } from '../src/db/admin.js';
 
 const [file] = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const remote = process.argv.includes('--remote');
@@ -51,10 +52,10 @@ const skipped = listings.length - toAdd.length;
 if (!toAdd.length) { console.log(`Nothing to add (${skipped} already there).`); process.exit(0); }
 
 const q = (v) => `'${String(v ?? '').replace(/'/g, "''")}'`;
-const JSON_COLS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans'];
+const JSON_COLS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans', 'sources'];
 const COLS = ['id', 'name', 'organization', 'category', ...JSON_COLS, 'phone', 'fax', 'email', 'website', 'address', 'town',
   'hours', 'eligibility', 'medicaid_notes', 'description', 'private_notes', 'status', 'review_by', 'visibility', 'last_verified', 'last_checked_online', 'retired'];
-const who = q(`research import ${new Date().toISOString().slice(0, 10)}`);
+const who = q(`research import ${todayLocal()}`);
 const sql = [
   ...newCats.map((c) => `INSERT OR IGNORE INTO categories (name) VALUES (${q(c)});`),
   ...toAdd.flatMap((l) => [

@@ -107,17 +107,15 @@ describe('Rule 2: no domestic violence shelter locations', () => {
     }
   });
 
-  it('the provider form refuses a DV shelter location, and asks to confirm an office address', async () => {
+  it('the correction form refuses a DV shelter location or street address', async () => {
     const sendReq = (extra, ip) => call('/api/requests', {
       method: 'POST', sitePublic: true, headers: { 'CF-Connecting-IP': ip }, envExtra: { SEND_EMAIL: fakeEmail().binding },
       body: validRequest({ organization: 'Practice Domestic Violence Services', ...extra }),
     });
-    expect((await sendReq({ address: '9 Example Road, Glens Falls, NY' }, '192.0.2.50')).status).toBe(422);
-    expect((await sendReq({ address: '', services: 'Safe house on Elm Street, 10 beds' }, '192.0.2.51')).status).toBe(422);
-    expect((await sendReq({ address: '', how_to_start: 'Come to 14 Maple Ave after dark' }, '192.0.2.52')).status).toBe(422);
+    expect((await sendReq({ correction: 'Safe house on Elm Street, 10 beds' }, '192.0.2.51')).status).toBe(422);
+    expect((await sendReq({ correction: 'They moved to 14 Maple Ave' }, '192.0.2.52')).status).toBe(422);
     expect(await countRows('provider_requests')).toBe(0);
-    expect((await sendReq({ address: '9 Example Road, Glens Falls, NY', office_not_shelter: true }, '192.0.2.53')).status).toBe(201);
-    expect((await sendReq({ address: '', no_public_address: true }, '192.0.2.54')).status).toBe(201);
+    expect((await sendReq({ correction: 'The hotline number changed to (518) 555-0123.' }, '192.0.2.53')).status).toBe(201);
   });
 
   it('an address saved before a listing became a DV program must be confirmed again', async () => {
@@ -131,5 +129,62 @@ describe('Rule 2: no domestic violence shelter locations', () => {
     });
     expect(res.status).toBe(422);
     expect((await res.json()).errors.address).toBeTruthy();
+  });
+});
+
+describe('Rule 2: sources on DV programs never point to a location', () => {
+  beforeEach(resetDb);
+
+  it('refuses a map link or a street address as a source', async () => {
+    const t = await token();
+    for (const s of [
+      { url: 'https://www.google.com/maps/search/?api=1&query=9+Example+Road', label: 'Map', seen: '2026-10-11' },
+      { url: 'https://example.org/about', label: 'Shelter at 9 Example Road', seen: '2026-10-11' },
+    ]) {
+      const res = await call('/api/admin/listings', { method: 'POST', as: t, body: dv({ phone: '(518) 555-0120', sources: [s] }) });
+      expect(res.status).toBe(422);
+      expect((await res.json()).errors.sources).toBeTruthy();
+    }
+  });
+
+  it('allows a plain source link on a DV program', async () => {
+    const res = await call('/api/admin/listings', {
+      method: 'POST', as: await token(),
+      body: dv({ phone: '(518) 555-0120', sources: [{ url: 'https://example.org/hotline', label: 'Hotline page', seen: '2026-10-11' }] }),
+    });
+    expect(res.status).toBe(201);
+  });
+});
+
+describe('Rule 2: DV source links can\'t carry a location in web-address form', () => {
+  beforeEach(resetDb);
+
+  it('refuses location links written as web addresses, map sites and coordinates', async () => {
+    const t = await token();
+    for (const url of [
+      'https://example.org/shelter/12-elm-street-glens-falls',
+      'https://www.openstreetmap.org/?mlat=43.31&mlon=-73.64',
+      'https://waze.com/ul?ll=43.31,-73.64',
+      'https://www.google.com/search?q=12+Elm+St+Glens+Falls',
+      'https://someone-else.org/about',
+    ]) {
+      const res = await call('/api/admin/listings', {
+        method: 'POST', as: t,
+        body: dv({ phone: '(518) 555-0120', website: 'https://example.org', sources: [{ url, label: 'Page', seen: '2026-10-11' }] }),
+      });
+      expect(res.status, url).toBe(422);
+      expect((await res.json()).errors.sources).toBeTruthy();
+    }
+  });
+
+  it('allows the program\'s own page or a government page', async () => {
+    const res = await call('/api/admin/listings', {
+      method: 'POST', as: await token(),
+      body: dv({ phone: '(518) 555-0120', website: 'https://example.org', sources: [
+        { url: 'https://example.org/get-help', label: 'Get help', seen: '2026-10-11' },
+        { url: 'https://opdv.ny.gov/hotline', label: 'State hotline page', seen: '2026-10-11' },
+      ] }),
+    });
+    expect(res.status).toBe(201);
   });
 });

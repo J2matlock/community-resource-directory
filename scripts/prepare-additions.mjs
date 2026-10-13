@@ -7,6 +7,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { validateListing } from '../src/validate.js';
+import { todayLocal } from '../src/db/admin.js';
 import {
   countyForTown, findTown, isOutOfArea, formatPhone, slugify, splitList, privateTextHits, PUBLIC_FIELDS,
 } from '../src/lib/listing-rules.js';
@@ -18,7 +19,7 @@ const base = JSON.parse(readFileSync('data/import/listings.json', 'utf8'));
 const categories = [...new Set([...base.categories, ...(A.NEW_CATEGORIES ?? [])])];
 const plans = base.medicaid_plans;
 const used = new Set(base.listings.map((l) => l.id));
-const today = new Date().toISOString().slice(0, 10);
+const today = todayLocal();
 
 const problems = [];
 const listings = A.ADDITIONS.map((a) => {
@@ -32,8 +33,9 @@ const listings = A.ADDITIONS.map((a) => {
     tags: [...new Set(splitList(a.tags).map((t) => t.toLowerCase()))],
     phone: a.phone ? formatPhone(a.phone) ?? a.phone : '', fax: a.fax ? formatPhone(a.fax) ?? a.fax : '',
     email: (a.email ?? '').toLowerCase(), website: a.website ?? '', address, town, serves_counties: counties,
-    hours: a.hours ?? '', eligibility: a.eligibility ?? '', age_groups: a.ages ?? [], cost: a.cost ?? [],
+    hours: a.hours ?? '', eligibility: a.eligibility ?? '', age_groups: a.ages ?? a.age_groups ?? [], cost: a.cost ?? [],
     medicaid_plans: a.medicaid_plans ?? [], medicaid_notes: a.medicaid_notes ?? '', description,
+    sources: a.sources ?? [],
     private_notes: `Added by research on ${today} (not on the original spreadsheet). Found on: ${a.src}. Not yet confirmed by phone.`,
     status: a.status ?? 'Active', review_by: a.review_by ?? '', visibility: 'Public', last_verified: '', last_checked_online: today,
   };

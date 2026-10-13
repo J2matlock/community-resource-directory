@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Request a listing or a correction: Southern ADK Help</title>
-  <meta name="description" content="Run a program that helps people in Warren, Washington or Saratoga County? Ask to be listed in the directory.">
+  <title>Report a correction: Southern ADK Help</title>
+  <meta name="description" content="See wrong or old information in a listing? Tell us what to fix.">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/site.css">
   <script defer src="/js/nav.js"></script>
@@ -54,151 +54,26 @@
   </header>
 
   <main id="main" tabindex="-1">
-    <h1>Request a listing or a correction</h1>
-    <p>Run a program that helps people in Warren, Washington or Saratoga County? Tell us about it. Or, if a listing here has wrong or old information, tell us what to fix. We'll call or email you to check before anything changes.</p>
-    <p class="note">Please don't include anything about the people you serve, like names or case details.</p>
-    <p class="note" id="support-line" hidden>Questions, or trouble with this form? Email <a id="support-email" href=""></a>.</p>
+    <h1>Report a correction</h1>
+    <p>See wrong or old information in a listing? Tell us what to fix. We check every correction with the program before anything changes.</p>
+    <p class="note">We don't ask for your name or contact information. Please don't include names, phone numbers or case details about you or anyone else.</p>
+    <p class="note support-line" id="support-line" hidden>Run a program that should be listed? Email <a id="support-email" class="support-email" href=""></a>.</p>
 
     <div id="form-summary" class="form-summary" role="alert" tabindex="-1" hidden></div>
 
     <form id="request-form" class="request-form" novalidate>
-      <fieldset class="field" data-field="request_type" aria-describedby="request_type-err">
-        <legend>What is this about?</legend>
-        <div class="checks">
-          <label><input type="radio" name="request_type" value="new" checked> Add a new program</label>
-          <label><input type="radio" name="request_type" value="correction"> Fix a listing that's already here</label>
-        </div>
-        <p class="error-text" id="request_type-err" hidden></p>
-      </fieldset>
-
-      <h2 id="program-heading">About the program</h2>
-
       <div class="field" data-field="organization">
-        <label for="organization">Organization or program name <span class="req">(required)</span></label>
-        <input id="organization" name="organization" type="text" maxlength="200" autocomplete="organization" required aria-describedby="organization-err">
+        <label for="organization">Which listing? <span class="req">(required)</span></label>
+        <span class="hint" id="organization-hint">The name of the program as it shows in the directory.</span>
+        <input id="organization" name="organization" type="text" maxlength="200" autocomplete="off" required aria-describedby="organization-hint organization-err">
         <p class="error-text" id="organization-err" hidden></p>
       </div>
 
-      <div class="field" data-field="correction" id="correction-field" hidden>
+      <div class="field" data-field="correction">
         <label for="correction">What needs to be corrected? <span class="req">(required)</span></label>
-        <span class="hint" id="correction-hint">For example: new phone number, different hours, moved to a new address, program has closed. You can fill in the correct details below too.</span>
-        <textarea id="correction" name="correction" rows="4" maxlength="3000" aria-describedby="correction-hint correction-err"></textarea>
+        <span class="hint" id="correction-hint">For example: new phone number, different hours, moved to a new address, program has closed.</span>
+        <textarea id="correction" name="correction" rows="5" maxlength="3000" required aria-describedby="correction-hint correction-err"></textarea>
         <p class="error-text" id="correction-err" hidden></p>
-      </div>
-
-      <div class="field" data-field="services">
-        <label for="services">What do you offer? <span class="req" id="services-req">(required)</span></label>
-        <span class="hint" id="services-hint">For example: free groceries once a month, help with rent, dental care.</span>
-        <textarea id="services" name="services" rows="4" maxlength="3000" required aria-describedby="services-hint services-err"></textarea>
-        <p class="error-text" id="services-err" hidden></p>
-      </div>
-
-      <div class="field" data-field="eligibility">
-        <label for="eligibility">Who can get help?</label>
-        <span class="hint" id="eligibility-hint">For example: "Warren County residents", "60 and older", "low income".</span>
-        <textarea id="eligibility" name="eligibility" rows="2" maxlength="1000" aria-describedby="eligibility-hint eligibility-err"></textarea>
-        <p class="error-text" id="eligibility-err" hidden></p>
-      </div>
-
-      <fieldset class="field" data-field="age_groups" aria-describedby="age_groups-err">
-        <legend>Ages you serve <span class="hint">Leave blank if all ages.</span></legend>
-        <div class="checks">
-          <label><input type="checkbox" name="age_groups" value="Children"> Children</label>
-          <label><input type="checkbox" name="age_groups" value="Youth 16–24"> Youth 16–24</label>
-          <label><input type="checkbox" name="age_groups" value="Adults"> Adults</label>
-          <label><input type="checkbox" name="age_groups" value="Seniors"> Seniors</label>
-        </div>
-        <p class="error-text" id="age_groups-err" hidden></p>
-      </fieldset>
-
-      <fieldset class="field" data-field="cost" aria-describedby="cost-err">
-        <legend>Cost</legend>
-        <div class="checks">
-          <label><input type="checkbox" name="cost" value="Free"> Free</label>
-          <label><input type="checkbox" name="cost" value="Sliding scale"> Sliding scale (price based on income)</label>
-          <label><input type="checkbox" name="cost" value="Insurance"> Takes insurance</label>
-          <label><input type="checkbox" name="cost" value="Uninsured OK"> OK without insurance</label>
-          <label><input type="checkbox" name="cost" value="Private pay"> Private pay</label>
-        </div>
-        <p class="error-text" id="cost-err" hidden></p>
-      </fieldset>
-
-      <div class="field" data-field="medicaid">
-        <label for="medicaid">Insurance you accept</label>
-        <span class="hint" id="medicaid-hint">For example: Straight (fee-for-service) Medicaid, Fidelis Care, UnitedHealthcare Community Plan, MVP, CDPHP, Medicare. Leave blank if none.</span>
-        <input id="medicaid" name="medicaid" type="text" maxlength="500" aria-describedby="medicaid-hint medicaid-err">
-        <p class="error-text" id="medicaid-err" hidden></p>
-      </div>
-
-      <fieldset class="field" data-field="counties" aria-describedby="counties-err">
-        <legend>Counties you serve</legend>
-        <div class="checks">
-          <label><input type="checkbox" name="counties" value="Warren"> Warren</label>
-          <label><input type="checkbox" name="counties" value="Washington"> Washington</label>
-          <label><input type="checkbox" name="counties" value="Saratoga"> Saratoga</label>
-          <label><input type="checkbox" name="counties" value="Regional"> Whole region or statewide</label>
-        </div>
-        <p class="error-text" id="counties-err" hidden></p>
-      </fieldset>
-
-      <div class="field" data-field="address">
-        <label for="address">Address where people go</label>
-        <span class="hint" id="address-hint">Domestic violence programs: give an office address only, never a shelter location.</span>
-        <input id="address" name="address" type="text" maxlength="300" autocomplete="street-address" aria-describedby="address-hint address-err">
-        <div class="checks">
-          <label><input type="checkbox" id="no_public_address" name="no_public_address"> No public address</label>
-          <label><input type="checkbox" id="office_not_shelter" name="office_not_shelter"> Domestic violence programs: this is an office, not a shelter</label>
-        </div>
-        <p class="error-text" id="address-err" hidden></p>
-      </div>
-
-      <div class="field" data-field="hours">
-        <label for="hours">Hours</label>
-        <input id="hours" name="hours" type="text" maxlength="500" aria-describedby="hours-err">
-        <p class="error-text" id="hours-err" hidden></p>
-      </div>
-
-      <p class="hint" id="contact-hint">Give at least one of these: phone, email or website.</p>
-
-      <div class="field" data-field="phone">
-        <label for="phone">Phone for the public</label>
-        <span class="hint" id="phone-hint">With area code, like (518) 555-1234.</span>
-        <input id="phone" name="phone" type="tel" maxlength="40" autocomplete="tel" aria-describedby="contact-hint phone-hint phone-err">
-        <p class="error-text" id="phone-err" hidden></p>
-      </div>
-
-      <div class="field" data-field="email">
-        <label for="email">Email for the public</label>
-        <input id="email" name="email" type="email" maxlength="200" aria-describedby="email-err">
-        <p class="error-text" id="email-err" hidden></p>
-      </div>
-
-      <div class="field" data-field="website">
-        <label for="website">Website</label>
-        <input id="website" name="website" type="url" maxlength="500" aria-describedby="website-err">
-        <p class="error-text" id="website-err" hidden></p>
-      </div>
-
-      <div class="field" data-field="how_to_start">
-        <label for="how_to_start">How do people get started?</label>
-        <span class="hint" id="how-hint">For example: call for an appointment, walk in, need a referral.</span>
-        <textarea id="how_to_start" name="how_to_start" rows="2" maxlength="1000" aria-describedby="how-hint how_to_start-err"></textarea>
-        <p class="error-text" id="how_to_start-err" hidden></p>
-      </div>
-
-      <h2>About you</h2>
-      <p class="note">So we can reach you to check the details. This is not published.</p>
-
-      <div class="field" data-field="submitter_name">
-        <label for="submitter_name">Your name <span class="req">(required)</span></label>
-        <input id="submitter_name" name="submitter_name" type="text" maxlength="200" autocomplete="name" required aria-describedby="submitter_name-err">
-        <p class="error-text" id="submitter_name-err" hidden></p>
-      </div>
-
-      <div class="field" data-field="submitter_contact">
-        <label for="submitter_contact">Your phone or email <span class="req">(required)</span></label>
-        <input id="submitter_contact" name="submitter_contact" type="text" maxlength="200" required aria-describedby="submitter_contact-err">
-        <p class="error-text" id="submitter_contact-err" hidden></p>
       </div>
 
       <!-- Trap for robots: hidden from people and screen readers. -->
@@ -207,22 +82,17 @@
         <input id="nickname" name="nickname" type="text" tabindex="-1" autocomplete="off">
       </div>
 
-      <div class="field" data-field="ok_to_publish" id="ok-field">
-        <div class="checks"><label><input type="checkbox" id="ok_to_publish" name="ok_to_publish" required aria-describedby="ok_to_publish-err"> It's OK to publish the program details above (not your name or contact).</label></div>
-        <p class="error-text" id="ok_to_publish-err" hidden></p>
-      </div>
-
       <div class="cf-turnstile" data-sitekey="" data-action="request" data-size="flexible"></div>
 
-      <p><button type="submit" id="submit">Send request</button></p>
+      <p><button type="submit" id="submit">Send correction</button></p>
       <p id="sending" class="note" role="status" aria-live="polite"></p>
     </form>
     <noscript><p class="noscript">This form needs JavaScript turned on.</p></noscript>
   </main>
 
   <footer class="site-footer">
-    <p class="scam-line"><strong>Real help is free.</strong> No real program asks for gift cards, wire transfers or a fee to apply or join a waiting list. <a href="/learn#scam-real-help-is-free">How to spot a scam</a>.</p>
-    <p><strong>A listing is not an endorsement.</strong> Details can change. Please call ahead to confirm.</p>
+    <p class="scam-line"><strong>Watch for scams.</strong> No real program asks you to pay with gift cards or wire transfers, and it's free to apply for government benefits, Section 8 or public housing. <a href="/learn#scam-real-help-is-free">How to spot a scam</a>.</p>
+    <p><strong>A listing is not an endorsement.</strong> Details can change. Please call ahead to confirm. <a href="/terms">Terms of use</a>.</p>
     <p><a href="/">Back to the directory</a></p>
   </footer>
 </body>

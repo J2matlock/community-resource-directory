@@ -8,10 +8,10 @@ const PUBLIC_COLUMNS = [
   'id', 'name', 'organization', 'category', 'tags', 'phone', 'fax', 'email', 'website',
   'address', 'town', 'serves_counties', 'hours', 'eligibility', 'age_groups', 'cost',
   'medicaid_plans', 'medicaid_notes', 'description', 'status', 'review_by', 'last_verified',
-  'last_checked_online',
+  'last_checked_online', 'sources',
 ];
 
-const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans'];
+const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans', 'sources'];
 
 const PUBLIC_LISTINGS_SQL = `
   SELECT ${PUBLIC_COLUMNS.join(', ')}

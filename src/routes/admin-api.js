@@ -5,12 +5,13 @@ import { COUNTIES } from '../lib/listing-rules.js';
 import { json, notFound, readJson } from '../http.js';
 import {
   UserError, listAllListings, getListing, getHistory, createListing, updateListing,
-  markVerified, setRetired, dueForRecheck, notYetConfirmed, getManagedList, addListItem, renameListItem, deleteListItem,
+  markVerified, setRetired, dueForRecheck, notYetConfirmed, visitorReports, getManagedList, addListItem, renameListItem, deleteListItem,
   exportSheets, todayLocal, listRequests, markRequestHandled,
 } from '../db/admin.js';
 import { buildXlsx } from '../xlsx.js';
-import { getNotice, saveNotice } from '../db/notice.js';
+import { getNotice, saveNotice, isPaused, setPaused } from '../db/notice.js';
 import { validateNotice } from '../validate.js';
+import { listReviewItems, answerReviewItem } from '../db/review.js';
 
 const LIST_KINDS = ['categories', 'plans'];
 
@@ -90,6 +91,18 @@ export async function handleAdminApi(request, env, url, admin) {
       }
     }
 
+    if (parts[0] === 'pause' && parts.length === 1) {
+      const backup = env.SITE_PAUSED === 'true';
+      if (method === 'GET') return json({ paused: await isPaused(env, { fresh: true }), backup_switch: backup });
+      if (method === 'PUT') {
+        const { body, error } = await readJson(request);
+        if (error) return error;
+        if (typeof body?.paused !== 'boolean') return json({ error: 'Expected paused: true or false.' }, 422);
+        await setPaused(db, body.paused);
+        return json({ paused: await isPaused(env, { fresh: true }), backup_switch: backup });
+      }
+    }
+
     if (parts[0] === 'suggestions' && parts.length === 1 && method === 'GET') {
       const { results } = await db.prepare('SELECT id, looking_for, county, created_at FROM help_suggestions ORDER BY id DESC LIMIT 500').all();
       return json({ suggestions: results });
@@ -105,8 +118,17 @@ export async function handleAdminApi(request, env, url, admin) {
       }
     }
 
+    if (parts[0] === 'review') {
+      if (parts.length === 1 && method === 'GET') return json({ items: await listReviewItems(db) });
+      if (parts.length === 2 && method === 'POST') {
+        const { body, error } = await readJson(request);
+        if (error) return error;
+        return json({ item: await answerReviewItem(db, parts[1], body) });
+      }
+    }
+
     if (parts[0] === 'recheck' && parts.length === 1 && method === 'GET') {
-      return json({ listings: await dueForRecheck(db), unconfirmed: await notYetConfirmed(db) });
+      return json({ listings: await dueForRecheck(db), unconfirmed: await notYetConfirmed(db), reported: await visitorReports(db) });
     }
 
     if (parts[0] === 'lists' && LIST_KINDS.includes(parts[1])) {

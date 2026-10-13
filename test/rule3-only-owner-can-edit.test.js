@@ -27,16 +27,26 @@ const ADMIN_REQUESTS = [
   ['PUT', '/api/admin/notice', { message: 'Hijacked notice', level: 'info', ends_on: '' }],
   ['GET', '/api/admin/region'],
   ['POST', '/api/admin/requests/1/handled', { note: 'x' }],
+  ['GET', '/api/admin/review'],
+  ['GET', '/api/admin/pause'],
+  ['PUT', '/api/admin/pause', { paused: true }],
+  ['POST', '/api/admin/review/1', { status: 'done', note: '' }],
   ['GET', '/admin/'],
 ];
 
 async function snapshot() {
   const listings = await env.DB.prepare('SELECT * FROM listings ORDER BY id').all();
-  return JSON.stringify(listings.results) + (await countRows('listing_history')) + (await countRows('categories')) + (await countRows('medicaid_plans'));
+  const review = await env.DB.prepare('SELECT * FROM review_items ORDER BY id').all();
+  const notice = await env.DB.prepare('SELECT message, paused FROM site_notice').all();
+  return JSON.stringify(listings.results) + JSON.stringify(review.results) + JSON.stringify(notice.results) + (await countRows('listing_history')) + (await countRows('categories')) + (await countRows('medicaid_plans'));
 }
 
 describe('Rule 3: only the owner can edit', () => {
-  beforeEach(resetDb);
+  beforeEach(async () => {
+    await resetDb();
+    // A review item with id 1, so a refused POST /api/admin/review/1 has something it could have changed.
+    await env.DB.prepare("INSERT INTO review_items (id, key, kind, grp, title) VALUES (1, 'rule3-test', 'check', 'Test', 'Test item')").run();
+  });
 
   const badTokens = {
     'no login at all': async () => null,

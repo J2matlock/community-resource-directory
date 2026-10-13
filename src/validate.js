@@ -59,6 +59,62 @@ function cleanList(v, allowed, field, errors, { max = 30, itemMax = 60 } = {}) {
   return out;
 }
 
+function decodeURIComponentSafe(s) {
+  try { return decodeURIComponent(s); } catch { return s; }
+}
+
+// A web address read as words: "/shelter/12-elm-street" -> "shelter 12 elm street".
+function urlAsText(url) {
+  return decodeURIComponentSafe(String(url || '')).replace(/[-_+/?&=.#]+/g, ' ');
+}
+
+const MAP_HOSTS = /(^|\.)(maps\.google\.[a-z.]+|google\.[a-z.]+|goo\.gl|g\.co|maps\.app\.goo\.gl|openstreetmap\.org|waze\.com|bing\.com|mapquest\.com|apple\.com|here\.com)$/i;
+const STREET_WORDS = /\b\d{1,5}\s+([a-z]+\s+){1,3}(st|street|ave|avenue|rd|road|dr|drive|ln|lane|blvd|boulevard|way|pl|place|ct|court|hwy|route|rte)\b/i;
+const COORDS = /-?\d{1,3}\.\d{3,}\s*,\s*-?\d{1,3}\.\d{3,}|[?&](ll|mlat|mlon|lat|lon|lng|q)=/i;
+
+function hostOf(url) {
+  try { return new URL(url).hostname.replace(/^www\./, '').toLowerCase(); } catch { return ''; }
+}
+
+// Rule 2 for sources: a DV program's sources may only be its own website or a
+// government site, and never point to or name a place.
+function dvSourceAllowed(s, website) {
+  const h = hostOf(s.url);
+  const own = hostOf(website);
+  const ownSite = own && (h === own || h.endsWith(`.${own}`));
+  const gov = /(\.gov|\.ny\.us)$/.test(h);
+  if (!ownSite && !gov) return false;
+  if (MAP_HOSTS.test(h) || /\/maps?\b/i.test(s.url)) return false;
+  const text = `${s.label} ${urlAsText(s.url)}`;
+  return !(SHELTER_LOCATION.test(text) || STREET_ADDRESS.test(text) || STREET_WORDS.test(text) || COORDS.test(decodeURIComponentSafe(s.url)));
+}
+
+// Public sources: up to 3 links that back up a listing's details, each
+// {url, label, seen}. Shown on the card as "Source", so they are public text.
+export function cleanSources(raw, errors) {
+  if (raw === undefined || raw === null || raw === '') return [];
+  if (!Array.isArray(raw)) { errors.sources = 'Must be a list.'; return []; }
+  const out = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object' || Array.isArray(item)) { errors.sources = 'Each source needs a web address.'; return []; }
+    const url = cleanText(item.url, 500);
+    const label = cleanText(item.label, 120);
+    const seen = cleanText(item.seen, 10);
+    if (url === null || label === null || seen === null) { errors.sources = 'Keep each web address under 500 characters and each label under 120.'; return []; }
+    if (!url && !label) continue;
+    const u = normalizeWebsite(url);
+    let parsed = null;
+    try { parsed = u ? new URL(u) : null; } catch { parsed = null; }
+    if (!parsed || parsed.protocol !== 'https:' || parsed.username || parsed.password) {
+      errors.sources = `"${url || label}" needs a full web address starting with https://`; return [];
+    }
+    if (seen && (!DATE.test(seen) || Number.isNaN(Date.parse(seen)))) { errors.sources = 'Use a date like 2026-10-11 for when you saw a source.'; return []; }
+    out.push({ url: u, label, seen });
+  }
+  if (out.length > 3) { errors.sources = 'Up to 3 sources.'; return []; }
+  return out;
+}
+
 export function normalizeWebsite(s) {
   if (!s) return '';
   const withScheme = /^[a-z][a-z0-9+.-]*:/i.test(s) ? s : `https://${s}`;
@@ -133,9 +189,11 @@ export function validateListing(input, lists, opts = {}) {
     }
   }
 
+  v.sources = cleanSources(input.sources, errors);
+
   // Rule 1: no client information anywhere, including private notes.
-  for (const f of [...Object.keys(TEXT_LIMITS), 'tags']) {
-    const text = Array.isArray(v[f]) ? v[f].join(' ') : v[f];
+  for (const f of [...Object.keys(TEXT_LIMITS), 'tags', 'sources']) {
+    const text = f === 'sources' ? v.sources.map((s) => `${s.label} ${urlAsText(s.url)}`).join(' ') : Array.isArray(v[f]) ? v[f].join(' ') : v[f];
     for (const c of CLIENT_INFO) {
       if (c.re.test(text)) {
         errors[f] = `This looks like ${c.what}. Client information must never be stored here.`;
@@ -160,6 +218,9 @@ export function validateListing(input, lists, opts = {}) {
         errors[f] = 'On a domestic violence program, put the office address only in the address box. Never store a shelter\'s location, in any field, even private notes.';
       }
     }
+    if (!errors.sources && v.sources.some((s) => !dvSourceAllowed(s, v.website))) {
+      errors.sources = 'On a domestic violence program, sources must be the program\'s own website or a government site, and must not point to or name a location (no map links, coordinates or street addresses).';
+    }
   }
 
   // Private-looking text in public fields: warn, unless the listing is Internal.
@@ -169,9 +230,58 @@ export function validateListing(input, lists, opts = {}) {
         warnings.push(`${f.replace('_', ' ')} mentions ${hit}. Private details belong in private notes.`);
       }
     }
+    for (const hit of privateTextHits(v.sources.map((s) => `${s.label} ${urlAsText(s.url)}`).join(' '))) {
+      warnings.push(`sources mention ${hit}. Private details belong in private notes.`);
+    }
+    if (v.sources.some((s) => /[?&](utm_[a-z]+|fbclid|gclid|mc_eid)=/i.test(s.url))) {
+      warnings.push('A source link has tracking tags (like utm_ or fbclid). Remove everything after the "?" if the page still loads without it.');
+    }
   }
 
   return { value: Object.keys(errors).length ? null : v, errors, warnings };
+}
+
+// ---- "To review" answers (admin only) ----
+
+export const REVIEW_STATUSES = {
+  check: ['open', 'done', 'dismissed'],
+  call: ['open', 'done', 'dismissed'],
+  task: ['open', 'done', 'dismissed'],
+  decision: ['open', 'yes', 'later', 'no'],
+  idea: ['open', 'yes', 'later', 'no'],
+  fyi: ['open', 'ok', 'change'],
+  info: ['open'], // reference only (the review report); nothing to answer
+};
+
+/** Checks the owner's answer to a review item. Notes are private but still never hold client information. */
+export function validateReviewAnswer(kind, input, { dv = false } = {}) {
+  const allowed = REVIEW_STATUSES[kind];
+  if (!allowed) return { value: null, error: 'Unknown item.' };
+  const status = input?.status;
+  if (typeof status !== 'string' || !allowed.includes(status)) return { value: null, error: 'Choose one of the buttons.' };
+  const note = cleanText(input?.note ?? '', 2000);
+  if (note === null) return { value: null, error: 'Keep the note under 2,000 characters.' };
+  const unsafe = unsafeStoredText(note, { dv, anyShelter: true });
+  if (unsafe) return { value: null, error: unsafe };
+  return { value: { status, note }, error: null };
+}
+
+/**
+ * Rules 1 and 2 for text kept anywhere (review notes, seeded review items):
+ * returns why it can't be stored, or ''. `dv` also refuses street addresses.
+ */
+export function unsafeStoredText(text, { dv = false, anyShelter = false } = {}) {
+  for (const c of CLIENT_INFO) {
+    if (c.re.test(text)) return `This looks like ${c.what}. Client information must never be stored.`;
+  }
+  // Shelter-location wording is checked whenever the item or text is about
+  // domestic violence (rule 2), and always in the owner's notes (anyShelter).
+  // Seeded text about a homeless shelter's public address is fine.
+  const aboutDv = dv || anyShelter || DV_PATTERN.test(text) || /\babuse|survivor/i.test(text);
+  if ((aboutDv && SHELTER_LOCATION.test(text)) || (dv && STREET_ADDRESS.test(text))) {
+    return 'Never store a domestic violence shelter\'s location, even in notes.';
+  }
+  return '';
 }
 
 /** True if a saved listing looks like a domestic violence program. */
@@ -197,79 +307,58 @@ export function validateListName(raw) {
 
 // ---- Provider request form (rule 5: untrusted input) ----
 
-const REQUEST_TEXT = {
-  organization: [200, true], services: [3000, true], correction: [3000, false], eligibility: [1000, false], medicaid: [500, false],
-  address: [300, false], hours: [500, false], phone: [40, false], email: [200, false], website: [500, false],
-  how_to_start: [1000, false], submitter_name: [200, true], submitter_contact: [200, true],
-};
+// The public form takes corrections only (owner decision, 2026-10-12): which
+// listing, and what to fix. No name, contact details or other free text.
+const REQUEST_TEXT = { organization: [200, true], correction: [3000, true] };
 
 export function validateProviderRequest(input) {
   const errors = {};
   if (!input || typeof input !== 'object' || Array.isArray(input)) return { value: null, errors: { _form: 'Expected the form fields.' } };
-  const v = {};
-  // "new" asks to add a program; "correction" asks to fix an existing listing.
-  if (input.request_type !== undefined && input.request_type !== 'new' && input.request_type !== 'correction') {
-    errors.request_type = 'Please choose from the list.';
+  if (input.request_type !== undefined && input.request_type !== 'correction') {
+    errors.request_type = 'This form is for corrections only. To ask for a new listing, email the support address on this page.';
   }
-  v.request_type = input.request_type === 'correction' ? 'correction' : 'new';
-  const isCorrection = v.request_type === 'correction';
+  // Only the two correction fields are kept; anything else sent is ignored and never stored.
+  const v = { request_type: 'correction' };
   for (const [field, [max, required]] of Object.entries(REQUEST_TEXT)) {
     const s = cleanText(input[field], max);
-    const needed = isCorrection ? ['organization', 'correction', 'submitter_name', 'submitter_contact'].includes(field) : required;
     if (s === null) errors[field] = `Please keep this under ${max} characters.`;
-    else if (needed && !s) errors[field] = 'Please fill this in.';
+    else if (required && !s) errors[field] = 'Please fill this in.';
     v[field] = s ?? '';
   }
-  for (const [field, allowed] of [['age_groups', AGE_GROUPS], ['cost', COSTS], ['counties', COUNTIES]]) {
-    const raw = input[field] ?? [];
-    if (!Array.isArray(raw) || raw.length > allowed.length || raw.some((x) => typeof x !== 'string' || !allowed.includes(x))) {
-      errors[field] = 'Please choose from the list.';
-      v[field] = [];
-    } else {
-      v[field] = [...new Set(raw)];
-    }
-  }
-  v.no_public_address = input.no_public_address === true;
-  if (v.no_public_address) v.address = '';
-  if (input.ok_to_publish !== true && !isCorrection) errors.ok_to_publish = 'Please tick the box to confirm the program details can be published.';
-  v.ok_to_publish = input.ok_to_publish === true;
 
-  if (v.phone && !errors.phone) {
-    const p = formatPhone(v.phone);
-    if (p === null) errors.phone = 'Please use a 10-digit phone number, like (518) 555-1234.';
-    else v.phone = p;
-  }
-  if (v.email && !errors.email && !EMAIL_PATTERN.test(v.email)) errors.email = 'Please check the email address.';
-  if (v.website && !errors.website) {
-    const w = normalizeWebsite(v.website);
-    if (w === null) errors.website = 'Please check the web address.';
-    else v.website = w;
-  }
-  if (!isCorrection && !v.phone && !v.email && !v.website) errors.phone = 'Please give at least a phone, email or website for the program.';
-
-  // Rule 2: a domestic violence program may give an office address only.
-  const dvText = [v.organization, v.services, v.eligibility, v.correction].join(' ');
-  // A correction can name a DV program without saying so; never accept a shelter location in one.
-  if (isCorrection && SHELTER_LOCATION.test(v.correction)) {
+  // Rule 2: a correction can name a DV program without saying so; never accept a shelter location.
+  if (!errors.correction && SHELTER_LOCATION.test(v.correction)) {
     errors.correction = 'Please don\'t include a shelter location. Office addresses only.';
   }
-  if (DV_PATTERN.test(dvText)) {
-    if (v.address && input.office_not_shelter !== true) {
-      errors.address = 'For domestic violence programs, give an office address only, never a shelter location. Tick the box to confirm, or leave the address blank.';
-    }
+  if (DV_PATTERN.test(`${v.organization} ${v.correction}`)) {
     for (const f of Object.keys(REQUEST_TEXT)) {
-      if (f === 'address' || errors[f]) continue;
-      if (SHELTER_LOCATION.test(v[f]) || STREET_ADDRESS.test(v[f])) {
-        errors[f] = 'Please don\'t include a shelter location or street address here. Put an office address only in the address box.';
+      if (!errors[f] && (SHELTER_LOCATION.test(v[f]) || STREET_ADDRESS.test(v[f]))) {
+        errors[f] = 'Please don\'t include a shelter location or street address for a domestic violence program.';
       }
     }
   }
 
-  // Rule 1: client information has no place in a provider request.
+  // Rule 1: client information has no place in a correction.
   for (const f of Object.keys(REQUEST_TEXT)) {
-    if (CLIENT_INFO.some((c) => c.re.test(v[f]))) errors[f] = 'Please don\'t include personal details about clients.';
+    if (CLIENT_INFO.some((c) => c.re.test(v[f]))) errors[f] = 'Please don\'t include personal details about yourself or the people you serve.';
   }
   return { value: Object.keys(errors).length ? null : v, errors };
+}
+
+// ---------- One-tap "This didn't work" reports (anonymous, tap-only) ----------
+export const REPORT_REASONS = [
+  ['phone', 'The phone number didn\'t work'],
+  ['closed', 'Closed or moved'],
+  ['full', 'Not taking new people'],
+];
+
+export function validateListingReport(input) {
+  const errors = {};
+  const id = input?.listing_id;
+  if (typeof id !== 'string' || !/^[a-z0-9-]{1,80}$/.test(id)) errors.listing_id = 'Unknown listing.';
+  const reason = input?.reason;
+  if (!REPORT_REASONS.some(([r]) => r === reason)) errors.reason = 'Please choose one of the buttons.';
+  return { value: Object.keys(errors).length ? null : { listing_id: id, reason }, errors };
 }
 
 // ---------- Anonymous barrier reports (Community needs page) ----------
@@ -300,18 +389,6 @@ const BARRIER_IDS = BARRIERS.map(([id]) => id);
 export const BARRIER_COUNTIES = [...REGION.counties, 'Other or prefer not to say'];
 export const BARRIER_REPORTERS = ['', 'For myself or my family', 'As a worker or volunteer who helps people'];
 
-// Rule 1: no client information. Comments are short and only the owner sees
-// them; anything that looks like a name with a date, an ID number, an email
-// address or a phone number is refused so no one can be identified.
-const CONTACT_INFO = [
-  /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i, // email address
-  /\(?\b\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/, // phone number
-  /\b\d{1,2}[\/.-]\d{1,2}[\/.-]\d{2,4}\b/, // any date written in numbers
-  /\b(born|birthday|d\.?o\.?b)\b/i, // birth details
-  /\bage[sd]?\s*\d{1,3}\b|\b\d{1,3}[\s-]*(years?|yrs?)[\s-]*old\b/i, // an age
-  /\b(my|our|a|the)\s+(client|patient|consumer|resident)s?\b/i, // talking about a specific person served
-  /\b(?:[Mm]rs?|[Mm]s|[Mm]iss|[Dd]r)\.?\s+[A-Z]/, // a titled name
-];
 
 export function validateBarrierReport(input) {
   const errors = {};
@@ -326,34 +403,12 @@ export function validateBarrierReport(input) {
   const reporter = input.reporter ?? '';
   if (!BARRIER_REPORTERS.includes(reporter)) errors.reporter = 'Please choose from the list.';
   v.reporter = reporter;
-  const comment = cleanText(input.comment, 1000);
-  if (comment === null) errors.comment = 'Please keep this under 1,000 characters.';
-  v.comment = comment ?? '';
-  if (v.comment && (CLIENT_INFO.some((c) => c.re.test(v.comment)) || CONTACT_INFO.some((re) => re.test(v.comment)))) {
-    errors.comment = 'Please leave out names, dates of birth, ID numbers, phone numbers and email addresses. This form is anonymous.';
-  }
+  // No free text on this form (owner decision, 2026-10-12): any comment sent is
+  // ignored and never stored.
+  v.comment = '';
   return { value: Object.keys(errors).length ? null : v, errors };
 }
 
-// ---------- "Don't see the help you need?" (anonymous, owner-only) ----------
-export const SUGGESTION_COUNTIES = ['', ...REGION.counties, 'Somewhere else'];
-
-export function validateSuggestion(input) {
-  const errors = {};
-  if (!input || typeof input !== 'object' || Array.isArray(input)) return { value: null, errors: { _form: 'Expected the form fields.' } };
-  const v = {};
-  const looking = cleanText(input.looking_for, 500);
-  if (looking === null) errors.looking_for = 'Please keep this under 500 characters.';
-  else if (looking.length < 3) errors.looking_for = 'Please tell us what kind of help you were looking for.';
-  else if (CLIENT_INFO.some((c) => c.re.test(looking)) || CONTACT_INFO.some((re) => re.test(looking))) {
-    errors.looking_for = 'Please leave out names, ages, birth dates, ID numbers, phone numbers and email addresses. This form is anonymous.';
-  }
-  v.looking_for = looking ?? '';
-  const county = input.county ?? '';
-  if (!SUGGESTION_COUNTIES.includes(county)) errors.county = 'Please choose from the list.';
-  v.county = county;
-  return { value: Object.keys(errors).length ? null : v, errors };
-}
 
 // ---------- Site notice (owner only) ----------
 // Short plain text shown under the crisis bar on every public page. Rule 1:

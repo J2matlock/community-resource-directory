@@ -33,6 +33,9 @@ await check('Admin data', '/api/admin/listings');
 await check('Admin export', '/api/admin/export');
 await check('Save without login', '/api/admin/listings', { method: 'POST', body: { name: 'x' } });
 await check('Change list without login', '/api/admin/lists/categories', { method: 'POST', body: { name: 'x' } });
+await check('To review list', '/api/admin/review');
+await check('Answer without login', '/api/admin/review/1', { method: 'POST', body: { status: 'done' } });
+await check('Pause switch without login', '/api/admin/pause', { method: 'PUT', body: { paused: true } });
 
 let failed = 0;
 for (const r of results) {

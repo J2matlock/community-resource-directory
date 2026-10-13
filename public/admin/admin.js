@@ -208,6 +208,17 @@ const TEXT_FIELDS = [
   ['organization', 'Parent organization', 'text', 'Groups programs from the same agency, e.g. "Open Door Mission".'],
 ];
 
+// Sources as text in the form: one per line, "web address | what it shows | date seen".
+function sourcesToText(list) {
+  return (list || []).map((s) => [s.url, s.label, s.seen].filter(Boolean).join(' | ')).join('\n');
+}
+function textToSources(text) {
+  return text.split('\n').map((line) => line.trim()).filter(Boolean).map((line) => {
+    const [url = '', label = '', seen = ''] = line.split('|').map((p) => p.trim());
+    return { url, label, seen };
+  });
+}
+
 function textField(name, label, type, hint, value, opts = {}) {
   const id = `f-${name}`;
   const input = type === 'textarea'
@@ -259,6 +270,7 @@ function readForm(form) {
     status: v('status'), review_by: v('review_by'), visibility: form.querySelector('input[name="visibility"]:checked')?.value ?? 'Public',
     last_verified: v('last_verified'),
     last_checked_online: v('last_checked_online'),
+    sources: textToSources(v('sources')),
     confirm_office_address: form.elements.confirm_office_address?.checked === true,
   };
 }
@@ -309,7 +321,7 @@ const FIELD_LABELS = {
   fax: 'Fax', email: 'Email', website: 'Website', address: 'Office address', town: 'Town', serves_counties: 'Counties served',
   hours: 'Hours', eligibility: 'Who can get help', age_groups: 'Age groups', cost: 'Cost', medicaid_plans: 'Insurance accepted',
   medicaid_notes: 'Insurance notes', description: 'Description (public)', private_notes: 'Private notes', status: 'Status',
-  review_by: 'Re-check by', visibility: 'Visibility', last_verified: 'Last confirmed with the program', last_checked_online: 'Last checked online', retired: 'Retired',
+  review_by: 'Re-check by', visibility: 'Visibility', last_verified: 'Last confirmed with the program', last_checked_online: 'Last checked online', sources: 'Sources', retired: 'Retired',
 };
 
 function whoChanged(by) {
@@ -425,7 +437,8 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
       checkGroup('medicaid_plans', 'Insurance accepted', lists.plans, l.medicaid_plans, 'Tick only plans you have confirmed. Add plans under "Categories & plans".'),
       textField('medicaid_notes', 'Insurance notes', 'text', 'e.g. "Does not take UnitedHealthcare Medicaid"', l.medicaid_notes)),
     section('description', 'Public description', null,
-      textField('description', 'Description (public)', 'textarea', 'Plain summary anyone can understand.', l.description, { rows: 5 })),
+      textField('description', 'Description (public)', 'textarea', 'Plain summary anyone can understand.', l.description, { rows: 5 }),
+      textField('sources', 'Sources (public)', 'textarea', 'Shown on the listing as "Source". Up to 3, one per line: web address | what it shows | date seen. Example: https://example.org/hours | Hours page | 2026-10-11', sourcesToText(l.sources), { rows: 3 })),
     section('private', 'Private: only you see this', 'Never shown on the public site. Never put client information here.',
       textField('private_notes', 'Private notes', 'textarea', 'Staff names, direct lines, scripts, intake tips.', l.private_notes, { rows: 5, private: true })),
     section('status', 'Status and checks', null,
@@ -526,7 +539,7 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
 async function viewRecheck() {
   setNav('recheck');
   document.title = 'Due for re-check: Directory admin';
-  const { listings, unconfirmed } = await api('/recheck');
+  const { listings, unconfirmed, reported = [] } = await api('/recheck');
   const today = new Date().toISOString().slice(0, 10);
   const reason = (l) => {
     if (l.review_by && l.review_by <= today) return `Re-check date ${formatDate(l.review_by)} has passed`;
@@ -551,6 +564,17 @@ async function viewRecheck() {
   const weekly = Math.max(1, Math.ceil(unconfirmed.length / 52));
   show(
     pageHead('Due for re-check'),
+    reported.length ? el('section', { class: 'reported', 'aria-labelledby': 'reported-h' },
+      el('h2', { id: 'reported-h' }, `Reported by visitors (last 90 days): ${reported.length}`),
+      el('p', { class: 'note' }, 'Anonymous one-tap reports from the public site. They never change a listing, and the counts are not verified (anyone can tap). Check these first, especially any with 2 or more reports.'),
+      el('ul', { class: 'items' }, reported.map((r) => el('li', { class: 'item' },
+        el('div', { class: 'item-main' },
+          el('a', { class: 'item-name', href: `#/edit/${encodeURIComponent(r.id)}` }, r.name),
+          el('p', { class: 'item-meta' },
+            el('span', { class: `state ${r.total >= 2 ? 'state-due' : 'state-never'}` }, `${r.total} report${r.total === 1 ? '' : 's'}`),
+            ` · ${[r.phone ? `number didn't work: ${r.phone}` : '', r.closed ? `closed or moved: ${r.closed}` : '', r.full ? `not taking new people: ${r.full}` : ''].filter(Boolean).join(', ')} · latest ${formatDate(r.latest)}`,
+            r.phone ? [' · ', el('a', { class: 'item-phone', href: `tel:${String(r.phone).replace(/[^\d+]/g, '').replace(/^(\d{10}).*/, '$1')}` }, r.phone)] : null))))))
+      : null,
     el('p', { class: 'lede' }, `Due now: ${listings.length}. Food, shelter, rent help, crisis and domestic violence listings are re-checked every 3 months; everything else every 12 months, counted from the last check (by phone, or online by research). Call or email them, then press "Verified today" or edit the listing.`),
     callSheetPanel(listings.length ? listings : unconfirmed, reason),
     listings.length ? el('ul', { class: 'items' }, listings.map(item)) : emptyState('All caught up', 'Nothing is due for a re-check right now.'),
@@ -721,7 +745,54 @@ async function viewNotice() {
     el('p', { class: 'lede' }, 'A short message shown under the red crisis bar on every public page. Use it for things like Code Blue nights, a closed office, or when HEAP opens.'),
     status,
     form,
+    await pauseSection(),
   );
+}
+
+// ---------- Emergency pause ----------
+// One switch that makes every public page show only the crisis numbers and 211
+// (for example if wrong information spreads, or the site is attacked). The
+// admin panel keeps working. Two steps, so it can't be pressed by accident.
+async function pauseSection() {
+  const box = el('section', { class: 'pause-box', 'aria-labelledby': 'pause-h' });
+  async function render(state) {
+    const confirmArea = el('div', { class: 'pause-confirm', hidden: true });
+    const statusText = state.paused
+      ? 'The public site is PAUSED. Visitors see only the crisis numbers and 211.'
+      : 'The public site is on.';
+    const set = (paused, button) => runAction(button, async () => {
+      const r = await api('/pause', { method: 'PUT', body: { paused } });
+      updatePauseBanner(r.paused);
+      toast(r.paused ? 'The public site is paused.' : 'The public site is back on.');
+      box.replaceChildren(...(await render(r)));
+    });
+    const main = state.paused
+      ? el('button', { type: 'button', onclick: (e) => set(false, e.currentTarget) }, 'Turn the public site back on')
+      : el('button', { type: 'button', class: 'danger', onclick: () => { confirmArea.hidden = false; confirmArea.querySelector('button').focus(); } }, 'Pause the public site');
+    confirmArea.append(
+      el('p', {}, 'Are you sure? Every public page will show only the crisis numbers and 211 until you turn it back on.'),
+      el('div', { class: 'review-buttons' },
+        el('button', { type: 'button', class: 'danger', onclick: (e) => set(true, e.currentTarget) }, 'Yes, pause it now'),
+        el('button', { type: 'button', class: 'secondary', onclick: () => { confirmArea.hidden = true; } }, 'Cancel')));
+    return [
+      el('h2', { id: 'pause-h' }, 'Emergency pause'),
+      el('p', { class: `pause-status${state.paused ? ' on' : ''}`, role: 'status' }, statusText),
+      state.backup_switch ? el('p', { class: 'note' }, 'The backup switch (SITE_PAUSED in the Cloudflare dashboard) is on, so the site stays paused until that setting is removed. See HANDOFF.md.') : null,
+      el('p', { class: 'note' }, 'Use this if wrong information is spreading or the site is being misused. This admin panel keeps working while the site is paused.'),
+      main,
+      confirmArea,
+    ].filter(Boolean);
+  }
+  box.replaceChildren(...(await render(await api('/pause'))));
+  return box;
+}
+
+function updatePauseBanner(paused) {
+  let b = document.getElementById('pause-banner');
+  if (!paused) { b?.remove(); return; }
+  if (b) return;
+  b = el('p', { id: 'pause-banner', class: 'pause-banner', role: 'status' }, 'The public site is paused. ', el('a', { href: '#/notice' }, 'Turn it back on'));
+  document.querySelector('.admin-header')?.after(b);
 }
 
 async function viewSuggestions() {
@@ -736,6 +807,105 @@ async function viewSuggestions() {
         el('p', { class: 'note-meta' }, `${formatDateTime(r.created_at)}${r.county ? ` · ${r.county}` : ''}`),
         el('p', { class: 'note-text' }, r.looking_for))))
       : emptyState('No messages yet', 'Messages from "Don\'t see the help you need?" will show here.'),
+  );
+}
+
+// ---------- To review: decisions, checks and ideas waiting on you ----------
+const REVIEW_KINDS = {
+  decision: { label: 'Decision', buttons: [['yes', 'Yes, do it'], ['later', 'Not now'], ['no', 'No']] },
+  idea: { label: 'Idea', buttons: [['yes', 'Yes, do it'], ['later', 'Not now'], ['no', 'No']] },
+  fyi: { label: 'Claude decided', buttons: [['ok', 'OK'], ['change', 'Change this']] },
+  check: { label: 'Check', buttons: [['done', 'Done'], ['dismissed', 'Not needed']] },
+  call: { label: 'Phone call', buttons: [['done', 'Done'], ['dismissed', 'Not needed']] },
+  task: { label: 'Task', buttons: [['done', 'Done'], ['dismissed', 'Not needed']] },
+  info: { label: 'Report', buttons: [] },
+};
+const REVIEW_ANSWERS = { yes: 'Yes, do it', later: 'Not now', no: 'No', ok: 'OK', change: 'Change this', done: 'Done', dismissed: 'Not needed' };
+let reviewFilter = 'open';
+
+async function viewReview() {
+  setNav('review');
+  document.title = 'To review: Directory admin';
+  const { items } = await api('/review');
+  const waitingOf = (list) => list.filter((i) => i.status === 'open' && i.kind !== 'info');
+
+  function itemCard(item) {
+    const kind = REVIEW_KINDS[item.kind] || REVIEW_KINDS.check;
+    const noteId = `rn-${item.id}`;
+    const note = el('textarea', { id: noteId, rows: 2, maxlength: 2000 });
+    note.value = item.owner_note || '';
+    const card = el('li', { class: `note-card review-item${item.status === 'open' ? '' : ' answered'}` });
+    const answer = (status, button) => runAction(button, async () => {
+      const r = await api(`/review/${item.id}`, { method: 'POST', body: { status, note: note.value } });
+      Object.assign(item, r.item);
+      card.replaceWith(itemCard(item));
+      updateCounts();
+      toast(status === 'open' ? 'Moved back to waiting.' : `Saved: ${REVIEW_ANSWERS[status]}.`);
+    });
+    card.append(...[
+      el('p', { class: 'note-meta' }, el('span', { class: `kind kind-${item.kind}` }, kind.label), item.source ? ` · ${item.source}` : ''),
+      el('h3', { class: 'review-title' }, item.title),
+      item.detail ? el('p', { class: 'review-detail' }, item.detail) : null,
+      item.listing_id ? el('p', {}, el('a', { href: `#/edit/${encodeURIComponent(item.listing_id)}` }, 'Open the listing')) : null,
+      item.kind !== 'info' && item.status !== 'open'
+        ? el('p', { class: 'review-answer' }, el('strong', {}, `Your answer: ${REVIEW_ANSWERS[item.status] || item.status}`),
+          item.owner_note ? ` · ${item.owner_note}` : '', ` (${formatDate(item.updated_at)})`)
+        : null,
+      item.kind === 'info' ? null : el('details', { class: 'review-note', open: Boolean(item.owner_note) && item.status === 'open' },
+        el('summary', {}, item.owner_note ? 'Your note' : 'Add a note (optional)'),
+        el('label', { for: noteId, class: 'visually-hidden' }, `Note for: ${item.title}`), note),
+      item.kind === 'info' ? null : el('div', { class: 'review-buttons' },
+        item.status === 'open'
+          ? kind.buttons.map(([status, text], i) => el('button', { type: 'button', class: i ? 'secondary' : '',
+            onclick: (e) => answer(status, e.currentTarget) }, text, el('span', { class: 'visually-hidden' }, `: ${item.title}`)))
+          : [el('button', { type: 'button', class: 'secondary', onclick: (e) => answer(item.status, e.currentTarget) }, 'Save note', el('span', { class: 'visually-hidden' }, `: ${item.title}`)),
+            el('button', { type: 'button', class: 'secondary', onclick: (e) => answer('open', e.currentTarget) }, 'Undo', el('span', { class: 'visually-hidden' }, `: ${item.title}`))]),
+    ].filter(Boolean));
+    return card;
+  }
+
+  const countLine = el('p', { class: 'lede', role: 'status' });
+  function updateCounts() {
+    const waiting = waitingOf(items).length;
+    const answered = items.filter((i) => i.kind !== 'info' && i.status !== 'open').length;
+    countLine.textContent = `${waiting} waiting for you, ${answered} answered. Your answers save as you click, from any device. Claude reads them the next time you ask it to.`;
+    const badge = document.querySelector('[data-nav="review"] .count');
+    if (badge) badge.textContent = waiting ? String(waiting) : '';
+  }
+
+  const groups = [];
+  for (const i of items) {
+    let g = groups.find((x) => x.name === i.grp);
+    if (!g) { g = { name: i.grp || 'Other', items: [] }; groups.push(g); }
+    g.items.push(i);
+  }
+  const listArea = el('div');
+  function render() {
+    const keep = (i) => (reviewFilter === 'report' ? i.kind === 'info'
+      : reviewFilter === 'all' ? i.kind !== 'info'
+        : i.kind !== 'info' && (reviewFilter === 'open' ? i.status === 'open' : i.status !== 'open'));
+    const shown = groups.map((g) => ({ ...g, items: g.items.filter(keep) }))
+      .filter((g) => g.items.length);
+    listArea.replaceChildren(...(shown.length
+      ? shown.map((g, n) => el('details', { class: 'review-group', open: n === 0 && reviewFilter !== 'report' },
+        el('summary', {}, el('span', { class: 'review-group-name' }, g.name), el('span', { class: 'tally-count' }, String(g.items.length))),
+        el('ul', { class: 'note-list' }, g.items.map(itemCard))))
+      : [emptyState(reviewFilter === 'open' ? 'Nothing waiting' : 'Nothing here yet', reviewFilter === 'open' ? 'You have answered everything. New items appear here when Claude adds them.' : 'Items you answer show here.')]));
+  }
+  const filterButtons = [['open', 'Waiting'], ['answered', 'Answered'], ['all', 'All'], ['report', 'Review report']].map(([f, text]) =>
+    el('button', { type: 'button', class: reviewFilter === f ? '' : 'secondary', 'aria-pressed': String(reviewFilter === f), onclick: (e) => {
+      reviewFilter = f;
+      for (const b of e.currentTarget.parentNode.children) { const on = b === e.currentTarget; b.className = on ? '' : 'secondary'; b.setAttribute('aria-pressed', String(on)); }
+      render();
+    } }, text));
+  updateCounts();
+  render();
+  show(
+    pageHead('To review'),
+    countLine,
+    el('p', { class: 'lede' }, 'Decisions, checks and ideas that need you. "Claude decided" items are choices Claude already made; press OK, or "Change this" and add a note. Phone calls and checks: press Done after you call or update the listing. "Review report" shows everything the October 2026 accuracy review changed, for reference.'),
+    el('div', { class: 'review-filters', role: 'group', 'aria-label': 'Show' }, filterButtons),
+    listArea,
   );
 }
 
@@ -914,6 +1084,7 @@ async function route() {
     else if (hash === '#/retired') await viewRetired();
     else if (hash === '#/barriers') await viewBarriers();
     else if (hash === '#/suggestions') await viewSuggestions();
+    else if (hash === '#/review') await viewReview();
     else if (hash === '#/notice') await viewNotice();
     else await viewListings();
   } catch (err) {
@@ -928,6 +1099,13 @@ window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault()
   try {
     const [{ email }] = await Promise.all([api('/whoami'), loadLists()]);
     document.getElementById('who').textContent = `Logged in as ${email}`;
+    api('/pause').then((p) => updatePauseBanner(p.paused)).catch(() => { /* banner is a convenience */ });
+    // Waiting count next to "To review" in the menu.
+    api('/review').then(({ items }) => {
+      const n = items.filter((i) => i.status === 'open' && i.kind !== 'info').length;
+      const badge = document.querySelector('[data-nav="review"] .count');
+      if (badge) badge.textContent = n ? String(n) : '';
+    }).catch(() => { /* the count is a convenience */ });
     await route();
   } catch (err) {
     showError(err);

@@ -9,12 +9,15 @@ It's built to be cheap and safe to run: one Cloudflare Worker and a D1 database,
 **For the public (no login, no tracking):**
 - Search that forgives typos, category buttons with counts, and filters for county, cost, age and insurance accepted (including New York's "Straight" fee-for-service Medicaid).
 - Listing cards with tap-to-call, maps, hours and who qualifies, a "copy" and "text" button, and a link for each listing.
+- Each card shows where its information came from (up to 3 source links with the month they were checked).
+- A one-tap "Did something not work?" on each card (phone didn't work, closed or moved, not taking new people): anonymous, spam-checked, rate-limited, and it never changes a listing by itself.
 - A printable one-page handout builder, with a QR code for each listing, and a "Share list" link for several listings at once.
 - Works offline and installs to a phone's home screen: the public directory is saved on the device (never the admin panel).
 - Link previews and a sitemap, so shared links show each listing's name and search engines can find every listing.
 - A one-page printable flyer with a QR code and tear-off strips.
 - A red crisis bar on every page, with phone-friendly buttons.
-- A form for programs to request a listing or a correction (spam-checked, rate-limited).
+- A short correction form (which listing and what to fix, no name or contact needed; spam-checked, rate-limited). New listing requests go to the site's support email address.
+- A plain-language Terms of use page linked from every footer.
 - **Learn:** plain-language answers about benefits, each with a source.
 - **Community needs:** documented service gaps, plus an anonymous "what's getting in your way" form whose public totals are rounded and hide small numbers.
 - **Ways to help:** links straight to local organizations' own donation pages. The site never handles money.
@@ -22,7 +25,9 @@ It's built to be cheap and safe to run: one Cloudflare Worker and a D1 database,
 **For the one owner (admin panel behind Cloudflare Access):**
 - Add, edit, retire and restore listings, with full change history.
 - Private notes and internal-only listings that never reach the public.
-- "Due for re-check" view with a printable call sheet, requests inbox, anonymous barrier reports, Excel export and a weekly emailed backup.
+- "Due for re-check" view with a printable call sheet and the latest "Did something not work?" reports, requests inbox, anonymous barrier reports, Excel export and a weekly emailed backup.
+- A "To review" list of decisions, checks and calls the owner can answer from any device (Yes / Not now / No, Done, notes, Undo).
+- An emergency pause switch: one two-step button makes every public page show only the crisis numbers and 211 while the admin panel keeps working. A `SITE_PAUSED=true` setting does the same if the admin panel can't be reached.
 - A site notice (e.g. "Code Blue shelter open tonight") shown under the crisis bar on every page, with an optional end date.
 - A monthly broken-link check (`npm run link-check`).
 

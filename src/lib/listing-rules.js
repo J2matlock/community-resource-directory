@@ -16,7 +16,7 @@ export const PUBLIC_FIELDS = [
   'id', 'name', 'organization', 'category', 'tags', 'phone', 'fax', 'email', 'website',
   'address', 'town', 'serves_counties', 'hours', 'eligibility', 'age_groups', 'cost',
   'medicaid_plans', 'medicaid_notes', 'description', 'status', 'review_by', 'last_verified',
-  'last_checked_online',
+  'last_checked_online', 'sources',
 ];
 export const PRIVATE_FIELDS = ['private_notes', 'visibility', 'retired'];
 export const ALL_FIELDS = [...PUBLIC_FIELDS, ...PRIVATE_FIELDS];
@@ -24,6 +24,14 @@ export const ALL_FIELDS = [...PUBLIC_FIELDS, ...PRIVATE_FIELDS];
 const TOWN_COUNTY = REGION.townCounty;
 export const KNOWN_TOWNS = Object.keys(TOWN_COUNTY);
 const OUT_OF_AREA_TOWNS = REGION.outOfAreaTowns;
+
+// Listing sources as plain text, one per line ("url | label | date"), for
+// history rows, the export and the admin form.
+export function sourcesText(sources) {
+  return (Array.isArray(sources) ? sources : [])
+    .map((s) => [s && s.url, s && s.label, s && s.seen].filter(Boolean).join(' | '))
+    .join('\n');
+}
 
 export function countyForTown(town) {
   return TOWN_COUNTY[town] ?? null;

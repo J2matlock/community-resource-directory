@@ -1,5 +1,6 @@
-// Provider request form: sends the answers as JSON and shows any problems
-// next to the right field. All messages are set with textContent.
+// Correction form: sends the listing name and the correction as JSON and
+// shows any problems next to the right field. All messages are set with
+// textContent. No name or contact details are asked for.
 
 (function () {
   'use strict';
@@ -9,10 +10,6 @@
   var sending = document.getElementById('sending');
   var submit = document.getElementById('submit');
   var loadedAt = Date.now();
-
-  function checked(name) {
-    return Array.prototype.map.call(form.querySelectorAll('input[name="' + name + '"]:checked'), function (i) { return i.value; });
-  }
 
   function value(name) {
     var el = form.elements[name];
@@ -50,7 +47,6 @@
         var err = wrap.querySelector('.error-text');
         if (err) { err.textContent = errors[field]; err.hidden = false; }
         Array.prototype.forEach.call(controlsOf(wrap), function (c) {
-          if (c.type === 'checkbox' && field === 'address' && c.id === 'no_public_address') return;
           c.setAttribute('aria-invalid', 'true');
           if (!first) first = c;
         });
@@ -76,66 +72,32 @@
     summary.focus();
   }
 
-  // New program vs correction to an existing listing. A link like
-  // /request?type=correction&listing=Name opens the form ready for a correction.
-  function isCorrection() {
-    var r = form.querySelector('input[name="request_type"]:checked');
-    return r && r.value === 'correction';
-  }
-  function applyType() {
-    var c = isCorrection();
-    document.getElementById('correction-field').hidden = !c;
-    document.getElementById('ok-field').hidden = c;
-    document.getElementById('services-req').hidden = c;
-    document.getElementById('services').required = !c;
-    document.getElementById('contact-hint').hidden = c;
-    document.getElementById('program-heading').textContent = c ? 'Which listing, and what should it say?' : 'About the program';
-  }
-  Array.prototype.forEach.call(form.querySelectorAll('input[name="request_type"]'), function (r) {
-    r.addEventListener('change', applyType);
-  });
+  // A "Report a change" link like /request?type=correction&listing=Name&id=x
+  // fills in which listing it is.
   try {
     var params = new URLSearchParams(location.search);
-    if (params.get('type') === 'correction') {
-      form.querySelector('input[name="request_type"][value="correction"]').checked = true;
-      var name = (params.get('listing') || '').slice(0, 150);
-      var id = (params.get('id') || '').replace(/[^a-z0-9-]/g, '').slice(0, 80);
-      if (name) form.elements.organization.value = name + (id ? ' [listing: ' + id + ']' : '');
-    }
+    var name = (params.get('listing') || '').slice(0, 150);
+    var id = (params.get('id') || '').replace(/[^a-z0-9-]/g, '').slice(0, 80);
+    if (name) form.elements.organization.value = (name + (id ? ' [listing: ' + id + ']' : '')).slice(0, 200);
   } catch (err) { /* old browser: the form still works */ }
-  applyType();
-
-  document.getElementById('no_public_address').addEventListener('change', function (e) {
-    document.getElementById('address').disabled = e.target.checked;
-  });
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     clearErrors();
     var tokenInput = form.querySelector('[name="cf-turnstile-response"]');
     var body = {
-      request_type: isCorrection() ? 'correction' : 'new', correction: value('correction'),
-      organization: value('organization'), services: value('services'), eligibility: value('eligibility'),
-      age_groups: checked('age_groups'), cost: checked('cost'), medicaid: value('medicaid'), counties: checked('counties'),
-      address: value('address'), no_public_address: document.getElementById('no_public_address').checked,
-      office_not_shelter: document.getElementById('office_not_shelter').checked,
-      hours: value('hours'), phone: value('phone'), email: value('email'), website: value('website'),
-      how_to_start: value('how_to_start'), submitter_name: value('submitter_name'), submitter_contact: value('submitter_contact'),
-      ok_to_publish: document.getElementById('ok_to_publish').checked,
+      request_type: 'correction',
+      organization: value('organization'),
+      correction: value('correction'),
       nickname: value('nickname'),
       turnstile_token: tokenInput ? tokenInput.value : '',
     };
     // Quick checks here first, so people see helpful messages right away.
     // The server checks everything again.
     var missing = {};
-    var needed = isCorrection() ? ['organization', 'correction', 'submitter_name', 'submitter_contact'] : ['organization', 'services', 'submitter_name', 'submitter_contact'];
-    needed.forEach(function (f) {
+    ['organization', 'correction'].forEach(function (f) {
       if (!body[f].trim()) missing[f] = 'Please fill this in.';
     });
-    if (!isCorrection()) {
-      if (!body.phone.trim() && !body.email.trim() && !body.website.trim()) missing.phone = 'Please give at least a phone, email or website for the program.';
-      if (!body.ok_to_publish) missing.ok_to_publish = 'Please tick the box to confirm the program details can be published.';
-    }
     if (Object.keys(missing).length) { showErrors('Please check the highlighted answers.', missing); return; }
     if (!body.turnstile_token) {
       var waited = (Date.now() - loadedAt) / 1000;
