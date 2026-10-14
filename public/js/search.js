@@ -60,6 +60,16 @@
     });
   }
 
+  // Singular and plural count as the same word: "veteran" finds "veterans",
+  // "dentists" finds "dentist", "glasses" finds "glass". Words ending in
+  // ss, us or is ("glass", "bus", "crisis"), and short words, are left alone
+  // when trimming, so "news" doesn't turn into "new".
+  function samePlural(word, term) {
+    if (word === term + 's' || word === term + 'es') return true;
+    if (term.length < 5 || /(ss|us|is)$/.test(term)) return false;
+    return term === word + 's' || term === word + 'es';
+  }
+
   function create(listings, dict) {
     dict = dict || {};
     var filler = {};
@@ -90,12 +100,12 @@
 
     // Best field weight for a word in a listing, or 0.
     // exact = whole words only (used for dictionary words, so "me" or "off"
-    // don't match "medical" or "office").
+    // don't match "medical" or "office"); a plural or singular still counts.
     function weightFor(entry, term, fuzzy, exact) {
       var best = 0;
       for (var i = 0; i < entry.fields.length; i++) {
         var pair = entry.fields[i];
-        if (pair[1].some(function (w) { return exact ? w === term : w.indexOf(term) === 0; })) best = Math.max(best, pair[0]);
+        if (pair[1].some(function (w) { return (exact ? w === term : w.indexOf(term) === 0) || samePlural(w, term); })) best = Math.max(best, pair[0]);
         else if (fuzzy && pair[1].some(function (w) { return closeEnough(term, w); })) best = Math.max(best, pair[0] * 0.6);
       }
       return best;
@@ -106,6 +116,18 @@
     var candidates = [];
     entries.forEach(function (e) { e.match.forEach(function (m) { candidates.push({ entry: e, phrase: m }); }); });
     candidates.sort(function (a, b) { return b.phrase.split(' ').length - a.phrase.split(' ').length || b.phrase.length - a.phrase.length; });
+
+    // A plural of a word from the everyday-words list counts as that word, so
+    // "urgent cares" is understood like "urgent care".
+    var dictWord = {};
+    candidates.forEach(function (c) { c.phrase.split(' ').forEach(function (w) { dictWord[w] = true; }); });
+    function toDictWord(w) {
+      if (dictWord[w] || w.length < 5 || /(ss|us|is)$/.test(w)) return w;
+      // Try "s" before "es": "cares" is "care", not "car"; "glasses" is "glass".
+      if (/s$/.test(w) && dictWord[w.slice(0, -1)]) return w.slice(0, -1);
+      if (/es$/.test(w) && dictWord[w.slice(0, -2)]) return w.slice(0, -2);
+      return w;
+    }
 
     function findEntries(q) {
       var padded = ' ' + q + ' ';
@@ -127,6 +149,7 @@
     function search(query) {
       var q = norm(query);
       if (!q) return { results: listings.slice(), mode: 'all', notes: [], suggestions: [], safety: false };
+      q = q.split(' ').map(toDictWord).join(' ');
       var found = findEntries(q);
       var terms = q.split(' ').filter(function (w, i, a) { return !filler[w] && !found.used[w] && a.indexOf(w) === i; });
       var notes = [];

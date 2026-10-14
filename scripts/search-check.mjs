@@ -14,7 +14,7 @@ const data = await (await fetch(`${base}/api/listings`)).json();
 const dict = JSON.parse(readFileSync('public/content/words.json', 'utf8'));
 const engine = globalThis.SADKSearch.create(data.listings, dict);
 
-// [phrase, categories the top 3 results should come from]
+// [phrase, categories the top 3 results should come from, optional category the first result must be]
 const CASES = [
   ['help paying rent', ['Rent, Utility and Emergency Help', 'Housing and Shelter']],
   ['I need help paying my electric bill', ['Rent, Utility and Emergency Help']],
@@ -60,6 +60,10 @@ const CASES = [
   ['daycare', ['Child Care', 'Youth Programs']],
   ['lonely', ['Senior Centers and Social', 'Mental Health']],
   ['veteran', ['Veterans']],
+  // A veteran in crisis: the crisis line first, then crisis or veteran help.
+  ['veteran suicide', ['Crisis Help', 'Veterans'], 'Crisis Help'],
+  ['suicidal veteran', ['Crisis Help', 'Veterans'], 'Crisis Help'],
+  ['veteran crisis', ['Crisis Help', 'Veterans'], 'Crisis Help'],
   ['just got out of prison', ['Legal Help', 'Employment', 'Housing and Shelter']],
   ['comida', ['Food']],
   ['dentista', ['Dental']],
@@ -82,11 +86,11 @@ const CASES = [
 
 let pass = 0;
 const fails = [];
-for (const [phrase, cats] of CASES) {
+for (const [phrase, cats, firstCat] of CASES) {
   const r = engine.search(phrase);
   const top = r.results.slice(0, 3);
   // The first result must be the right kind of help, and most of the top 3.
-  const ok = top.length > 0 && cats.includes(top[0].category) && top.filter((l) => cats.includes(l.category)).length >= Math.min(2, top.length);
+  const ok = top.length > 0 && (firstCat ? top[0].category === firstCat : cats.includes(top[0].category)) && top.filter((l) => cats.includes(l.category)).length >= Math.min(2, top.length);
   if (ok) pass++;
   else fails.push(`  ✗ "${phrase}" (${r.mode}): ${top.map((l) => `${l.name} [${l.category}]`).join(' | ') || 'no results'}`);
 }

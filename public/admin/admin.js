@@ -510,7 +510,7 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
         ? await api(`/listings/${encodeURIComponent(listing.id)}`, { method: 'PUT', body })
         : await api('/listings', { method: 'POST', body });
       dirty = false;
-      if (fromRequest) sessionStorage.removeItem('prefill');
+      if (fromRequest) { sessionStorage.removeItem('prefill'); refreshRequestCount(); }
       toast(fromRequest ? 'Saved. The request is marked handled.' : 'Saved.');
       location.hash = `#/edit/${res.listing.id}`;
       if (listing) await viewEdit(res.listing.id, { again: '.actions-bar .save' });
@@ -919,8 +919,7 @@ async function viewReview() {
     const waiting = waitingOf(items).length;
     const answered = items.filter((i) => i.kind !== 'info' && i.status !== 'open').length;
     countLine.textContent = `${waiting} waiting for you, ${answered} answered. Your answers save as you click, from any device. Claude reads them the next time you ask it to.`;
-    const badge = document.querySelector('[data-nav="review"] .count');
-    if (badge) badge.textContent = waiting ? String(waiting) : '';
+    setNavCount('review', waiting);
   }
 
   const groups = [];
@@ -1054,6 +1053,18 @@ export function listingFromRequest(r) {
 // `again` is set when the page is rebuilt after Mark handled: the scroll
 // position is kept and focus goes to the next new request's heading (or the
 // "Handled" summary when none are left) instead of the top of the page.
+// The small number next to a menu item ("To review 131", "Requests 1").
+function setNavCount(nav, n) {
+  const badge = document.querySelector(`[data-nav="${nav}"] .count`);
+  if (badge) badge.textContent = n ? String(n) : '';
+}
+
+// New (not yet handled) provider requests, for the menu count.
+function refreshRequestCount() {
+  api('/requests').then(({ requests }) => setNavCount('requests', requests.filter((r) => r.status === 'New').length))
+    .catch(() => { /* the count is a convenience */ });
+}
+
 async function viewRequests({ again = null } = {}) {
   setNav('requests');
   document.title = 'Requests: Directory admin';
@@ -1066,6 +1077,7 @@ async function viewRequests({ again = null } = {}) {
   }
   const { requests } = data;
   const open = requests.filter((r) => r.status === 'New');
+  setNavCount('requests', open.length);
   const handled = requests.filter((r) => r.status !== 'New');
 
   const card = (r) => {
@@ -1159,10 +1171,10 @@ window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault()
     api('/pause').then((p) => updatePauseBanner(p.paused)).catch(() => { /* banner is a convenience */ });
     // Waiting count next to "To review" in the menu.
     api('/review').then(({ items }) => {
-      const n = items.filter((i) => i.status === 'open' && i.kind !== 'info').length;
-      const badge = document.querySelector('[data-nav="review"] .count');
-      if (badge) badge.textContent = n ? String(n) : '';
+      setNavCount('review', items.filter((i) => i.status === 'open' && i.kind !== 'info').length);
     }).catch(() => { /* the count is a convenience */ });
+    // New provider requests count next to "Requests".
+    refreshRequestCount();
     // The old "Help suggestions" menu item starts hidden (so the menu doesn't
     // jump) and only appears while there are still messages, or when the page
     // itself was opened by its address.

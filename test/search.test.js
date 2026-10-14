@@ -50,6 +50,22 @@ describe('Search', () => {
     expect(top('lights shut off')).not.toContain('office');
   });
 
+  it('treats singular and plural as the same word, without trimming words like "news"', () => {
+    const p = globalThis.SADKSearch.create([
+      L('vcl', 'Crisis Help', 'Veterans Crisis Line', { tags: ['veterans', 'suicide'] }),
+      L('agency', 'Veterans', 'County Veterans Agency'),
+      L('dent', 'Dental', 'Family Dentist'),
+      L('glass', 'Eye Care', 'Eye Glass Shop'),
+      L('ny', 'Social Services', 'New York Benefits'),
+    ], words);
+    const first = (q) => p.search(q).results.map((l) => l.id);
+    expect(first('suicidal veteran')[0]).toBe('vcl');
+    expect(first('dentists')).toContain('dent');
+    expect(first('glasses')).toContain('glass');
+    expect(p.search('urgent cares').mode).toBe('understood'); // "cares" is "care", not "car"
+    expect(p.search('news').mode).toBe('unsure'); // only the typo fallback, never a real match
+  });
+
   it('shows a plain explainer for local names', () => {
     expect(engine.search('OFA').notes[0]).toMatch(/Office for the Aging/);
   });
