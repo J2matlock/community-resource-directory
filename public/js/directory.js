@@ -7,6 +7,7 @@
 
   var PARAMS = { q: 'q', category: 'category', county: 'county', plan: 'plan', cost: 'cost', age: 'age' };
   var UNSPECIFIED_PLAN = 'Medicaid (call to check plan)';
+  var PLAN_UNLISTED_LABEL = 'Medicaid, plan not listed (call to check)';
   var COST_LABELS = { 'Sliding scale': 'Sliding scale (price based on income)', 'Uninsured OK': 'OK without insurance' };
   var HANDOUT_KEY = 'handout-ids';
   // Site settings come from <body data-…> (set by `npm run apply-region`).
@@ -53,7 +54,7 @@
 
   function setChildren(node, children) {
     while (node.firstChild) node.removeChild(node.firstChild);
-    flatten(children).forEach(function (c) { if (c) node.appendChild(c); });
+    flatten(children).forEach(function (c) { if (c) node.appendChild(c instanceof Node ? c : document.createTextNode(String(c))); });
   }
 
   // ---------- formatting ----------
@@ -262,7 +263,11 @@
     var d = savedAt ? new Date(savedAt) : null;
     var when = d && !isNaN(d) ? d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'earlier';
     var note = $('offline-note');
-    note.textContent = 'You are offline. Showing the copy saved on this device on ' + when + '. Calls and texts still work; details may have changed.';
+    // Sent here from a page that was never saved on this phone (see /sw.js).
+    var notSaved = location.hash === '#not-saved';
+    if (notSaved) history.replaceState(null, '', location.pathname + location.search);
+    note.textContent = (notSaved ? 'That page isn\'t saved on this phone yet, so here is the directory. ' : '')
+      + (navigator.onLine === false ? 'You\'re offline' : 'No signal or a slow connection') + ', so this is the copy saved on this device on ' + when + '. Calls and texts still work; details may have changed.';
     note.hidden = false;
   }
 
@@ -282,6 +287,34 @@
     var qs = p.toString();
     var url = '/' + (qs ? '?' + qs : '');
     if (location.pathname + location.search !== url) history.replaceState(null, '', url);
+    rememberList(url);
+  }
+
+  function rememberFromList() {
+    try { sessionStorage.setItem('from-list', location.pathname + location.search); } catch (e) { /* private mode */ }
+  }
+
+  // "← Back to your results" on a listing goes to the search the visitor came
+  // from (this tab only), or to all resources.
+  var LAST_LIST_KEY = 'last-list';
+  function rememberList(url) {
+    try { sessionStorage.setItem(LAST_LIST_KEY, url); } catch (e) { /* private mode */ }
+  }
+  function showBackLink() {
+    var last = '';
+    try { last = sessionStorage.getItem(LAST_LIST_KEY) || ''; } catch (e) { /* private mode */ }
+    var a = $('back-link').querySelector('a');
+    var useLast = /^\/\?[^/]*$/.test(last);
+    a.setAttribute('href', useLast ? last : '/');
+    a.textContent = useLast ? '← Back to your results' : '← All resources';
+    $('back-link').hidden = false;
+    // Came straight from those results in this tab: go Back, which returns to
+    // the same place in the list (a new visit would start at the top).
+    a.onclick = function (e) {
+      var from = '';
+      try { from = sessionStorage.getItem('from-list') || ''; } catch (err) { /* private mode */ }
+      if (useLast && from === last && history.length > 1) { e.preventDefault(); history.back(); }
+    };
   }
 
   // A shared list: /?list=id1,id2 shows just those listings, in that order.
@@ -314,11 +347,18 @@
     return searchCache.result;
   }
 
+  // With no search, the full list is A to Z, with names that start with a
+  // number ("1115 Waiver…") after the letters, so it opens on plain names.
+  var allInOrder = [];
+  function defaultOrder(list) {
+    return list.filter(function (l) { return !/^\d/.test(l.name); }).concat(list.filter(function (l) { return /^\d/.test(l.name); }));
+  }
+
   function searched() {
     var q = state.q.trim();
     if (!q) {
       lastSearch = { mode: 'all', notes: [], suggestions: [], safety: false };
-      return data.listings;
+      return allInOrder;
     }
     if (!engine) { // search.js didn't load: plain text match
       lastSearch = { mode: 'exact', notes: [], suggestions: [], safety: false };
@@ -354,6 +394,7 @@
 
   // ---------- filtering ----------
   function has(list, v) { return list.indexOf(v) !== -1; }
+  function filtersActive() { return FILTER_KEYS.some(function (k) { return state[k]; }); }
 
   function matchesFilters(l, skipCategory) {
     if (!skipCategory && state.category && l.category !== state.category) return false;
@@ -430,7 +471,7 @@
     var emailValue = l.email ? el('a', { href: 'mailto:' + l.email }, l.email) : null;
     var medicaid = [l.medicaid_plans.join(', '), l.medicaid_notes].filter(Boolean).join('. ');
     var costs = l.cost.map(function (c) { return COST_LABELS[c] || c; }).join(', ');
-    var title = single ? l.name : el('a', { href: '/listing/' + linkId(l) }, l.name);
+    var title = single ? l.name : el('a', { href: '/listing/' + linkId(l), onclick: rememberFromList }, l.name);
 
     var box = el('input', {
       type: 'checkbox', id: 'h-' + l.id, checked: handout.has(l.id),
@@ -499,19 +540,28 @@
   var showMoreButton = null;
   var moreWatcher = null;
 
-  // How many cards are drawn for this search, so that coming Back from a
-  // listing (a full page load on older phones) redraws the same amount and
-  // the browser can land where the visitor was.
+  // Coming Back from a listing (a full page load on many phones): redraw as
+  // many cards as before and return to the same spot. The browser's own scroll
+  // restore is turned off, because it runs before the list has loaded and
+  // lands at the bottom of a short page. Only a Back/Forward visit restores;
+  // a fresh visit to the same search starts at the top with one page.
+  var navEntry = window.performance && performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+  var restoring = Boolean(navEntry && navEntry.type === 'back_forward');
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   function drawnKey() { return 'drawn:' + location.search; }
   function saveDrawn() {
-    try { sessionStorage.setItem(drawnKey(), String(shown)); } catch (e) { /* private mode: start small */ }
+    try { sessionStorage.setItem(drawnKey(), JSON.stringify({ shown: shown, y: Math.round(window.scrollY || 0) })); } catch (e) { /* private mode: start small */ }
   }
   function loadDrawn() {
-    try { return parseInt(sessionStorage.getItem(drawnKey()), 10) || 0; } catch (e) { return 0; }
+    try { return JSON.parse(sessionStorage.getItem(drawnKey()) || 'null') || { shown: 0, y: 0 }; } catch (e) { return { shown: 0, y: 0 }; }
   }
   function forgetDrawn() {
     try { sessionStorage.removeItem(drawnKey()); } catch (e) { /* nothing stored */ }
   }
+  // The place is saved as the visitor leaves (to a listing, or anywhere).
+  window.addEventListener('pagehide', function () {
+    if (data && !singleListingId() && !sharedListIds().length) saveDrawn();
+  });
 
   // Draws the next "count" cards (one page unless told otherwise). "focus" is
   // 'new' (the button: move to the first new card so a screen reader isn't
@@ -527,7 +577,6 @@
       list.appendChild(li);
     });
     shown += next.length;
-    if (focus !== 'none') saveDrawn();
     var hadFocus = document.activeElement === showMoreButton;
     renderShowMore();
     if (first && (focus === 'new' || (focus === 'auto' && hadFocus && $('show-more').hidden))) {
@@ -623,17 +672,19 @@
     var list = $('results');
 
     if (single) {
+      restoring = false;
       hideShowMore();
       renderClear(false);
       var l = findListing(single);
       // A DV listing opened by its old, named address: swap in the neutral one.
       if (l && l.category === DV && single !== neutralId(l.id)) history.replaceState(null, '', '/listing/' + neutralId(l.id));
       $('finder').hidden = true;
-      $('back-link').hidden = false;
+      showBackLink();
       $('plan-note').hidden = true;
       if (!l) {
         document.title = 'Listing not found: ' + SITE_NAME;
-        $('result-status').textContent = 'That listing was not found. It may have moved or closed. Call 211 for help.';
+        $('page-title').textContent = 'Listing not found';
+        setChildren($('result-status'), ['That listing was not found. It may have moved or closed. ', el('a', { href: '/' }, 'Search all resources'), ', or call ', el('a', { href: 'tel:211' }, '211'), ' for help.']);
         setChildren(list, []);
         return;
       }
@@ -642,20 +693,32 @@
       $('page-title').textContent = l.name;
       toggleQuickExit(l.category === 'Domestic Violence');
       $('result-status').textContent = '';
-      setChildren(list, [el('li', {}, cardFor(l, true))]);
+      // The card drawn early is already here: keep it (and the keyboard focus).
+      var node = cardFor(l, true);
+      if (node.parentNode && node.parentNode.parentNode === list) return;
+      setChildren(list, [el('li', {}, node)]);
       return;
     }
 
     var shared = sharedListIds();
     if (shared.length) {
+      restoring = false;
       hideShowMore();
       renderClear(false);
       var picked = shared.map(findListing).filter(Boolean);
+      // A domestic violence listing named by its real id: switch the address
+      // to the neutral ones, as a single listing link does.
+      var neutralList = picked.map(linkId).join(',');
+      if (picked.some(function (x) { return x.category === DV; }) && neutralList !== shared.join(',')) {
+        history.replaceState(null, '', '/?list=' + neutralList);
+      }
       $('finder').hidden = true;
-      $('back-link').hidden = false;
+      showBackLink();
       $('plan-note').hidden = true;
       $('page-title').textContent = 'Shared list';
       document.title = 'Shared list: ' + SITE_NAME;
+      // A list with a domestic violence listing gets the quick exit too.
+      toggleQuickExit(isSensitive());
       $('result-status').textContent = picked.length
         ? 'Someone shared ' + picked.length + (picked.length === 1 ? ' resource' : ' resources') + ' with you.'
           + (picked.length < shared.length ? ' Some on the list are no longer listed.' : '')
@@ -666,23 +729,27 @@
 
     $('finder').hidden = false;
     $('back-link').hidden = true;
+    rememberList(location.pathname + location.search);
     var items = results();
     var total = data.listings.length;
     var active = Object.keys(state).some(function (k) { return k === 'q' ? state.q.trim() : state[k]; });
     var mode = lastSearch.mode;
+    var blocked = !items.length && blockingFilters().length > 0;
     $('result-status').textContent = !items.length
-      ? 'No matches. Try different words or pick a category below, or ' + HELP_LINE + '.'
+      ? (blocked ? 'No matches with the filters you chose. Remove one below, or ' + HELP_LINE + '.' : 'No matches. Try different words or pick a category below, or ' + HELP_LINE + '.')
       : mode === 'unsure'
         ? 'We\'re not sure what you meant by "' + state.q.trim() + '". These are guesses. Try a category below, or ' + HELP_LINE + '.'
-        : mode === 'partial'
-          ? 'Showing ' + items.length + ' resources that match some of your words.'
-          : 'Showing ' + items.length + ' of ' + total + ' resources' + (active ? ' that match' : '') + '.';
+        : (mode === 'partial'
+          ? (lastSearch.corrected ? 'Showing results for "' + lastSearch.corrected + '": ' : 'Showing ') + items.length + ' resources that match some of your words.'
+          : lastSearch.corrected
+            ? 'Showing results for "' + lastSearch.corrected + '": ' + items.length + ' of ' + total + ' resources.'
+            : 'Showing ' + items.length + ' of ' + total + ' resources' + (active ? ' that match' : '') + '.')
+          + wishesLine();
+    var n = FILTER_KEYS.filter(function (k) { return state[k]; }).length;
+    $('filter-count').textContent = n ? (n === 1 ? '1 filter on' : n + ' filters on') + ': ' + items.length + (items.length === 1 ? ' result' : ' results') : '';
     renderSearchHelp(items.length);
     renderClear(active);
-    $('plan-note').hidden = !state.plan;
-    $('plan-note').textContent = state.plan
-      ? 'Showing places known to take ' + state.plan + '. Some other places take Medicaid but haven\'t said which plans; search "medicaid" to see them. Always call to confirm.'
-      : '';
+    renderPlanNote();
     // Start again from the first page (the count above reports every match),
     // or from as many cards as were drawn before, when coming Back to this
     // same search.
@@ -691,8 +758,66 @@
     pageItems = items;
     shown = 0;
     autoAppends = 0;
-    var drawn = loadDrawn();
-    appendPage('auto', drawn > PAGE ? Math.min(drawn, pageItems.length) : PAGE);
+    var place = restoring ? loadDrawn() : { shown: 0, y: 0 };
+    appendPage('auto', place.shown > PAGE ? Math.min(place.shown, pageItems.length) : PAGE);
+    if (restoring) {
+      restoring = false;
+      if (place.y) window.scrollTo(0, place.y);
+    }
+  }
+
+  // What the search understood as wishes rather than needs: a place, or free
+  // and low-cost help. Those come first; nothing else is hidden.
+  function wishesLine() {
+    if (!state.q.trim()) return '';
+    var place = lastSearch.places && lastSearch.places.length;
+    return (place ? ' Places in or serving ' + lastSearch.places.join(' and ') + ' come first.' : '')
+      + (lastSearch.lowCost ? ' Free and low-cost places come ' + (place ? 'next.' : 'first.') : '');
+  }
+
+  // Filters (and the category) whose removal would bring results back.
+  function blockingFilters() {
+    return FILTER_KEYS.concat(['category']).filter(function (k) {
+      if (!state[k]) return false;
+      var patch = {};
+      patch[k] = '';
+      return countWith(patch) > 0;
+    });
+  }
+
+  // How many results there would be with one filter (or the category) taken off.
+  var FILTER_KEYS = ['county', 'plan', 'cost', 'age'];
+  var FILTER_LABELS = { county: 'County', plan: 'Insurance', cost: 'Cost', age: 'Age group', category: 'Category' };
+  // Leaves the page's own search untouched (state, last result, cache).
+  function countWith(patch) {
+    var saved = {};
+    var keptSearch = lastSearch;
+    var keptCache = searchCache;
+    Object.keys(patch).forEach(function (k) { saved[k] = state[k]; state[k] = patch[k]; });
+    var n = results().length;
+    Object.keys(saved).forEach(function (k) { state[k] = saved[k]; });
+    lastSearch = keptSearch;
+    searchCache = keptCache;
+    return n;
+  }
+  function filterValueLabel(k, v) {
+    return k === 'county' ? v + ' County' : k === 'cost' ? COST_LABELS[v] || v : k === 'plan' && v === UNSPECIFIED_PLAN ? PLAN_UNLISTED_LABEL : v;
+  }
+
+  // The insurance filter shows only places known to take that plan. Many
+  // others take Medicaid but haven't said which plans: one tap shows those.
+  function renderPlanNote() {
+    var note = $('plan-note');
+    note.hidden = !state.plan;
+    if (!state.plan) { setChildren(note, []); return; }
+    if (state.plan === UNSPECIFIED_PLAN) {
+      setChildren(note, ['Showing places that take Medicaid but haven\'t said which plans. Call to check that they take yours.']);
+      return;
+    }
+    var medicaidPlan = !/medicare/i.test(state.plan) && data.medicaid_plans.indexOf(UNSPECIFIED_PLAN) !== -1;
+    setChildren(note, ['Showing places known to take ' + state.plan + '. Always call to confirm. ',
+      medicaidPlan ? el('button', { type: 'button', class: 'linklike', onclick: function () { setState({ plan: UNSPECIFIED_PLAN }); $('result-status').focus(); } },
+        'Instead, show places that take Medicaid but haven\'t listed plans') : null]);
   }
 
   // Plain explainers ("DSS = your county's Department of Social Services") and,
@@ -722,13 +847,38 @@
       ? (lastSearch.suggestions.length ? lastSearch.suggestions : ['Food', 'Rent, Utility and Emergency Help', 'Housing and Shelter', 'Medical'])
           .filter(function (c) { return data.categories.indexOf(c) !== -1; })
       : [];
-    setChildren($('search-suggest'), suggest.length ? [
-      el('p', {}, lastSearch.suggestions.length ? 'Did you mean:' : 'Or try a category:'),
-      el('div', { class: 'suggest-buttons' }, suggest.map(function (c) {
-        return el('button', { type: 'button', class: 'secondary', onclick: function () { setState({ q: '', category: c }); $('result-status').focus(); } }, c);
-      })),
-    ] : []);
-    $('search-suggest').hidden = !suggest.length;
+    // No matches because of the filters: one button per filter, with how many
+    // results taking it off would give.
+    // (Only filters whose removal brings results back; "Clear all" is always there.)
+    var blocking = !count ? blockingFilters() : [];
+    var nodes = [];
+    if (blocking.length) {
+      nodes.push(el('p', {}, 'Or remove a filter:'), el('div', { class: 'suggest-buttons' }, blocking.map(function (k) {
+        var patch = {};
+        patch[k] = '';
+        var n = countWith(patch);
+        return el('button', { type: 'button', class: 'secondary', onclick: function () { setState(patch); $('result-status').focus(); } },
+          'Remove ' + FILTER_LABELS[k] + ': ' + filterValueLabel(k, state[k]) + ' (' + n + (n === 1 ? ' result)' : ' results)'));
+      })));
+    }
+    // A guessed spelling can always be undone: search the words exactly as typed.
+    if (lastSearch.corrected && state.q.trim()) {
+      var typed = state.q.trim();
+      nodes.push(el('p', {}, el('button', { type: 'button', class: 'linklike', onclick: function () { setState({ q: '"' + typed + '"' }); $('result-status').focus(); } },
+        'Search for "' + typed + '" exactly as typed')));
+    }
+    if (suggest.length) {
+      nodes.push(el('p', {}, lastSearch.mode === 'unsure' ? 'Did you mean:' : 'Or try a category:'), el('div', { class: 'suggest-buttons' }, suggest.map(function (c) {
+        // Keep the filters if the category has matches with them; otherwise drop them.
+        var keep = countWith({ q: '', category: c }) > 0;
+        return el('button', { type: 'button', class: 'secondary', onclick: function () {
+          setState(keep ? { q: '', category: c } : { q: '', category: c, county: '', plan: '', cost: '', age: '' });
+          $('result-status').focus();
+        } }, c, keep || !filtersActive() ? '' : ' (all filters off)');
+      })));
+    }
+    setChildren($('search-suggest'), nodes);
+    $('search-suggest').hidden = !nodes.length;
     toggleQuickExit(isSensitive());
   }
 
@@ -749,14 +899,15 @@
     var selects = document.querySelectorAll('.filter-grid select');
     for (var i = 0; i < selects.length; i++) selects[i].value = state[selects[i].getAttribute('data-key')] || '';
     if ($('search').value !== state.q) $('search').value = state.q;
-    var n = ['county', 'plan', 'cost', 'age'].filter(function (k) { return state[k]; }).length;
-    $('filter-count').textContent = n ? n + (n === 1 ? ' filter on' : ' filters on') : '';
+    var n = FILTER_KEYS.filter(function (k) { return state[k]; }).length;
+    if (!n) $('filter-count').textContent = '';
     $('browse-current').textContent = state.category ? 'Showing: ' + state.category : '';
     if (n) $('filters').open = true;
   }
 
   function render() {
     if (!$('search')) return; // page already emptied by "Leave this site"
+    if (!data) return; // still loading: the search is kept and drawn when the list arrives
     // A domestic-violence view opened from a link: take the words out of the
     // address so they don't stay in browser history.
     if (isSensitive() && (location.search.indexOf('q=') !== -1 || location.search.indexOf('category=') !== -1)) writeUrl();
@@ -967,16 +1118,38 @@
     window.addEventListener('popstate', function () { readUrl(); render(); });
   }
 
+  // A listing's own page carries that listing (see src/routes/pages.js), so
+  // its card is drawn at once; the full directory still loads for search.
+  var earlyCard = null;
+  function drawEarlyListing() {
+    var node = $('listing-data');
+    var id = singleListingId();
+    if (!node || !id) return;
+    var l;
+    try { l = JSON.parse(node.textContent); } catch (e) { return; }
+    if (!l || l.id !== id || l.category === DV) return;
+    $('finder').hidden = true;
+    showBackLink();
+    document.title = l.name + ': ' + SITE_NAME;
+    $('page-title').textContent = l.name;
+    $('result-status').textContent = '';
+    earlyCard = { json: JSON.stringify(l), node: cardFor(l, true) };
+    setChildren($('results'), [el('li', {}, earlyCard.node)]);
+  }
+
   function start() {
     // Categories start open on wider screens, closed on phones so results come first
     // (the summary line still says which category is showing).
     if (!narrow.matches) $('browse').open = true;
     wireControls();
     readUrl();
+    drawEarlyListing();
     // The everyday-words list is optional: search still works without it.
     var words = fetch('/content/words.json', { headers: { Accept: 'application/json' } })
       .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function () { return null; });
+    // A stuck words list must never hold the listings back.
+    words = Promise.race([words, new Promise(function (resolve) { setTimeout(function () { resolve(null); }, 6000); })]);
     fetch('/api/listings', { headers: { Accept: 'application/json' } })
       .then(function (res) {
         if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -986,20 +1159,32 @@
       .then(function (json) { return words.then(function (w) { dictionary = w; return json; }); })
       .then(function (json) {
         data = json;
-        // Fresh data means fresh cards and a fresh search.
+        // Fresh data means fresh cards and a fresh search. The card drawn early
+        // stays (with any focus or open "Did something not work?") if unchanged.
         cardNodes = {};
+        if (earlyCard) {
+          var same = json.listings.filter(function (x) { return JSON.stringify(x) === earlyCard.json; })[0];
+          if (same) cardNodes[same.id + '|single'] = earlyCard.node;
+        }
         searchCache = { q: null, result: null };
         fillSelect('f-county', data.counties.filter(function (c) { return c !== 'Regional'; }), function (c) { return c + ' County'; });
         fillSelect('f-plan', data.medicaid_plans.filter(function (p) { return p !== UNSPECIFIED_PLAN; }));
+        // Last, and in plain words: places that take Medicaid but haven't said which plans.
+        if (data.medicaid_plans.indexOf(UNSPECIFIED_PLAN) !== -1) $('f-plan').appendChild(el('option', { value: UNSPECIFIED_PLAN }, PLAN_UNLISTED_LABEL));
         fillSelect('f-cost', data.costs, function (c) { return COST_LABELS[c] || c; });
         fillSelect('f-age', data.age_groups);
-        engine = window.SADKSearch ? window.SADKSearch.create(data.listings, dictionary) : null;
+        engine = window.SADKSearch ? window.SADKSearch.create(data.listings, dictionary, { towns: data.towns, counties: data.counties }) : null;
+        allInOrder = defaultOrder(data.listings);
         searchCache = { q: null, result: null };
         buildCategories();
         render();
       })
       .catch(function () {
+        if (earlyCard) return; // the listing is already showing; only search is missing
         $('result-status').textContent = FALLBACK;
+        // One clear way to try again (a weak signal often comes back).
+        setChildren($('result-clear'), [el('button', { type: 'button', class: 'secondary', onclick: function () { location.reload(); } }, 'Try again')]);
+        $('result-clear').hidden = false;
       });
   }
 

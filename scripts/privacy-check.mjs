@@ -3,7 +3,9 @@
 // - The owner's email is not in any file headed for GitHub (settings rule).
 // - No listing data, backups or secrets are tracked by git (rule 8).
 // - No SSN-shaped numbers in tracked files (rule 1).
-// - No third-party scripts in pages besides the vendored Fuse.js and Turnstile (rule 7).
+// - No third-party scripts in pages besides Turnstile (rule 7; search is our own
+//   public/js/search.js, Fuse.js is not used).
+// - Hotline numbers outside the crisis bar match src/region.js.
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, statSync } from 'node:fs';
@@ -56,6 +58,24 @@ for (const f of tracked.filter((x) => /^public\/[^/]+\.html$/.test(x))) {
   const { crisisBarHtml } = await import('../src/lib/crisis-bar.js');
   if (!readFileSync('public/index.html', 'utf8').includes(crisisBarHtml(REGION))) {
     failures.push('public/index.html crisis bar differs from the one built from src/region.js. Run `npm run apply-region`.');
+  }
+}
+
+// Hotline numbers written outside the crisis bar (the flyer's crisis box and
+// the domestic violence search note) are not rewritten by apply-region: they
+// must be the region's numbers, so a changed hotline can't stay wrong there.
+{
+  const { REGION } = await import('../src/region.js');
+  const numbers = REGION.crisis.flatMap((g) => g.items.filter((i) => i.number && /\(\d{3}\)/.test(i.number)).map((i) => i.number));
+  const flyer = readFileSync('public/flyer.html', 'utf8');
+  const box = flyer.slice(flyer.indexOf('class="flyer-crisis"'));
+  for (const n of numbers) if (!box.includes(n)) failures.push(`public/flyer.html crisis box is missing the hotline ${n} from src/region.js.`);
+  const words = JSON.parse(readFileSync('public/content/words.json', 'utf8'));
+  for (const e of words.entries.filter((x) => x.safety && (x.categories || []).includes('Domestic Violence'))) {
+    for (const n of (e.note || '').match(/\(\d{3}\) \d{3}-\d{4}/g) || []) {
+      if (!numbers.includes(n)) failures.push(`public/content/words.json domestic violence note has ${n}, which is not a hotline in src/region.js.`);
+    }
+    for (const n of numbers) if (!(e.note || '').includes(n)) failures.push(`public/content/words.json domestic violence note is missing the hotline ${n} from src/region.js.`);
   }
 }
 

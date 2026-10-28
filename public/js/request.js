@@ -51,7 +51,8 @@
           if (!first) first = c;
         });
       }
-      var text = (label ? label.replace(/\s*\(required\)\s*/, '').replace(/\s+/g, ' ').trim() + ': ' : '') + errors[field];
+      var name = label ? label.replace(/\s*\(required\)\s*/, '').replace(/\s+/g, ' ').trim() : '';
+      var text = (name ? name + (/[?:]$/.test(name) ? ' ' : ': ') : '') + errors[field];
       var li = document.createElement('li');
       if (first) {
         var a = document.createElement('a');
@@ -72,14 +73,26 @@
     summary.focus();
   }
 
-  // A "Report a change" link like /request?type=correction&listing=Name&id=x
-  // fills in which listing it is.
+  // A "Report a correction" link like /request?type=correction&listing=Name&id=x
+  // fills in which listing it is. The box shows just the name; the listing's
+  // id is added when sending (so the owner knows exactly which one), unless
+  // the name was changed.
+  var prefilled = { name: '', id: '' };
   try {
     var params = new URLSearchParams(location.search);
-    var name = (params.get('listing') || '').slice(0, 150);
-    var id = (params.get('id') || '').replace(/[^a-z0-9-]/g, '').slice(0, 80);
-    if (name) form.elements.organization.value = (name + (id ? ' [listing: ' + id + ']' : '')).slice(0, 200);
+    prefilled.name = (params.get('listing') || '').slice(0, 170);
+    prefilled.id = (params.get('id') || '').replace(/[^a-z0-9-]/g, '').slice(0, 80);
+    if (prefilled.name) form.elements.organization.value = prefilled.name;
   } catch (err) { /* old browser: the form still works */ }
+
+  function organizationToSend() {
+    var typed = value('organization');
+    return prefilled.id && typed.trim() === prefilled.name.trim() ? (typed + ' [listing: ' + prefilled.id + ']').slice(0, 200) : typed;
+  }
+
+  // The "are you human" check can take a while to appear; it starts again
+  // after a failed send, so the wait is counted from then.
+  var checkStarted = loadedAt;
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -87,7 +100,7 @@
     var tokenInput = form.querySelector('[name="cf-turnstile-response"]');
     var body = {
       request_type: 'correction',
-      organization: value('organization'),
+      organization: organizationToSend(),
       correction: value('correction'),
       nickname: value('nickname'),
       turnstile_token: tokenInput ? tokenInput.value : '',
@@ -99,8 +112,12 @@
       if (!body[f].trim()) missing[f] = 'Please fill this in.';
     });
     if (Object.keys(missing).length) { showErrors('Please check the highlighted answers.', missing); return; }
+    if (navigator.onLine === false) {
+      showErrors('You\'re offline. What you typed is still here: press Send again when you have a signal.', {});
+      return;
+    }
     if (!body.turnstile_token) {
-      var waited = (Date.now() - loadedAt) / 1000;
+      var waited = (Date.now() - checkStarted) / 1000;
       showErrors(waited < 15
         ? 'The "are you human" check is still loading. Please wait a moment, then press Send again.'
         : 'The "are you human" check didn\'t load. A content blocker or a work network may be blocking it. Please try another browser, or your phone\'s data instead of Wi-Fi.' + supportText(), {});
@@ -116,9 +133,10 @@
         if (r.res.ok) { location.href = '/request-thanks'; return; }
         sending.textContent = '';
         submit.disabled = false;
-        if (window.turnstile) { try { window.turnstile.reset(); } catch (err) { /* ignore */ } }
+        if (window.turnstile) { try { window.turnstile.reset(); checkStarted = Date.now(); } catch (err) { /* ignore */ } }
         var msg = r.data.error || 'Something went wrong. Please try again.';
-        if (r.res.status === 429 || r.res.status === 503) msg += supportText();
+        // Refused by the human check (403), too many tries (429) or a fault: offer email too.
+        if (r.res.status === 403 || r.res.status === 429 || r.res.status >= 500) msg += supportText();
         showErrors(msg, r.data.errors);
       })
       .catch(function () {

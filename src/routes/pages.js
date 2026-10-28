@@ -12,9 +12,27 @@ import { getPublicListing, getPublicListingIds } from '../db/public.js';
 import { getActiveNotice } from '../db/notice.js';
 import { todayLocal } from '../db/admin.js';
 import { neutralId } from '../lib/neutral-id.js';
+import { DV_CATEGORY } from '../lib/site-names.js';
 
 // Categories whose listings get neutral titles and link previews.
-export const SENSITIVE_CATEGORIES = ['Domestic Violence'];
+export const SENSITIVE_CATEGORIES = [DV_CATEGORY];
+
+// Neutral address ("h-…") → real id for sensitive listings. Kept for a minute
+// per running copy of the Worker, so a DV listing link doesn't read every
+// public row on each view.
+let neutralMemo = { map: null, at: 0 };
+/** Forget the remembered addresses (tests). */
+export function forgetNeutralMemo() { neutralMemo = { map: null, at: 0 }; }
+async function realIdFor(db, neutral) {
+  const age = Date.now() - neutralMemo.at;
+  // Re-read after a minute, or after 5 seconds when the address isn't known
+  // (a DV listing published a moment ago works almost at once).
+  if (!neutralMemo.map || age >= 60_000 || (!neutralMemo.map.has(neutral) && age >= 5_000)) {
+    const rows = await getPublicListingIds(db);
+    neutralMemo = { map: new Map(rows.filter((r) => SENSITIVE_CATEGORIES.includes(r.category)).map((r) => [neutralId(r.id), r.id])), at: Date.now() };
+  }
+  return neutralMemo.map.get(neutral) ?? null;
+}
 
 const STATIC_PAGES = ['/', '/learn', '/needs', '/help', '/about', '/terms', '/request', '/flyer'];
 
@@ -56,6 +74,13 @@ function metaTags({ title, description, url, image, noindex }) {
   return `\n  ${tags.join('\n  ')}\n`;
 }
 
+// JSON inside a non-running script tag; "<" is escaped so the text can never
+// close the tag early (rule 5).
+function listingDataHtml(l) {
+  const json = JSON.stringify(l).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+  return `<script type="application/json" id="listing-data">${json}</script>`;
+}
+
 function noticeHtml(n) {
   const cls = n.level === 'urgent' ? 'site-notice urgent' : 'site-notice';
   const label = n.level === 'urgent' ? 'Important notice' : 'Notice';
@@ -71,18 +96,18 @@ export async function decoratePage(response, env, url) {
   try {
     // A neutral address ("h-…") belongs to a sensitive listing: find which.
     let realId = listingId;
-    if (listingId && listingId.startsWith('h-')) {
-      const match = (await getPublicListingIds(env.DB)).find((r) => SENSITIVE_CATEGORIES.includes(r.category) && neutralId(r.id) === listingId);
-      realId = match ? match.id : null;
-    }
+    if (listingId && listingId.startsWith('h-')) realId = await realIdFor(env.DB, listingId);
     [notice, listing] = await Promise.all([
       getActiveNotice(env.DB, todayLocal()),
       realId ? getPublicListing(env.DB, realId) : null,
     ]);
   } catch (err) {
     // A database hiccup must never take down the pages (or the crisis bar).
+    // The page still gets the Turnstile key, so "Did something not work?" stays.
     console.error('Page extras skipped:', err?.name);
-    return response;
+    return new HTMLRewriter()
+      .on('#turnstile-key', { element: (e) => e.setAttribute('data-sitekey', env.TURNSTILE_SITE_KEY || '') })
+      .transform(response);
   }
   const origin = url.origin;
   const image = `${origin}/og-image.png`;
@@ -110,6 +135,13 @@ export async function decoratePage(response, env, url) {
     }),
   });
   if (notice) rw.on('aside.crisis', { element: (e) => e.after(noticeHtml(notice), { html: true }) });
+  // The listing itself (public columns only, rule 4) rides along with its own
+  // page, so a texted link shows the card at once instead of waiting for the
+  // whole directory on a weak signal. Not for sensitive listings: their page
+  // carries only neutral text.
+  if (listing && !SENSITIVE_CATEGORIES.includes(listing.category)) {
+    rw.on('body', { element: (e) => e.append(listingDataHtml(listing), { html: true }) });
+  }
   const out = rw.transform(response);
   const headers = new Headers(out.headers);
   headers.delete('ETag');

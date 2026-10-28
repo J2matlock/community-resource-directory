@@ -1,4 +1,4 @@
-// Friendly error pages (404, 403, 500) for page addresses: a small complete
+// Friendly error pages (404, 403, 405, 500) for page addresses: a small complete
 // page with the crisis bar, the site name, a short message, a way back to the
 // directory and the 211 help line. Built from src/region.js like the pause
 // page, plain HTML, never cached and never indexed. Nothing from the request
@@ -12,9 +12,11 @@ const KINDS = {
   404: { title: 'Page not found', text: 'That page doesn\'t exist or has moved.', statusText: 'Not Found' },
   403: { title: 'Not available', text: 'This page is only for the site\'s owner.', statusText: 'Forbidden' },
   500: { title: 'Something went wrong', text: 'Please try again in a minute.', statusText: 'Internal Server Error' },
+  // A form sent without its script (blocked or not loaded): nothing was sent.
+  405: { title: 'Not sent', text: 'This form could not send from this browser, so nothing you typed was kept. Please go back and try again, or try a different browser.', statusText: 'Method Not Allowed' },
 };
 
-/** A complete HTML error page. `kind` is the status: 404, 403 or 500. */
+/** A complete HTML error page. `kind` is the status: 404, 403, 405 or 500. */
 export function errorPage(kind) {
   const k = KINDS[kind] || KINDS[500];
   const status = KINDS[kind] ? Number(kind) : 500;

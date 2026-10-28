@@ -3,6 +3,7 @@
 // or retired to this file, and never filter private data in the browser.
 
 import { COUNTIES, AGE_GROUPS, COSTS } from '../lib/listing-rules.js';
+import { REGION } from '../region.js';
 
 const PUBLIC_COLUMNS = [
   'id', 'name', 'organization', 'category', 'tags', 'phone', 'fax', 'email', 'website',
@@ -39,13 +40,29 @@ export async function getPublicDirectory(db) {
     counties: COUNTIES,
     age_groups: AGE_GROUPS,
     costs: COSTS,
+    // Town → county, so a search for a town ("hudson falls") puts nearby help
+    // first. Public place names only.
+    towns: REGION.townCounty,
   };
+}
+
+// A list column that isn't a valid list (say, after a hand-made database fix)
+// reads as empty, so one bad row can't take the whole directory down.
+// `where` (listing id and column) goes in the log so the row can be fixed;
+// the value itself is never logged.
+export function parseList(text, where = '') {
+  try {
+    const v = JSON.parse(text || '[]');
+    if (Array.isArray(v)) return v;
+  } catch { /* logged below */ }
+  console.warn('Not a list, read as empty:', where);
+  return [];
 }
 
 function parsePublicRow(row) {
   const out = {};
   for (const col of PUBLIC_COLUMNS) {
-    out[col] = JSON_COLUMNS.includes(col) ? JSON.parse(row[col] || '[]') : row[col] ?? '';
+    out[col] = JSON_COLUMNS.includes(col) ? parseList(row[col], `${row.id}.${col}`) : row[col] ?? '';
   }
   return out;
 }

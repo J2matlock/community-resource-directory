@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { env } from 'cloudflare:test';
 import { call, token, resetDb } from './helpers.js';
 import { PRIVATE_MARKER } from './fixtures/sample-listings.js';
+import { PUBLIC_FIELDS } from '../src/lib/listing-rules.js';
 import { neutralId } from '../src/lib/neutral-id.js';
 
 const page = async (path) => (await call(path, { sitePublic: true })).text();
@@ -25,6 +26,33 @@ describe('Link previews and listing pages', () => {
     expect(html).toContain('<link rel="canonical" href="https://directory.example.test/listing/sample-food-pantry">');
     expect(html).not.toContain(PRIVATE_MARKER);
     expect(html).not.toContain('noindex');
+  });
+
+  it('a listing page carries that listing\'s public details, so its card draws at once', async () => {
+    await env.DB.prepare("UPDATE listings SET description = 'Groceries </script><b>x</b>' WHERE id = 'sample-food-pantry'").run();
+    const html = await (await call('/listing/sample-food-pantry', { sitePublic: true })).text();
+    const m = html.match(/<script type="application\/json" id="listing-data">([\s\S]*?)<\/script>/);
+    expect(m).toBeTruthy();
+    expect(m[1]).not.toContain('</script>');
+    const data = JSON.parse(m[1]);
+    expect(data.id).toBe('sample-food-pantry');
+    expect(data.description).toBe('Groceries </script><b>x</b>');
+    expect(Object.keys(data).sort()).toEqual([...PUBLIC_FIELDS].sort());
+    expect(html).not.toContain(PRIVATE_MARKER);
+  });
+
+  it('the home page and unknown listings carry no listing data', async () => {
+    expect(await (await call('/', { sitePublic: true })).text()).not.toContain('listing-data');
+    expect(await (await call('/listing/no-such-listing', { sitePublic: true })).text()).not.toContain('id="listing-data"');
+  });
+
+  it('a database hiccup still leaves the page, with its "Did something not work?" key', async () => {
+    const broken = { prepare() { throw new Error('D1 down'); }, batch() { throw new Error('D1 down'); } };
+    const res = await call('/listing/sample-food-pantry', { sitePublic: true, envExtra: { DB: broken } });
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain('aside class="crisis"');
+    expect(html).toMatch(/id="turnstile-key" data-sitekey="test-site-key"/);
   });
 
   it('Internal, retired and unknown listings never show a name or details, are not indexed, and answer 404', async () => {
@@ -88,6 +116,12 @@ describe('Domestic violence listings stay discreet', () => {
     expect(html).not.toContain('noindex');
   });
 
+  it('a DV listing page never carries its details in the page itself', async () => {
+    const html = await page(`/listing/${neutralId('sample-dv-program')}`);
+    expect(html).not.toContain('id="listing-data"');
+    expect(html).not.toContain('Hotline and advocacy');
+  });
+
   it('the old named address still works but shows only neutral text', async () => {
     const html = await page('/listing/sample-dv-program');
     expect(html).toContain('<title>Local help: ');
@@ -98,6 +132,22 @@ describe('Domestic violence listings stay discreet', () => {
     const res = await call('/listing/h-zzzzzz', { sitePublic: true });
     expect(res.status).toBe(404);
     expect(await res.text()).toContain('noindex');
+  });
+  it('the neutral address list is read once and reused, not on every view', async () => {
+    const spy = vi.spyOn(env.DB, 'prepare');
+    await page(`/listing/${neutralId('sample-dv-program')}`);
+    await page(`/listing/${neutralId('sample-dv-program')}`);
+    const idReads = spy.mock.calls.filter(([sql]) => /SELECT id, category FROM listings/.test(sql)).length;
+    spy.mockRestore();
+    expect(idReads).toBe(1);
+  });
+
+  it('a retired DV listing\'s neutral address stops working at once, even while remembered', async () => {
+    expect((await call(`/listing/${neutralId('sample-dv-program')}`, { sitePublic: true })).status).toBe(200);
+    await env.DB.prepare("UPDATE listings SET retired = 1 WHERE id = 'sample-dv-program'").run();
+    const res = await call(`/listing/${neutralId('sample-dv-program')}`, { sitePublic: true });
+    expect(res.status).toBe(404);
+    expect(await res.text()).not.toContain('Sample Domestic Violence Program');
   });
 });
 
@@ -131,8 +181,17 @@ describe('Site notice', () => {
   });
 
   it('a notice whose last day has passed hides itself', async () => {
-    await setNotice({ message: 'Old notice', level: 'info', ends_on: '2020-01-01' });
+    // Saved while current; its last day has since gone by.
+    await env.DB.prepare("INSERT INTO site_notice (id, message, level, ends_on, updated_at) VALUES (1, 'Old notice', 'info', '2020-01-01', '2019-12-31T12:00:00Z') ON CONFLICT(id) DO UPDATE SET message = excluded.message, ends_on = excluded.ends_on").run();
     expect(await page('/')).not.toContain('Old notice');
+  });
+
+  it('refuses to save a notice whose last day has already passed (it would never show)', async () => {
+    const res = await setNotice({ message: 'Code Blue tonight', level: 'info', ends_on: '2020-01-01' });
+    expect(res.status).toBe(422);
+    expect((await res.json()).errors.ends_on).toMatch(/already passed/);
+    // Clearing a notice that still carries an old date is fine.
+    expect((await setNotice({ message: '', level: 'info', ends_on: '2020-01-01' })).status).toBe(200);
   });
 
   it('refuses over-long text, client details, bad dates and unknown styles', async () => {

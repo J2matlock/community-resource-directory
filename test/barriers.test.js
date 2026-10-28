@@ -5,6 +5,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { env } from 'cloudflare:test';
 import { call, token, resetDb, countRows, fakeEmail } from './helpers.js';
+import { barrierSummary, startOfDayNewYork } from '../src/routes/barriers.js';
 
 let ipCounter = 0;
 function report(body, opts = {}) {
@@ -76,6 +77,20 @@ describe('Barrier reports', () => {
     expect(housing.by_county.Saratoga).toBe(5);
     expect(housing.by_county.Warren).toBeNull();
     expect(s.barriers.find((b) => b.id === 'food').count).toBeNull();
+  });
+
+  it('the day for "before today" is New York\'s, so an evening report never shows the same night', async () => {
+    expect(startOfDayNewYork('2026-10-28')).toBe('2026-10-28T04:00:00.000Z'); // daylight time
+    expect(startOfDayNewYork('2026-12-15')).toBe('2026-12-15T05:00:00.000Z'); // standard time
+    // Reports at 7:59 PM New York on Oct 28 (23:59 UTC). At 8:30 PM the same
+    // evening (already Oct 29 in UTC) they must not count yet; the next day they do.
+    for (let i = 0; i < 5; i++) {
+      await env.DB.prepare("INSERT INTO barrier_reports (county, barriers, reporter, comment, created_at) VALUES ('Warren', '[\"food\"]', '', '', '2026-10-28T23:59:00.000Z')").run();
+    }
+    const evening = await barrierSummary(env.DB, new Date('2026-10-29T00:30:00Z')); // 8:30 PM in New York
+    expect(evening.barriers.find((b) => b.id === 'food').count).toBe(null);
+    const nextDay = await barrierSummary(env.DB, new Date('2026-10-29T14:00:00Z'));
+    expect(nextDay.barriers.find((b) => b.id === 'food').count).toBe(5);
   });
 
   it('reports are only visible to the owner', async () => {

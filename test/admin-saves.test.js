@@ -3,7 +3,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { env } from 'cloudflare:test';
-import { call, token, resetDb, validListing, OWNER } from './helpers.js';
+import { call, token, resetDb, validListing, countRows, OWNER } from './helpers.js';
 import { todayLocal, dueForRecheck } from '../src/db/admin.js';
 
 async function getListing(t, id) {
@@ -18,7 +18,8 @@ describe('Admin saves', () => {
   });
 
   it('creates a listing with a link-friendly id and cleaned values', async () => {
-    const res = await call('/api/admin/listings', { method: 'POST', as: t, body: validListing({ name: 'Sample Food Pantry' }) });
+    // Same name as a sample listing: the owner confirms the duplicate warning.
+    const res = await call('/api/admin/listings', { method: 'POST', as: t, body: validListing({ name: 'Sample Food Pantry', confirm_warnings: true }) });
     expect(res.status).toBe(201);
     const { listing } = await res.json();
     expect(listing.id).toBe('sample-food-pantry-2');
@@ -143,11 +144,63 @@ describe('Admin saves', () => {
   });
 
   it('renaming a category updates its listings, with history', async () => {
-    const res = await call('/api/admin/lists/categories/Food', { method: 'PUT', as: t, body: { name: 'Food and Meals' } });
+    await call('/api/admin/lists/categories', { method: 'POST', as: t, body: { name: 'Bike Repair' } });
+    const made = await call('/api/admin/listings', { method: 'POST', as: t, body: validListing({ name: 'Practice Bike Shop', category: 'Bike Repair' }) });
+    const { listing: bike } = await made.json();
+    const res = await call('/api/admin/lists/categories/Bike%20Repair', { method: 'PUT', as: t, body: { name: 'Bikes and Repair' } });
     expect(res.status).toBe(200);
-    const { listing, history } = await getListing(t, 'sample-food-pantry');
-    expect(listing.category).toBe('Food and Meals');
-    expect(history[0]).toMatchObject({ field: 'category', old_value: 'Food', new_value: 'Food and Meals' });
+    const { listing, history } = await getListing(t, bike.id);
+    expect(listing.category).toBe('Bikes and Repair');
+    expect(history[0]).toMatchObject({ field: 'category', old_value: 'Bike Repair', new_value: 'Bikes and Repair' });
+  });
+
+  it('won\'t rename a category or plan the site\'s code or search words depend on', async () => {
+    for (const name of ['Food', 'Housing and Shelter', 'Dental']) {
+      const res = await call(`/api/admin/lists/categories/${encodeURIComponent(name)}`, { method: 'PUT', as: t, body: { name: `${name} Renamed` } });
+      expect(res.status).toBe(409);
+      expect((await res.json()).error).toMatch(/can't be renamed here/);
+    }
+    const plan = await call('/api/admin/lists/plans/Medicaid%20(call%20to%20check%20plan)', { method: 'PUT', as: t, body: { name: 'Medicaid other' } });
+    expect(plan.status).toBe(409);
+    // A locked name that no listing uses still stays on the list.
+    await call('/api/admin/lists/categories', { method: 'POST', as: t, body: { name: 'Crisis Help' } });
+    expect((await call('/api/admin/lists/categories/Crisis%20Help', { method: 'DELETE', as: t })).status).toBe(409);
+    const { listing } = await getListing(t, 'sample-food-pantry');
+    expect(listing.category).toBe('Food');
+    // The list says which names are locked, so the panel can explain.
+    const { items } = await (await call('/api/admin/lists/categories', { as: t })).json();
+    expect(items.find((i) => i.name === 'Food').locked).toBe(true);
+  });
+
+  it('the Domestic Violence category name is locked, so its protections can\'t be renamed away', async () => {
+    await call('/api/admin/lists/categories', { method: 'POST', as: t, body: { name: 'Domestic Violence' } });
+    const res = await call('/api/admin/lists/categories/Domestic%20Violence', { method: 'PUT', as: t, body: { name: 'Safety Help' } });
+    expect(res.status).toBe(409);
+  });
+
+  it('asks before adding a second listing with the same name', async () => {
+    const res = await call('/api/admin/listings', { method: 'POST', as: t, body: validListing({ name: 'sample food pantry' }) });
+    expect(res.status).toBe(422);
+    const body = await res.json();
+    expect(body.warnings.join(' ')).toMatch(/already exists/);
+    expect(await countRows('listings')).toBe(5);
+  });
+
+  it('two saves of the same new listing at once add it only once', async () => {
+    const body = validListing({ name: 'Practice Double Tap Pantry' });
+    const results = await Promise.all([1, 2, 3].map(() => call('/api/admin/listings', { method: 'POST', as: t, body })));
+    const statuses = results.map((r) => r.status).sort();
+    expect(statuses.filter((s) => s === 201)).toHaveLength(1);
+    expect(statuses.every((s) => s === 201 || s === 409 || s === 422)).toBe(true);
+    expect(await countRows('listings')).toBe(6);
+  });
+
+  it('one listing with a broken list column doesn\'t take the public directory down', async () => {
+    await env.DB.prepare("UPDATE listings SET sources = 'see website' WHERE id = 'sample-food-pantry'").run();
+    const res = await call('/api/listings', { sitePublic: true });
+    expect(res.status).toBe(200);
+    const { listings } = await res.json();
+    expect(listings.find((l) => l.id === 'sample-food-pantry').sources).toEqual([]);
   });
 
   it('renaming a Medicaid plan updates its listings', async () => {

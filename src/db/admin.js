@@ -3,6 +3,7 @@
 
 import { validateListing, makeListingId, validateListName, isDvListing } from '../validate.js';
 import { sourcesText } from '../lib/listing-rules.js';
+import { parseList } from './public.js';
 
 const JSON_COLUMNS = ['tags', 'serves_counties', 'age_groups', 'cost', 'medicaid_plans', 'sources'];
 export const EDITABLE_FIELDS = [
@@ -29,10 +30,13 @@ export function todayLocal(date = new Date()) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
 }
 
+// Every listing the admin panel gets carries its re-check date, worked out
+// here only (the panel shows it; it has no copy of the rule).
 function parseRow(row) {
   if (!row) return null;
   const out = { ...row, retired: Boolean(row.retired) };
-  for (const c of JSON_COLUMNS) out[c] = JSON.parse(row[c] || '[]');
+  for (const c of JSON_COLUMNS) out[c] = parseList(row[c], `${row.id}.${c}`);
+  out.recheck_due = recheckDueDate(out);
   return out;
 }
 
@@ -71,8 +75,9 @@ export async function getHistory(db, id) {
   return results;
 }
 
-function checkInput(input, lists, opts) {
-  const { value, errors, warnings } = validateListing(input, lists, opts);
+function checkInput(input, lists, opts = {}) {
+  const { value, errors, warnings: found } = validateListing(input, lists, opts);
+  const warnings = [...found, ...(Object.keys(errors).length ? [] : opts.extraWarnings ?? [])];
   if (Object.keys(errors).length) throw new UserError(422, { error: 'Please fix the highlighted fields.', errors, warnings });
   if (warnings.length && input.confirm_warnings !== true) {
     throw new UserError(422, { error: 'Please check these warnings, then choose "Save anyway" if they are fine.', errors: {}, warnings });
@@ -82,8 +87,13 @@ function checkInput(input, lists, opts) {
 
 export async function createListing(db, input, who) {
   const lists = await managedLists(db);
-  const v = checkInput(input, lists);
-  const { results } = await db.prepare('SELECT id FROM listings').all();
+  const { results } = await db.prepare('SELECT id, name, retired FROM listings').all();
+  // A listing with the same name is usually a double tap or a duplicate:
+  // ask before adding a second one ("Save anyway" adds it).
+  const same = results.find((r) => r.name.trim().toLowerCase() === String(input?.name ?? '').trim().toLowerCase());
+  const v = checkInput(input, lists, {
+    extraWarnings: same ? [`A listing named "${same.name}" already exists${same.retired ? ' (retired; you can restore it from "Retired")' : ''}. Add another one only if this is a different program.`] : [],
+  });
   const id = makeListingId(v.name, new Set(results.map((r) => r.id)));
   const t = now();
   const cols = ['id', ...EDITABLE_FIELDS, 'retired', 'created_at', 'updated_at'];
@@ -92,7 +102,14 @@ export async function createListing(db, input, who) {
   const insertHistory = 'INSERT INTO listing_history (listing_id, field, old_value, new_value, changed_by, changed_at) SELECT ?, ?, ?, ?, ?, ?';
   const fromRequest = input.from_request_id;
   if (fromRequest === undefined) {
-    await db.batch([db.prepare(insertListing).bind(...vals), db.prepare(insertHistory).bind(id, 'created', '', v.name, who, t)]);
+    try {
+      await db.batch([db.prepare(insertListing).bind(...vals), db.prepare(insertHistory).bind(id, 'created', '', v.name, who, t)]);
+    } catch (err) {
+      // Two saves of the same new listing at the same moment (a double tap):
+      // the second finds the address taken. Nothing was added twice.
+      if (/UNIQUE/i.test(String(err?.message))) throw new UserError(409, 'This listing was just added (a second tap?). Check the listings list before adding it again.');
+      throw err;
+    }
     return getListing(db, id);
   }
   // "Create listing from this": mark the request handled and create the
@@ -182,7 +199,7 @@ export function recheckDueDate(l) {
 
 export async function dueForRecheck(db, today = todayLocal()) {
   const { results } = await db.prepare('SELECT * FROM listings WHERE retired = 0 ORDER BY name COLLATE NOCASE').all();
-  const all = results.map(parseRow).map((l) => ({ ...l, recheck_due: recheckDueDate(l) }));
+  const all = results.map(parseRow);
   const pastReview = (l) => l.review_by && l.review_by <= today;
   const due = all.filter((l) => pastReview(l) || !l.recheck_due || l.recheck_due <= today);
   due.sort((a, b) => (pastReview(b) - pastReview(a)) || (a.recheck_due || '').localeCompare(b.recheck_due || '') || a.name.localeCompare(b.name));
@@ -203,33 +220,39 @@ const LIST_TABLES = {
   plans: { table: 'medicaid_plans', column: 'medicaid_plans', json: true },
 };
 
-export async function getManagedList(db, kind) {
+// `locked` names (src/lib/site-names.js) come back with locked: true, so the
+// admin panel can say why they can't be renamed.
+export async function getManagedList(db, kind, locked = new Set()) {
   const L = LIST_TABLES[kind];
   const usage = L.json
     ? `(SELECT COUNT(*) FROM listings, json_each(listings.medicaid_plans) j WHERE j.value = t.name)`
     : `(SELECT COUNT(*) FROM listings WHERE listings.category = t.name)`;
   const { results } = await db.prepare(`SELECT t.name, ${usage} AS used FROM ${L.table} t ORDER BY t.name COLLATE NOCASE`).all();
-  return results;
+  return results.map((r) => ({ ...r, locked: locked.has(r.name) }));
 }
 
-export async function addListItem(db, kind, rawName) {
+export async function addListItem(db, kind, rawName, locked) {
   const L = LIST_TABLES[kind];
   const { value, error } = validateListName(rawName);
   if (error) throw new UserError(422, error);
   const exists = await db.prepare(`SELECT 1 FROM ${L.table} WHERE name = ? COLLATE NOCASE`).bind(value).first();
   if (exists) throw new UserError(409, `"${value}" is already on the list.`);
   await db.prepare(`INSERT INTO ${L.table} (name) VALUES (?)`).bind(value).run();
-  return getManagedList(db, kind);
+  return getManagedList(db, kind, locked);
 }
 
-// Renaming updates every listing that uses the old name, with history.
-export async function renameListItem(db, kind, oldName, rawNew, who) {
+// Renaming updates every listing that uses the old name, with history. Names
+// the site's code or content depends on (`locked`) are refused.
+export async function renameListItem(db, kind, oldName, rawNew, who, locked = new Set()) {
   const L = LIST_TABLES[kind];
   const { value: newName, error } = validateListName(rawNew);
   if (error) throw new UserError(422, error);
   const found = await db.prepare(`SELECT 1 FROM ${L.table} WHERE name = ?`).bind(oldName).first();
   if (!found) throw new UserError(404, 'Not found.');
-  if (newName === oldName) return getManagedList(db, kind);
+  if (newName === oldName) return getManagedList(db, kind, locked);
+  if (locked.has(oldName)) {
+    throw new UserError(409, `"${oldName}" can't be renamed here: the site's safety features, search words or Learn page use this exact name. Ask Claude to rename it everywhere at once.`);
+  }
   const clash = await db.prepare(`SELECT 1 FROM ${L.table} WHERE name = ? COLLATE NOCASE AND name <> ?`).bind(newName, oldName).first();
   if (clash) throw new UserError(409, `"${newName}" is already on the list.`);
 
@@ -240,7 +263,7 @@ export async function renameListItem(db, kind, oldName, rawNew, who) {
   const stmts = [db.prepare(`INSERT INTO ${L.table} (name) VALUES (?)`).bind(newName)];
   for (const row of affected) {
     if (L.json) {
-      const before = JSON.parse(row.medicaid_plans);
+      const before = parseList(row.medicaid_plans);
       const after = before.map((p) => (p === oldName ? newName : p));
       stmts.push(db.prepare('UPDATE listings SET medicaid_plans = ?, updated_at = ? WHERE id = ?').bind(JSON.stringify(after), t, row.id));
       stmts.push(db.prepare('INSERT INTO listing_history (listing_id, field, old_value, new_value, changed_by, changed_at) VALUES (?, ?, ?, ?, ?, ?)')
@@ -253,17 +276,18 @@ export async function renameListItem(db, kind, oldName, rawNew, who) {
   }
   stmts.push(db.prepare(`DELETE FROM ${L.table} WHERE name = ?`).bind(oldName));
   await db.batch(stmts);
-  return getManagedList(db, kind);
+  return getManagedList(db, kind, locked);
 }
 
-export async function deleteListItem(db, kind, name) {
+export async function deleteListItem(db, kind, name, locked) {
   const L = LIST_TABLES[kind];
-  const list = await getManagedList(db, kind);
+  const list = await getManagedList(db, kind, locked);
   const item = list.find((x) => x.name === name);
   if (!item) throw new UserError(404, 'Not found.');
   if (item.used > 0) throw new UserError(409, `"${name}" is used by ${item.used} listing(s). Change those listings first, or rename it instead.`);
+  if (item.locked) throw new UserError(409, `"${name}" is used by the site's safety features, search words or Learn page, so it stays on the list.`);
   await db.prepare(`DELETE FROM ${L.table} WHERE name = ?`).bind(name).run();
-  return getManagedList(db, kind);
+  return getManagedList(db, kind, locked);
 }
 
 // ---- Export to Excel (admin only; includes private notes) ----
@@ -313,6 +337,8 @@ export async function markRequestHandled(db, id, rawNote) {
 
 // One-tap visitor reports from the last 90 days, one row per listing, most
 // reported first. Reports never change a listing; they only flag it here.
+// Reports made before the owner last confirmed the listing (the time of the
+// last "Verified today" or confirmed-date change) count as dealt with.
 // The listing's own number comes back as `listing_phone`: `phone` is the
 // count of "phone didn't work" taps, and a row can't hold both under one name.
 export async function visitorReports(db, days = 90) {
@@ -321,6 +347,8 @@ export async function visitorReports(db, days = 90) {
       SUM(r.reason = 'phone') AS phone, SUM(r.reason = 'closed') AS closed, SUM(r.reason = 'full') AS full, MAX(r.created_at) AS latest
     FROM listing_reports r JOIN listings l ON l.id = r.listing_id
     WHERE r.created_at > ? AND l.retired = 0
+      AND r.created_at > COALESCE((SELECT MAX(h.changed_at) FROM listing_history h
+        WHERE h.listing_id = l.id AND h.field = 'last_verified'), '')
     GROUP BY r.listing_id ORDER BY total DESC, latest DESC LIMIT 200`).bind(since).all();
   return results;
 }

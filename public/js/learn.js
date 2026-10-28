@@ -87,8 +87,13 @@
 
   // While searching, sort answers (and their sections) by how well they match;
   // with no search, put everything back in its usual order.
+  var lastOrder = '';
   function reorder(byScore) {
     var key = function (a, b) { return byScore ? (b.score - a.score) || (a.order - b.order) : a.order - b.order; };
+    // Moving 100+ answers around is slow on a phone: skip it when nothing moves.
+    var order = byScore ? entries.slice().sort(key).map(function (e) { return e.order + (e.node.hidden ? 'h' : ''); }).join(',') : 'usual';
+    if (order === lastOrder) return;
+    lastOrder = order;
     sections.forEach(function (s) {
       var mine = entries.filter(function (e) { return e.section === s.node; }).sort(key);
       s.score = mine.reduce(function (m, e) { return e.node.hidden ? m : Math.max(m, e.score); }, 0);
@@ -118,12 +123,18 @@
       var match = words.every(function (w) { return e.text.indexOf(w) !== -1; });
       e.node.hidden = !match;
       if (match) shown++;
-      if (words.length) e.node.open = match;
+      if (words.length) e.node.open = false;
       // Best matches first: words in the question count most, then search words.
       e.score = 0;
       words.forEach(function (w) { e.score += (e.q.indexOf(w) !== -1 ? 4 : 0) + (e.kw.indexOf(w) !== -1 ? 2 : 0) + 1; });
     });
     reorder(words.length > 0);
+    // Open the best few answers only: opening every match of a one-letter
+    // search lays out the whole page and freezes a phone for a second.
+    if (words.join('').length >= 3) {
+      // The first three on screen (best sections first, best answers first in each).
+      Array.prototype.slice.call(list.querySelectorAll('details.qa:not([hidden])'), 0, 3).forEach(function (d) { d.open = true; });
+    }
     Array.prototype.forEach.call(list.querySelectorAll('.learn-section'), function (s) {
       s.hidden = !s.querySelector('details.qa:not([hidden])');
     });
@@ -139,8 +150,10 @@
     count.textContent = words.length ? shown + (shown === 1 ? ' answer matches.' : ' answers match.') : entries.length + ' answers. Tap a question to open it.';
   }
 
-  search.addEventListener('input', filter);
-  document.getElementById('learn-search-form').addEventListener('submit', function (e) { e.preventDefault(); filter(); });
+  // Search once typing pauses, not on every letter.
+  var typing;
+  search.addEventListener('input', function () { clearTimeout(typing); typing = setTimeout(filter, 250); });
+  document.getElementById('learn-search-form').addEventListener('submit', function (e) { e.preventDefault(); clearTimeout(typing); filter(); });
   window.addEventListener('hashchange', openFromHash);
 
   fetch('/content/learn.json', { headers: { Accept: 'application/json' } })

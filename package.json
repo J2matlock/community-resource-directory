@@ -24,6 +24,7 @@
     "exceljs": "^4.4.0",
     "jsqr": "^1.4.0",
     "marked": "^18.1.0",
+    "playwright-core": "1.63.0",
     "vitest": "4.1.11",
     "wrangler": "^4.149.0"
   },

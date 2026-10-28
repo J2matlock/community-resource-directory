@@ -4,6 +4,7 @@
 
 import { UserError } from './admin.js';
 import { validateReviewAnswer, isDvListing } from '../validate.js';
+import { parseList } from './public.js';
 
 const COLUMNS = 'id, key, kind, grp, title, detail, listing_id, source, status, owner_note, sort, created_at, updated_at';
 
@@ -20,7 +21,7 @@ export async function answerReviewItem(db, rawId, body) {
   let dv = /domestic violence|\bDV\b|shelter/i.test(`${item.title} ${item.grp}`);
   if (item.listing_id) {
     const l = await db.prepare('SELECT name, organization, category, description, tags FROM listings WHERE id = ?').bind(item.listing_id).first();
-    if (l) dv = dv || isDvListing({ ...l, tags: JSON.parse(l.tags || '[]') });
+    if (l) dv = dv || isDvListing({ ...l, tags: parseList(l.tags) });
   }
   const { value, error } = validateReviewAnswer(item.kind, body, { dv });
   if (!value) throw new UserError(422, error);

@@ -3,6 +3,7 @@
 // hourly limit, save, email the owner. The public summary only ever returns
 // totals, and hides any number under 5 so no one can be singled out.
 
+import { todayLocal } from '../db/admin.js';
 import { json } from '../http.js';
 import { validateBarrierReport, BARRIERS, BARRIER_COUNTIES } from '../validate.js';
 import { barrierEmail } from '../email.js';
@@ -39,13 +40,24 @@ export async function handleBarrierReport(request, env, url) {
 }
 
 // Public totals, privacy-protected three ways: (1) only reports from before
-// today (UTC) count, so a new report never changes the page right away; (2)
+// today (New York time) count, so a new report never changes the page right
+// away, even in the evening (UTC's day ends at 7 or 8 PM here); (2)
 // every number is rounded down to a step of 5 and shown as "N+"; (3) anything
 // under 5 is hidden (null). Rounding stops anyone working out a hidden number
 // by subtracting the counties that are shown.
-export async function barrierSummary(db) {
-  const today = new Date().toISOString().slice(0, 10);
-  const { results } = await db.prepare('SELECT county, barriers FROM barrier_reports WHERE created_at < ?').bind(today).all();
+// The moment a New York day starts, as a UTC time like the saved reports'
+// (midnight in New York is 04:00 or 05:00 UTC, depending on daylight time).
+export function startOfDayNewYork(day) {
+  for (const h of ['04', '05']) {
+    const t = new Date(`${day}T${h}:00:00.000Z`);
+    if (todayLocal(t) === day && todayLocal(new Date(t.getTime() - 1)) !== day) return t.toISOString();
+  }
+  return `${day}T05:00:00.000Z`;
+}
+
+export async function barrierSummary(db, now = new Date()) {
+  const today = todayLocal(now);
+  const { results } = await db.prepare('SELECT county, barriers FROM barrier_reports WHERE created_at < ?').bind(startOfDayNewYork(today)).all();
   const step = (n) => (n >= MIN_SHOWN ? Math.floor(n / MIN_SHOWN) * MIN_SHOWN : null);
   const byBarrier = Object.fromEntries(BARRIERS.map(([id]) => [id, { all: 0, byCounty: Object.fromEntries(BARRIER_COUNTIES.map((c) => [c, 0])) }]));
   for (const r of results) {

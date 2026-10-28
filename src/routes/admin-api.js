@@ -12,6 +12,7 @@ import { buildXlsx } from '../xlsx.js';
 import { getNotice, saveNotice, isPaused, setPaused } from '../db/notice.js';
 import { validateNotice } from '../validate.js';
 import { listReviewItems, answerReviewItem } from '../db/review.js';
+import { lockedNames } from '../lib/site-names.js';
 
 const LIST_KINDS = ['categories', 'plans'];
 
@@ -85,7 +86,7 @@ export async function handleAdminApi(request, env, url, admin) {
       if (method === 'PUT') {
         const { body, error } = await readJson(request);
         if (error) return error;
-        const { value, errors } = validateNotice(body);
+        const { value, errors } = validateNotice(body, { today: todayLocal() });
         if (!value) return json({ error: 'Please check the notice.', errors }, 422);
         return json({ notice: await saveNotice(db, value) });
       }
@@ -133,21 +134,22 @@ export async function handleAdminApi(request, env, url, admin) {
 
     if (parts[0] === 'lists' && LIST_KINDS.includes(parts[1])) {
       const kind = parts[1];
+      const locked = await lockedNames(env, kind);
       if (parts.length === 2) {
-        if (method === 'GET') return json({ items: await getManagedList(db, kind) });
+        if (method === 'GET') return json({ items: await getManagedList(db, kind, locked) });
         if (method === 'POST') {
           const { body, error } = await readJson(request);
           if (error) return error;
-          return json({ items: await addListItem(db, kind, body?.name) }, 201);
+          return json({ items: await addListItem(db, kind, body?.name, locked) }, 201);
         }
       }
       if (parts.length === 3) {
         if (method === 'PUT') {
           const { body, error } = await readJson(request);
           if (error) return error;
-          return json({ items: await renameListItem(db, kind, parts[2], body?.name, who) });
+          return json({ items: await renameListItem(db, kind, parts[2], body?.name, who, locked) });
         }
-        if (method === 'DELETE') return json({ items: await deleteListItem(db, kind, parts[2]) });
+        if (method === 'DELETE') return json({ items: await deleteListItem(db, kind, parts[2], locked) });
       }
     }
 

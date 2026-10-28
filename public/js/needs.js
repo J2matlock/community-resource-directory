@@ -13,6 +13,8 @@
   var status = document.getElementById('barrier-status');
   var submit = document.getElementById('barrier-submit');
   var COUNTIES = [];
+  // When the "are you human" check (re)started, to tell "still loading" from "blocked".
+  var checkStarted = Date.now();
 
   function el(tag, attrs) {
     var node = document.createElement(tag);
@@ -129,14 +131,23 @@
     if (!picked.length) missing.barriers = 'Please tick at least one barrier.';
     if (!body.county) missing.county = 'Please choose a county.';
     if (Object.keys(missing).length) { showErrors('Please check the highlighted answers.', missing); return; }
-    if (!body.turnstile_token) { showErrors('The "are you human" check is still loading. Please wait a moment and try again.', {}); return; }
+    if (navigator.onLine === false) {
+      showErrors('You\'re offline. Your answers are still here: press "Send anonymously" again when you have a signal.', {});
+      return;
+    }
+    if (!body.turnstile_token) {
+      showErrors((Date.now() - checkStarted) / 1000 < 15
+        ? 'The "are you human" check is still loading. Please wait a moment, then press "Send anonymously" again.'
+        : 'The "are you human" check didn\'t load. A content blocker or a work network may be blocking it. Please try another browser, or your phone\'s data instead of Wi-Fi.', {});
+      return;
+    }
     submit.disabled = true;
     status.textContent = 'Sending…';
     fetch('/api/barriers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { r: r, d: d }; }); })
       .then(function (x) {
         submit.disabled = false;
-        if (window.turnstile) { try { window.turnstile.reset(); } catch (err) { /* ignore */ } }
+        if (window.turnstile) { try { window.turnstile.reset(); checkStarted = Date.now(); } catch (err) { /* ignore */ } }
         if (x.r.ok) {
           form.reset();
           status.textContent = 'Thank you. Your report was sent anonymously.';

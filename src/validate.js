@@ -37,8 +37,18 @@ const CLIENT_INFO = [
 
 const DV_PATTERN = /domestic violence|\bDV\b|intimate partner|relationship abuse/i;
 // Wording that gives where a shelter or safe house is.
-const SHELTER_LOCATION = /\b(shelter|safe ?house|safehouse)\b[^.\n]{0,40}(\b(located|location|address|is at|is on|on [A-Z0-9]|at \d)|\b\d{1,5}\s+[A-Z])/i;
+const SHELTER_LOCATION = /\b(shelter|safe ?house|safehouse|safe ?home)\b[^.\n]{0,40}(\b(located|location|address|is at|is on|on [A-Z0-9]|at \d)|\b\d{1,5}\s+[A-Z])/i;
 const STREET_ADDRESS = /\b\d{1,5}\s+([A-Z][a-z]+\s+){1,3}(St|Street|Ave|Avenue|Rd|Road|Dr|Drive|Ln|Lane|Blvd|Boulevard|Way|Pl|Place|Ct|Court|Hwy|Route|Rte)\b/;
+// Also wording that places a home ("the house is located on Ridge Rd", but not
+// "keep your home address private") and a
+// street address typed in any case ("22 maple ave"), for domestic violence text.
+const HOME_LOCATION = /\b(house|home|residence|apartment)\b[^.\n]{0,30}\b(is|are) located\b/i;
+// Lowercase street addresses; "court", "way", "place" and "route" are left out
+// here, since "1 family court" or "3 counties along route 9" are ordinary wording.
+const STREET_ANY_CASE = /\b\d{1,5}\s+([a-z]+\s+){1,3}(st|street|ave|avenue|rd|road|drive|ln|lane|blvd|boulevard|hwy)\b/i;
+function dvPlace(text) {
+  return SHELTER_LOCATION.test(text) || STREET_ADDRESS.test(text) || STREET_ANY_CASE.test(text) || HOME_LOCATION.test(text);
+}
 
 export function cleanText(v, max) {
   if (v === undefined || v === null) return '';
@@ -149,7 +159,7 @@ export function validateListing(input, lists, opts = {}) {
     v[field] = s ?? '';
   }
 
-  if (!v.name) errors.name = 'Name is required.';
+  if (!v.name && !errors.name) errors.name = 'Name is required.';
 
   if (typeof input.category !== 'string' || !lists.categories.includes(input.category)) {
     errors.category = 'Choose a category from the list.';
@@ -222,7 +232,7 @@ export function validateListing(input, lists, opts = {}) {
   if (isDv) {
     for (const f of Object.keys(TEXT_LIMITS)) {
       if (f === 'address' || errors[f]) continue;
-      if (SHELTER_LOCATION.test(v[f]) || STREET_ADDRESS.test(v[f])) {
+      if (dvPlace(v[f])) {
         errors[f] = 'On a domestic violence program, put the office address only in the address box. Never store a shelter\'s location, in any field, even private notes.';
       }
     }
@@ -286,7 +296,7 @@ export function unsafeStoredText(text, { dv = false, anyShelter = false } = {}) 
   // domestic violence (rule 2), and always in the owner's notes (anyShelter).
   // Seeded text about a homeless shelter's public address is fine.
   const aboutDv = dv || anyShelter || DV_PATTERN.test(text) || /\babuse|survivor/i.test(text);
-  if ((aboutDv && SHELTER_LOCATION.test(text)) || (dv && STREET_ADDRESS.test(text))) {
+  if ((aboutDv && SHELTER_LOCATION.test(text)) || (dv && dvPlace(text))) {
     return 'Never store a domestic violence shelter\'s location, even in notes.';
   }
   return '';
@@ -340,7 +350,7 @@ export function validateProviderRequest(input) {
   }
   if (DV_PATTERN.test(`${v.organization} ${v.correction}`)) {
     for (const f of Object.keys(REQUEST_TEXT)) {
-      if (!errors[f] && (SHELTER_LOCATION.test(v[f]) || STREET_ADDRESS.test(v[f]))) {
+      if (!errors[f] && dvPlace(v[f])) {
         errors[f] = 'Please don\'t include a shelter location or street address for a domestic violence program.';
       }
     }
@@ -421,7 +431,9 @@ export function validateBarrierReport(input) {
 // ---------- Site notice (owner only) ----------
 // Short plain text shown under the crisis bar on every public page. Rule 1:
 // the same checks as public fields, so no client details end up public.
-export function validateNotice(input) {
+// `today` (YYYY-MM-DD, New York) refuses a last day that has already passed,
+// which would save a notice that never shows.
+export function validateNotice(input, { today = '' } = {}) {
   const errors = {};
   if (!input || typeof input !== 'object' || Array.isArray(input)) return { value: null, errors: { _form: 'Expected the notice fields.' } };
   const message = cleanText(input.message, 280);
@@ -432,6 +444,7 @@ export function validateNotice(input) {
   if (!['info', 'urgent'].includes(level)) errors.level = 'Please choose from the list.';
   const endsOn = input.ends_on ?? '';
   if (typeof endsOn !== 'string' || (endsOn && !isRealDate(endsOn))) errors.ends_on = 'Please use a date like 2026-12-31.';
+  else if (endsOn && today && endsOn < today && message) errors.ends_on = 'That last day has already passed, so the notice would never show. Pick today or a later date, or leave it blank.';
   const value = { message: message ?? '', level, ends_on: endsOn };
   return { value: Object.keys(errors).length ? null : value, errors };
 }

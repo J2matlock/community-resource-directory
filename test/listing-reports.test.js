@@ -64,6 +64,18 @@ describe('One-tap listing reports', () => {
     expect(reported[0]).toMatchObject({ id: 'sample-food-pantry', total: 2, phone: 2 });
   });
 
+  it('reports from before the owner confirmed the listing ("Verified today") count as dealt with', async () => {
+    await report({ reason: 'phone' });
+    const t = await token();
+    expect((await (await call('/api/admin/recheck', { as: t })).json()).reported).toHaveLength(1);
+    await call('/api/admin/listings/sample-food-pantry/verify', { method: 'POST', as: t });
+    expect((await (await call('/api/admin/recheck', { as: t })).json()).reported).toHaveLength(0);
+    // A new report later the same day shows again.
+    await new Promise((r) => setTimeout(r, 5));
+    await report({ reason: 'closed' });
+    expect((await (await call('/api/admin/recheck', { as: t })).json()).reported).toMatchObject([{ id: 'sample-food-pantry', total: 1, closed: 1 }]);
+  });
+
   it('keeps the listing\'s own phone number next to the counts (the count must not overwrite it)', async () => {
     await report({ reason: 'phone' });
     const { reported } = await (await call('/api/admin/recheck', { as: await token() })).json();

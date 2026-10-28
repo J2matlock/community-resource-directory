@@ -161,12 +161,14 @@ main.flyer-main { max-width: calc(8.5in + 2rem); padding: 1rem 1rem 2.5rem; }
   border-left: 1.5pt dashed var(--f-cut);
 }
 .strips li:first-child { border-left: 0; }
-.strip-qr svg { display: block; width: 0.78in; height: 0.78in; }
+.strip-qr svg { display: block; width: 0.72in; height: 0.72in; }
+/* Sized so the longest line ("southernadkhelp.org") fits the strip with room
+   to spare, even with a wider fallback font (it was clipped at 10pt). */
 .strip-text {
   writing-mode: vertical-rl; transform: rotate(180deg);
-  white-space: nowrap; font-size: 10pt; line-height: 1.2; color: var(--f-ink);
+  white-space: nowrap; font-size: 9pt; line-height: 1.2; color: var(--f-ink);
 }
-.strip-text strong { display: block; font-size: 10.5pt; color: var(--f-deep); }
+.strip-text strong { display: block; font-size: 9.5pt; color: var(--f-deep); }
 
 /* ---------- Phones and narrow windows (screen only) ---------- */
 

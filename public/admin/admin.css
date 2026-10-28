@@ -312,6 +312,8 @@ fieldset.visibility:has(input[value="Internal"]:checked) { border: 2px solid var
 .list-items li { display: flex; flex-wrap: wrap; gap: 0.4rem 0.5rem; align-items: center; padding: 0.45rem 0; border-bottom: 1px solid var(--line); }
 .list-items .grow { flex: 1 1 14rem; min-width: 0; }
 .list-items .used { color: var(--muted); font-size: 0.88rem; min-width: 6.5rem; }
+.list-items input[readonly] { background: transparent; border-color: transparent; font-weight: 600; }
+.list-items .locked-note { display: block; color: var(--muted); font-size: 0.88rem; margin-top: 0.2rem; }
 .list-items button { padding-inline: 0.9rem; }
 .add-row { margin-top: 0.9rem; margin-bottom: 0.4rem; }
 .add-row .field { margin-bottom: 0.5rem; }
@@ -461,3 +463,8 @@ details.handled > summary:hover { background: var(--sage); }
 .pause-confirm { margin-top: 0.75rem; }
 .pause-banner { margin: 0; padding: 0.6rem 1rem; background: var(--danger); color: #ffffff; font-weight: 700; text-align: center; }
 .pause-banner a { color: #ffffff; text-decoration: underline; }
+
+/* A draft of unsaved changes, offered back after a reload or failed save. */
+.draft-offer { border: 2px solid var(--accent, #2b5a3a); border-radius: 8px; padding: 0.75rem 1rem; margin: 0 0 1rem; background: var(--surface, #fffdf8); }
+.draft-offer h2 { margin: 0 0 0.25rem; font-size: 1.15rem; }
+.draft-offer .row { display: flex; flex-wrap: wrap; gap: 0.5rem; }

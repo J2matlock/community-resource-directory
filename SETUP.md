@@ -90,6 +90,6 @@ While `SITE_PUBLIC` is `"false"`, only you can see the site. When you're ready, 
 - Run `npm run link-check -- --base https://your-domain.org` once a month: it lists listing websites and source links that no longer work.
 - The admin panel's **Site notice** puts a short message under the crisis bar on every page (for example a Code Blue night), and **Due for re-check** prints a call sheet for verification calls.
 
-- Every listing shows when it was last checked; the admin "Due for re-check" view lists anything older than 11 months.
+- Every listing shows when it was last checked; the admin "Due for re-check" view lists anything past its re-check date (3 months after the last check for basic-needs and safety categories, 12 months for the rest).
 - A backup is emailed to you every Monday; use "Export to Excel" before big changes.
 - Run `npm run check` before every deploy.

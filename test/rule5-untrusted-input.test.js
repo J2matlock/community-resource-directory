@@ -193,7 +193,8 @@ describe('Rule 5: provider form input is untrusted', () => {
     const after = (await (await call('/api/admin/requests', { as: t })).json()).requests[0];
     expect(after).toMatchObject({ status: 'Handled', listing_id: 'practice-pantry-program' });
     // A second try can't make a duplicate.
-    const again = await call('/api/admin/listings', { method: 'POST', as: t, body: validListing({ name: 'Practice Pantry Program', from_request_id: id }) });
+    // (Even past the "same name" warning.)
+    const again = await call('/api/admin/listings', { method: 'POST', as: t, body: validListing({ name: 'Practice Pantry Program', from_request_id: id, confirm_warnings: true }) });
     expect(again.status).toBe(409);
     expect(await countRows('listings')).toBe(6); // 5 samples + 1, no duplicate
   });

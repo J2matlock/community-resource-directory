@@ -9,6 +9,11 @@ const STATUSES = ['Active', 'Temporarily closed', 'Seasonal'];
 const main = document.getElementById('main');
 let lists = { categories: [], plans: [] };
 let dirty = false;
+// The edit form's "keep the draft now" function while a save of it is waiting.
+let pendingDraft = null;
+// Counts page changes, so a late input event from a form that is being left
+// (the browser fires "change" when focus moves to a dialog) is ignored.
+let viewGen = 0;
 
 // ---------- helpers ----------
 function el(tag, attrs = {}, ...children) {
@@ -28,26 +33,39 @@ function el(tag, attrs = {}, ...children) {
   return node;
 }
 
+// Every failure ends up as one plain message. An expired Cloudflare login
+// usually shows up as a failed request (the login page is on another site),
+// or as a page instead of data: both say to reload. Typed changes to a
+// listing are kept on this device (see "drafts" below), so reloading is safe.
+const MSG_OFFLINE = 'Couldn\'t reach the site. Check your connection and try again. If you\'ve been away a while, your login may have expired: reload the page to log in again.';
+const MSG_LOGIN = 'Your login has expired. Reload the page to log in again.';
 async function api(path, { method = 'GET', body } = {}) {
-  const res = await fetch(`/api/admin${path}`, {
-    method,
-    headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
-    body: body === undefined ? undefined : JSON.stringify(body),
-    credentials: 'same-origin',
-  });
+  let res;
+  try {
+    res = await fetch(`/api/admin${path}`, {
+      method,
+      headers: body === undefined ? {} : { 'Content-Type': 'application/json' },
+      body: body === undefined ? undefined : JSON.stringify(body),
+      credentials: 'same-origin',
+    });
+  } catch {
+    throw Object.assign(new Error(MSG_OFFLINE), { status: 0 });
+  }
   let data = null;
   try { data = await res.json(); } catch { /* not JSON */ }
-  if (res.status === 403) throw Object.assign(new Error('Your login has expired. Reload the page to log in again.'), { status: 403 });
-  if (!res.ok) throw Object.assign(new Error(data?.error || `Something went wrong (${res.status}).`), { status: res.status, data });
+  if (res.status === 401 || res.status === 403) throw Object.assign(new Error(MSG_LOGIN), { status: res.status });
+  if (!res.ok) throw Object.assign(new Error(data?.error || `Something went wrong on the site (error ${res.status}). Please try again in a minute.`), { status: res.status, data });
+  // A page instead of data (a login page or a Wi-Fi sign-in page): nothing was saved.
+  if (!data || typeof data !== 'object') throw Object.assign(new Error(MSG_LOGIN), { status: 401 });
   return data;
 }
 
-function toast(message) {
+function toast(message, { long = false } = {}) {
   const t = document.getElementById('toast');
   t.textContent = message;
   t.classList.add('show');
   clearTimeout(toast.timer);
-  toast.timer = setTimeout(() => t.classList.remove('show'), 3500);
+  toast.timer = setTimeout(() => t.classList.remove('show'), long ? 9000 : 3500);
 }
 
 // Runs a button's action. If it fails (expired login, no signal), the button
@@ -83,8 +101,13 @@ function showKeepingPlace({ focus }, ...nodes) {
 }
 
 function showError(err) {
-  show(el('div', { class: 'error-page', role: 'alert' }, el('h1', {}, 'Something went wrong'), el('p', {}, err.message),
-    el('p', {}, el('button', { type: 'button', onclick: () => location.reload() }, 'Reload'))));
+  const missing = err.status === 404;
+  show(el('div', { class: 'error-page', role: 'alert' },
+    el('h1', {}, missing ? 'Not found' : 'Something went wrong'),
+    el('p', {}, missing ? 'That listing or page doesn\'t exist. It may have been removed, or the link is wrong.' : err.message),
+    el('p', {}, missing
+      ? el('a', { class: 'button', href: '#/listings' }, 'Go to all listings')
+      : el('button', { type: 'button', onclick: () => location.reload() }, 'Reload'))));
 }
 
 function formatDate(iso) {
@@ -130,23 +153,11 @@ function badges(l) {
 }
 
 // Display only: when a listing was last checked and whether a re-check is due
-// (same rule as the "Due for re-check" view: over 11 months, or a re-check
-// date that has passed). Words carry the meaning; colour only supports it.
-// Re-check tiers, the same rule as the server (src/db/admin.js): basic-needs
-// and safety categories every 3 months, everything else yearly.
-const FAST_RECHECK = ['Crisis Help', 'Domestic Violence', 'Housing and Shelter', 'Food', 'Rent, Utility and Emergency Help'];
-// Adds whole months and keeps the same day of the month, or the last day of the
-// target month when it is shorter (Jan 31 + 3 months = Apr 30, not May 1).
-// Must give the same date as recheckDueDate in src/db/admin.js.
+// (the same date the "Due for re-check" view uses: the server works it out,
+// 3 months for basic-needs and safety categories, 12 for the rest, or a
+// re-check date that has passed). Words carry the meaning; colour only supports it.
 function recheckDue(l) {
-  const checked = [l.last_verified, l.last_checked_online].filter(Boolean).sort().pop();
-  if (!checked) return '';
-  const [y, m, day] = checked.split('-').map(Number);
-  const total = y * 12 + (m - 1) + (FAST_RECHECK.includes(l.category) ? 3 : 12);
-  const ty = Math.floor(total / 12), tm = total % 12;
-  const lastDay = new Date(Date.UTC(ty, tm + 1, 0)).getUTCDate();
-  const pad = (n) => String(n).padStart(2, '0');
-  return `${ty}-${pad(tm + 1)}-${pad(Math.min(day, lastDay))}`;
+  return l.recheck_due || '';
 }
 
 function checkedWords(l) {
@@ -169,7 +180,7 @@ function emptyState(title, text) {
 }
 
 function pageHead(title, ...extra) {
-  return el('div', { class: 'page-head' }, el('h1', {}, title), ...extra);
+  return el('div', { class: 'page-head' }, el('h1', { tabindex: '-1' }, title), ...extra);
 }
 
 function setNav(name) {
@@ -187,6 +198,9 @@ async function loadLists() {
 // ---------- Listings view ----------
 let listingCache = [];
 const listFilters = { q: '', retired: false, visibility: '', category: '' };
+// Where the owner was in the list, so coming back from a listing lands on it
+// again (with 400+ listings, starting over at the top on every edit is slow).
+const listPlace = { y: 0, id: '' };
 
 async function viewListings() {
   setNav('listings');
@@ -209,7 +223,7 @@ async function viewListings() {
     count.textContent = `${shown.length} of ${listingCache.length} listings`;
     results.replaceChildren(...shown.map((l) => el('li', { class: `item${l.retired ? ' is-retired' : ''}${l.visibility === 'Internal' ? ' is-internal' : ''}` },
       el('div', { class: 'item-main' },
-        el('a', { class: 'item-name', href: `#/edit/${l.id}` }, l.name),
+        el('a', { class: 'item-name', href: `#/edit/${l.id}`, 'data-id': l.id, onclick: () => { listPlace.y = window.scrollY; listPlace.id = l.id; } }, l.name),
         el('p', { class: 'item-meta' }, [l.category, l.town].filter(Boolean).join(' · '))),
       el('div', { class: 'item-side' },
         el('span', { class: 'item-badges' }, badges(l)),
@@ -241,6 +255,11 @@ async function viewListings() {
     results,
   );
   render();
+  if (listPlace.id) {
+    const link = results.querySelector(`a[data-id="${CSS.escape(listPlace.id)}"]`);
+    if (link) { window.scrollTo(0, listPlace.y); link.focus({ preventScroll: true }); }
+    listPlace.id = '';
+  }
 }
 
 // ---------- Edit / Add view ----------
@@ -438,7 +457,9 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
     history = data.history;
   }
   const l = listing ?? {
-    name: '', organization: '', category: lists.categories[0] ?? '', tags: [], phone: '', fax: '', email: '', website: '',
+    // No category until the owner picks one: a pre-filled one could put a
+    // half-done listing in the wrong place on the public site.
+    name: '', organization: '', category: '', tags: [], phone: '', fax: '', email: '', website: '',
     address: '', town: '', serves_counties: [], hours: '', eligibility: '', age_groups: [], cost: [], medicaid_plans: [],
     medicaid_notes: '', description: '', private_notes: '', status: 'Active', review_by: '', visibility: 'Public', last_verified: '', last_checked_online: '',
     ...(prefill ?? {}),
@@ -499,9 +520,68 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
         textField('last_checked_online', 'Last checked online', 'date', 'Checked against their website or an official source (research sets this).', l.last_checked_online))),
   );
 
-  form.addEventListener('input', () => { dirty = true; });
+  // Unsaved means different from what was loaded, so typing a value back
+  // clears it. Changes are kept on this device as a draft (this tab only)
+  // until saved, so a failed save, a lost signal or an expired login never
+  // costs the owner their typing.
+  // One draft per listing, per request, or for a plain new listing.
+  const draftKey = listing ? `draft:${listing.id}` : fromRequest ? `draft:request:${fromRequest}` : 'draft:new';
+  const loaded = JSON.stringify(readForm(form));
+  let draftTimer;
+  // Keeps (or drops) the draft from what the form holds now. Runs after the
+  // page has moved on too (leaving keeps the draft, as the prompt says).
+  // Only the changed fields are kept (so private notes are stored only when
+  // they were edited), and nothing at all after a save was refused for what
+  // the text says (rules 1 and 2), until a save succeeds.
+  let draftsPaused = false;
+  const writeDraft = () => {
+    clearTimeout(draftTimer);
+    if (pendingDraft === writeDraft) pendingDraft = null;
+    if (draftsPaused) return;
+    const now = readForm(form);
+    const base = JSON.parse(loaded);
+    const keys = Object.keys(now).filter((k) => JSON.stringify(now[k]) !== JSON.stringify(base[k]));
+    try {
+      if (keys.length) {
+        const pick = (o) => Object.fromEntries(keys.map((k) => [k, o[k]]));
+        sessionStorage.setItem(draftKey, JSON.stringify({ at: Date.now(), base: pick(base), values: pick(now) }));
+      } else sessionStorage.removeItem(draftKey);
+    } catch { /* storage full or blocked: the form itself still works */ }
+  };
+  const dropDraft = () => {
+    clearTimeout(draftTimer);
+    if (pendingDraft === writeDraft) pendingDraft = null;
+    try { sessionStorage.removeItem(draftKey); } catch { /* nothing kept */ }
+  };
+  const myGen = ++viewGen;
+  const onInput = () => {
+    if (!form.isConnected || myGen !== viewGen) return; // a late "change" while leaving the page
+    dirty = JSON.stringify(readForm(form)) !== loaded;
+    clearTimeout(draftTimer);
+    draftTimer = setTimeout(writeDraft, 400);
+    pendingDraft = writeDraft;
+  };
+  form.addEventListener('input', onInput);
+  form.addEventListener('change', onInput);
 
+  // One save at a time: a second tap while the first is on its way would add
+  // a new listing twice. The Save button says so while it waits.
+  let saving = false;
   async function save(confirmWarnings = false) {
+    if (saving) return;
+    saving = true;
+    const saveButton = form.querySelector('.actions-bar .save');
+    const label = saveButton?.textContent;
+    if (saveButton) { saveButton.setAttribute('aria-disabled', 'true'); saveButton.textContent = 'Saving…'; }
+    try {
+      await saveOnce(confirmWarnings);
+    } finally {
+      saving = false;
+      if (saveButton?.isConnected) { saveButton.removeAttribute('aria-disabled'); saveButton.textContent = label; }
+    }
+  }
+
+  async function saveOnce(confirmWarnings) {
     const body = { ...readForm(form), confirm_warnings: confirmWarnings };
     if (listing) body.expected_updated_at = listing.updated_at;
     if (fromRequest) body.from_request_id = fromRequest;
@@ -509,15 +589,30 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
       const res = listing
         ? await api(`/listings/${encodeURIComponent(listing.id)}`, { method: 'PUT', body })
         : await api('/listings', { method: 'POST', body });
+      if (!res.listing?.id) throw Object.assign(new Error(MSG_LOGIN), { status: 401 });
       dirty = false;
+      dropDraft();
       if (fromRequest) { sessionStorage.removeItem('prefill'); refreshRequestCount(); }
       toast(fromRequest ? 'Saved. The request is marked handled.' : 'Saved.');
       location.hash = `#/edit/${res.listing.id}`;
-      if (listing) await viewEdit(res.listing.id, { again: '.actions-bar .save' });
+      // Saved: if only the refresh fails, say so, without "Not saved".
+      if (listing) await viewEdit(res.listing.id, { again: '.actions-bar .save' }).catch(() => toast('Saved. The page couldn\'t refresh: reload it to see the latest.', { long: true }));
     } catch (err) {
+      // Rejected for what it says (rule 1 or 2, a bad phone…): nothing of it is
+      // kept on the device. Any other failure keeps the typing as a draft.
+      if (err.status === 422 && Object.keys(err.data?.errors || {}).length) { dropDraft(); draftsPaused = true; } else writeDraft();
       if (err.status === 422 && err.data) showProblems(form, err.data, () => save(true));
-      else if (err.status === 409) showProblems(form, { error: err.message, errors: {} });
-      else showProblems(form, { error: err.message, errors: {} });
+      else if (err.status === 409 && listing) {
+        showProblems(form, { error: 'This listing was saved somewhere else (another tab?) after you opened it. Your changes are kept on this device: "Load the latest version" shows the other changes, then offers to put yours back.', errors: {} });
+        form.querySelector('.summary')?.append(el('p', {}, el('button', { type: 'button', onclick: async (e) => {
+          const btn = e.currentTarget;
+          try {
+            await viewEdit(listing.id);
+          } catch (loadErr) {
+            btn.after(el('p', { class: 'action-error', role: 'alert' }, loadErr.message));
+          }
+        } }, 'Load the latest version')));
+      } else showProblems(form, { error: `${err.message}${err.status === 0 || err.status === 401 || err.status === 403 ? ' Your changes are kept on this device and will be offered back after you reload. (If it did save, you\'ll see it after you reload.)' : ''}`, errors: {} });
     }
   }
 
@@ -529,11 +624,11 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
     el('div', { class: 'actions-inner' },
       el('button', { type: 'submit', class: 'save' }, id ? 'Save changes' : 'Add listing'),
       listing ? el('button', { type: 'button', class: 'secondary', onclick: (e) => {
-        if (dirty) { toast('Save or undo your changes first.'); return; }
+        if (dirty) { toast('Save your changes first.'); return; }
         runAction(e.currentTarget, async () => {
           await api(`/listings/${encodeURIComponent(listing.id)}/verify`, { method: 'POST' });
           toast('Marked as verified today.');
-          await viewEdit(listing.id, { again: '.actions-bar .secondary' });
+          await viewEdit(listing.id, { again: '.actions-bar .secondary' }).catch(() => toast('Verified. The page couldn\'t refresh: reload it to see the date.', { long: true }));
         });
       } }, 'Verified today') : null,
       el('p', { class: 'actions-note' }, id ? 'Changes go live as soon as you save.' : 'New listings go live when saved as Public.')),
@@ -546,11 +641,11 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
       ? 'This listing is retired: hidden from the public site but kept with its history. Restore puts it back.'
       : 'Retiring hides it from the public site. It is kept with its history and you can restore it any time from "Retired".'),
     el('button', { type: 'button', class: listing.retired ? 'secondary' : 'danger', onclick: (e) => {
-      if (dirty) { toast('Save or undo your changes first.'); return; }
+      if (dirty) { toast('Save your changes first.'); return; }
       runAction(e.currentTarget, async () => {
         await api(`/listings/${encodeURIComponent(listing.id)}/${listing.retired ? 'restore' : 'retire'}`, { method: 'POST' });
-        toast(listing.retired ? 'Restored. It shows on the public site again.' : 'Retired. It no longer shows on the public site.');
-        await viewEdit(listing.id, { again: '.retire-zone button' });
+        toast(listing.retired ? restoredMessage(listing) : 'Retired. It no longer shows on the public site.');
+        await viewEdit(listing.id, { again: '.retire-zone button' }).catch(() => toast('Done. The page couldn\'t refresh: reload it to see the change.', { long: true }));
       });
     } }, listing.retired ? 'Restore' : 'Retire')) : null;
 
@@ -575,12 +670,62 @@ async function viewEdit(id, { prefill = null, fromRequest = null, okToPublish = 
   ] : [];
 
   dirty = false;
-  if (again) showKeepingPlace({ focus: again }, ...head, form, retireZone, ...historySection);
-  else show(...head, form, retireZone, ...historySection);
+  const draftBox = draftOffer(draftKey, form, listing, onInput);
+  if (again) showKeepingPlace({ focus: again }, ...head, draftBox, form, retireZone, ...historySection);
+  else show(...head, draftBox, form, retireZone, ...historySection);
+}
+
+function restoredMessage(l) {
+  return l.visibility === 'Internal' ? 'Restored. It is Internal, so only you see it.' : 'Restored. It shows on the public site again.';
+}
+
+// Puts one saved value back into the edit form.
+function setFormValue(form, name, value) {
+  const boxes = form.querySelectorAll(`input[name="${name}"]`);
+  if (boxes.length && (boxes[0].type === 'checkbox' || boxes[0].type === 'radio')) {
+    if (name === 'confirm_office_address') { boxes[0].checked = value === true; return; }
+    for (const b of boxes) b.checked = Array.isArray(value) ? value.includes(b.value) : b.value === value;
+    return;
+  }
+  const ctl = form.elements[name];
+  if (!ctl) return;
+  ctl.value = name === 'tags' ? value.join(', ') : name === 'sources' ? sourcesToText(value) : value;
+}
+
+// A draft left from before (failed save, lost signal, expired login, a
+// reload): offer to put the changes back. Only fields changed in the draft
+// are restored, so edits saved elsewhere in the meantime are kept.
+function draftOffer(key, form, listing, onInput) {
+  let draft = null;
+  try { draft = JSON.parse(sessionStorage.getItem(key) || 'null'); } catch { draft = null; }
+  if (!draft || !draft.values || !draft.base) return null;
+  const changed = Object.keys(draft.values).filter((k) => JSON.stringify(draft.values[k]) !== JSON.stringify(draft.base[k]));
+  const current = readForm(form);
+  const differs = changed.filter((k) => JSON.stringify(draft.values[k]) !== JSON.stringify(current[k]));
+  if (!differs.length) { try { sessionStorage.removeItem(key); } catch { /* nothing kept */ } return null; }
+  const when = new Date(draft.at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+  const label = (k) => form.querySelector(`[data-field="${k}"] label, [data-field="${k}"] legend`)?.textContent.replace(/\s*\(required\)/, '') || k;
+  const box = el('section', { class: 'draft-offer', role: 'region', 'aria-labelledby': 'draft-h' },
+    el('h2', { id: 'draft-h' }, 'You have unsaved changes'),
+    el('p', { role: 'status' }, `From ${when}, not saved yet: ${differs.map(label).join(', ')}.`),
+    el('div', { class: 'row' },
+      el('button', { type: 'button', onclick: () => {
+        for (const k of differs) setFormValue(form, k, draft.values[k]);
+        onInput();
+        box.remove();
+        toast('Your changes are back. Press Save to keep them.');
+        form.querySelector(`[data-field="${differs[0]}"] input, [data-field="${differs[0]}"] textarea, [data-field="${differs[0]}"] select`)?.focus();
+      } }, 'Put my changes back'),
+      el('button', { type: 'button', class: 'secondary', onclick: () => {
+        try { sessionStorage.removeItem(key); } catch { /* nothing kept */ }
+        box.remove();
+        form.querySelector('input, select, textarea')?.focus();
+      } }, 'Discard them')));
+  return box;
 }
 
 // ---------- Due for re-check ----------
-async function viewRecheck() {
+async function viewRecheck({ again = null, openUnconfirmed = false } = {}) {
   setNav('recheck');
   document.title = 'Due for re-check: Directory admin';
   const { listings, unconfirmed, reported = [] } = await api('/recheck');
@@ -590,23 +735,29 @@ async function viewRecheck() {
     if (!l.last_verified && !l.last_checked_online) return 'Never checked';
     return checkedWords(l).replace(/^./, (c) => c.toUpperCase());
   };
-  const item = (l) => {
-    const li = el('li', { class: `item${l.visibility === 'Internal' ? ' is-internal' : ''}` },
+  // After "Verified today" the page is drawn again (counts, both lists and the
+  // visitor reports change), keeping the place: focus goes to the next
+  // listing's button, or the page heading when the list is done.
+  const item = (l, i, all) => {
+    const next = all[i + 1] ?? all[i - 1];
+    const li = el('li', { class: `item${l.visibility === 'Internal' ? ' is-internal' : ''}`, 'data-id': l.id },
       el('div', { class: 'item-main' },
         el('a', { class: 'item-name', href: `#/edit/${l.id}` }, l.name),
         el('p', { class: 'item-meta' }, el('span', { class: `state ${(l.review_by && l.review_by <= today) || l.last_verified ? 'state-due' : 'state-never'}` }, reason(l)),
           telHref(l.phone) ? [' · ', phoneLink(l.phone)] : l.phone ? ` · ${l.phone}` : '')),
       el('div', { class: 'item-side' },
         el('span', { class: 'item-badges' }, badges(l)),
-        el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
+        el('button', { type: 'button', class: 'secondary', onclick: (e) => { const btn = e.currentTarget; runAction(btn, async () => {
           await api(`/listings/${encodeURIComponent(l.id)}/verify`, { method: 'POST' });
-          li.remove();
           toast(`${l.name}: confirmed today.`);
-        }) }, 'Verified today', el('span', { class: 'visually-hidden' }, `: ${l.name}`))));
+          const scope = btn.closest('details.unconfirmed') ? 'details.unconfirmed ' : '.due-list ';
+          await viewRecheck({ again: next ? `${scope}li[data-id="${CSS.escape(next.id)}"] button` : 'h1', openUnconfirmed: Boolean(document.querySelector('details.unconfirmed')?.open) })
+            .catch(() => { btn.closest('li')?.remove(); toast('Done. The list couldn\'t refresh: reload the page to see the new counts.', { long: true }); });
+        }); } }, 'Verified today', el('span', { class: 'visually-hidden' }, `: ${l.name}`))));
     return li;
   };
   const weekly = Math.max(1, Math.ceil(unconfirmed.length / 52));
-  show(
+  (again ? (...n) => showKeepingPlace({ focus: again }, ...n) : show)(
     pageHead('Due for re-check'),
     reported.length ? el('section', { class: 'reported', 'aria-labelledby': 'reported-h' },
       el('h2', { id: 'reported-h' }, `Reported by visitors (last 90 days): ${reported.length}`),
@@ -622,8 +773,8 @@ async function viewRecheck() {
       : null,
     el('p', { class: 'lede' }, `Due now: ${listings.length}. Food, shelter, rent help, crisis and domestic violence listings are re-checked every 3 months; everything else every 12 months, counted from the last check (by phone, or online by research). Call or email them, then press "Verified today" or edit the listing.`),
     callSheetPanel(listings.length ? listings : unconfirmed, reason),
-    listings.length ? el('ul', { class: 'items' }, listings.map(item)) : emptyState('All caught up', 'Nothing is due for a re-check right now.'),
-    unconfirmed.length ? el('details', { class: 'unconfirmed' },
+    listings.length ? el('ul', { class: 'items due-list' }, listings.map(item)) : emptyState('All caught up', 'Nothing is due for a re-check right now.'),
+    unconfirmed.length ? el('details', { class: 'unconfirmed', open: openUnconfirmed },
       el('summary', {}, `Not yet confirmed with the program by phone or email (${unconfirmed.length})`),
       el('p', { class: 'section-intro' }, `These were checked online but nobody has called them yet. About ${weekly} a week gets through all of them in a year. Oldest checks are first.`),
       el('ul', { class: 'items' }, unconfirmed.map(item))) : null,
@@ -673,25 +824,27 @@ function printCallSheet(chosen, reason, withPrivate) {
 window.addEventListener('afterprint', () => document.body.classList.remove('print-call-sheet'));
 
 // ---------- Retired (archive) ----------
-async function viewRetired() {
+async function viewRetired({ again = null } = {}) {
   setNav('retired');
   document.title = 'Retired: Directory admin';
   const { listings } = await api('/listings');
   const retired = listings.filter((l) => l.retired);
-  const list = el('ul', { class: 'items' }, retired.map((l) => {
-    const li = el('li', { class: 'item is-retired' },
+  const list = el('ul', { class: 'items' }, retired.map((l, i) => {
+    const next = retired[i + 1] ?? retired[i - 1];
+    const li = el('li', { class: 'item is-retired', 'data-id': l.id },
       el('div', { class: 'item-main' },
         el('a', { class: 'item-name', href: `#/edit/${l.id}` }, l.name),
         el('p', { class: 'item-meta' }, [l.category, l.town].filter(Boolean).join(' · '))),
       el('div', { class: 'item-side' },
         el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
           await api(`/listings/${encodeURIComponent(l.id)}/restore`, { method: 'POST' });
-          li.remove();
-          toast(`${l.name}: restored to the public directory.`);
+          toast(`${l.name}: ${restoredMessage(l)}`);
+          await viewRetired({ again: next ? `li[data-id="${CSS.escape(next.id)}"] button` : 'h1' })
+            .catch(() => { li.remove(); toast('Restored. The list couldn\'t refresh: reload the page to see it.', { long: true }); });
         }) }, 'Restore', el('span', { class: 'visually-hidden' }, `: ${l.name}`))));
     return li;
   }));
-  show(
+  (again ? (...n) => showKeepingPlace({ focus: again }, ...n) : show)(
     pageHead('Retired listings'),
     el('p', { class: 'lede' }, `${retired.length} retired (archived) listings. They are hidden from the public site but kept here with their history. Open one to see or edit it, or press Restore to put it back.`),
     retired.length ? list : emptyState('Nothing retired', 'Listings you retire will wait here, ready to restore.'),
@@ -741,6 +894,9 @@ async function viewNotice() {
   const count = el('span', { class: 'hint', id: 'n-count', 'aria-live': 'polite' });
   const updateCount = () => { count.textContent = `${message.value.length} of 280 characters`; };
   message.addEventListener('input', updateCount); updateCount();
+  // Unsent notice text counts as unsaved, so leaving the page asks first.
+  let savedMessage = notice.message;
+  message.addEventListener('input', () => { dirty = message.value !== savedMessage; });
   const endsOn = el('input', { type: 'date', id: 'n-ends', value: notice.ends_on, 'aria-describedby': 'n-ends-hint n-ends-err' });
   const level = (v, text) => el('label', {}, el('input', { type: 'radio', name: 'n-level', value: v, checked: (notice.level || 'info') === v }), text);
   const msgErr = el('p', { class: 'error-text', id: 'n-message-err', hidden: true });
@@ -759,12 +915,13 @@ async function viewNotice() {
       try {
         const r = await api('/notice', { method: 'PUT', body: values });
         message.value = r.notice.message; endsOn.value = r.notice.ends_on; updateCount(); showStatus(r.notice);
+        savedMessage = r.notice.message; dirty = false;
         toast(r.notice.message ? 'Notice saved. It shows on the public site now.' : 'Notice cleared.');
         button.disabled = false;
       } catch (err) {
         const e = err.data?.errors || {};
         if (e.message) { msgErr.textContent = e.message; msgErr.hidden = false; message.setAttribute('aria-invalid', 'true'); message.focus(); }
-        if (e.ends_on) { endErr.textContent = e.ends_on; endErr.hidden = false; endsOn.setAttribute('aria-invalid', 'true'); }
+        if (e.ends_on) { endErr.textContent = e.ends_on; endErr.hidden = false; endsOn.setAttribute('aria-invalid', 'true'); if (!e.message) endsOn.focus(); }
         if (e.message || e.ends_on) { button.disabled = false; return; }
         throw err;
       }
@@ -967,23 +1124,26 @@ async function viewLists() {
   function section(kind, title, items, help) {
     const ul = el('ul', { class: 'items list-items' });
     const draw = (rows) => ul.replaceChildren(...rows.map((item) => {
-      const input = el('input', { type: 'text', value: item.name, 'aria-label': `New name for ${item.name}` });
+      // Names the site's safety features, search words or Learn page use can't
+      // be renamed here (the server refuses too); the note says why.
+      const input = el('input', { type: 'text', value: item.name, 'aria-label': item.locked ? `${item.name} (used by the site, can't be renamed here)` : `New name for ${item.name}`, readonly: item.locked });
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); e.currentTarget.closest('li').querySelector('button.rename')?.click(); } });
       return el('li', {},
-        el('span', { class: 'grow' }, input),
+        el('span', { class: 'grow' }, input, item.locked ? el('span', { class: 'locked-note' }, 'Locked') : null),
         el('span', { class: 'used' }, `${item.used} listing${item.used === 1 ? '' : 's'}`),
-        el('button', { type: 'button', class: 'secondary', onclick: (e) => runAction(e.currentTarget, async () => {
+        el('button', { type: 'button', class: 'secondary rename', disabled: item.locked, onclick: (e) => runAction(e.currentTarget, async () => {
           const r = await api(`/lists/${kind}/${encodeURIComponent(item.name)}`, { method: 'PUT', body: { name: input.value } });
           draw(r.items); await loadLists(); toast('Renamed. Listings using it were updated.');
         }) }, 'Rename', el('span', { class: 'visually-hidden' }, `: ${item.name}`)),
         // Remove only works when nothing uses the item; otherwise the button is
         // disabled and the "N listings" count beside it says why. The server
         // refuses too, and runAction shows its reason if that ever happens.
-        el('button', { type: 'button', class: 'danger', disabled: item.used > 0, onclick: (e) => {
+        el('button', { type: 'button', class: 'danger', disabled: item.used > 0 || item.locked, onclick: (e) => {
           runAction(e.currentTarget, async () => {
             const r = await api(`/lists/${kind}/${encodeURIComponent(item.name)}`, { method: 'DELETE' });
             draw(r.items); await loadLists(); toast('Removed.');
           });
-        } }, 'Remove', el('span', { class: 'visually-hidden' }, `${item.used > 0 ? ' (in use)' : ''}: ${item.name}`)));
+        } }, 'Remove', el('span', { class: 'visually-hidden' }, `${item.used > 0 || item.locked ? ' (in use)' : ''}: ${item.name}`)));
     }));
     draw(items);
     const addInput = el('input', { type: 'text', id: `add-${kind}`, 'aria-describedby': `add-${kind}-err` });
@@ -1007,7 +1167,7 @@ async function viewLists() {
 
   show(
     pageHead('Categories & insurance plans'),
-    ...section('categories', 'Categories', c.items, 'Renaming updates every listing in that category. A category in use can\'t be removed.'),
+    ...section('categories', 'Categories', c.items, 'Renaming updates every listing in that category. A category in use can\'t be removed. Names marked "Locked" are built into the search words, safety features or Learn page, so ask Claude to rename those: Claude changes them everywhere at once.'),
     ...section('plans', 'Insurance plans', p.items, 'Renaming updates every listing that lists that plan.'),
   );
 }
@@ -1023,9 +1183,18 @@ const REQUEST_LABELS = [
 
 function requestValue(f, key) {
   if (key === 'address') return f.no_public_address ? 'No public address' : f.address;
-  if (key === 'ok_to_publish') return f.ok_to_publish ? 'Yes' : 'No';
+  // Corrections have no "OK to publish" question.
+  if (key === 'ok_to_publish') return f.request_type === 'correction' ? '' : f.ok_to_publish ? 'Yes' : 'No';
   const v = f[key];
   return Array.isArray(v) ? v.join(', ') : v;
+}
+
+// The listing name and id from a correction ("Warren County DSS [listing: warren-county-dss]").
+function correctionListingName(text) {
+  return String(text || '').replace(/\s*\[listing: [a-z0-9-]+\]\s*$/, '').trim();
+}
+function correctionListingId(text) {
+  return (String(text || '').match(/\[listing: ([a-z0-9-]+)\]\s*$/) || [])[1] || '';
 }
 
 export function listingFromRequest(r) {
@@ -1095,7 +1264,8 @@ async function viewRequests({ again = null } = {}) {
         isNew ? null : el('span', { class: 'req-handled' }, 'Handled')),
       el('h2', { id: `req-${r.id}`, tabindex: '-1' }, r.fields.organization || '(no name)'),
       el('p', { class: 'meta-line' }, `Received ${formatDateTime(r.created_at)}`,
-        r.status !== 'New' ? ` · Handled ${formatDateTime(r.handled_at)}${r.handled_note ? `: ${r.handled_note}` : ''}` : ''),
+        r.status !== 'New' ? ` · Handled ${formatDateTime(r.handled_at)}${r.handled_note ? `: ${r.handled_note}` : ''}` : '',
+        r.listing_id ? [' · ', el('a', { href: `#/edit/${encodeURIComponent(r.listing_id)}` }, 'Open the listing')] : null),
       r.email_sent ? null : el('p', { class: 'inline-warn' }, 'Email was not sent; this copy is the only record.'),
       el('dl', {}, REQUEST_LABELS.flatMap(([k, label]) => {
         const v = requestValue(r.fields, k);
@@ -1103,7 +1273,11 @@ async function viewRequests({ again = null } = {}) {
       })),
       isNew ? el('div', { class: 'request-actions' },
         isCorrection
-          ? el('p', { class: 'next-step' }, 'Next: find the listing in Listings, call or email to confirm, edit it, then mark this handled.')
+          ? el('p', { class: 'next-step' }, 'Next: ',
+            correctionListingId(r.fields.organization)
+              ? el('a', { href: `#/edit/${encodeURIComponent(correctionListingId(r.fields.organization))}` }, 'open the listing')
+              : el('a', { href: '#/listings', onclick: () => { listFilters.q = correctionListingName(r.fields.organization); } }, 'find the listing'),
+            ', call or email to confirm, edit it, then mark this handled.')
           : el('div', { class: 'row' },
             el('button', { type: 'button', onclick: () => {
               sessionStorage.setItem('prefill', JSON.stringify({ requestId: r.id, okToPublish: r.fields.ok_to_publish === true, listing: listingFromRequest(r) }));
@@ -1130,10 +1304,20 @@ async function viewRequests({ again = null } = {}) {
 }
 
 // ---------- router ----------
+// The address of the page on screen, so a cancelled "Leave without saving?"
+// puts the address (and the menu) back in step with it.
+let shownHash = location.hash || '#/listings';
 async function route() {
-  if (dirty && !confirm('You have unsaved changes. Leave without saving?')) return;
+  const keptAsDraft = Boolean(document.querySelector('.listing-form'));
+  if (dirty && !confirm(`You have unsaved changes. Leave without saving?${keptAsDraft ? ' (They are kept on this device: open the listing again to put them back.)' : ''}`)) {
+    history.replaceState(null, '', shownHash);
+    return;
+  }
+  pendingDraft?.();
+  viewGen++;
   dirty = false;
   const hash = location.hash || '#/listings';
+  shownHash = hash;
   try {
     if (hash.startsWith('#/edit/')) await viewEdit(decodeURIComponent(hash.slice(7)));
     else if (hash.startsWith('#/new')) {
@@ -1160,6 +1344,36 @@ async function route() {
     showError(err);
   }
 }
+
+// Export to Excel: downloaded here, so a failure (expired login, no signal)
+// shows a message instead of leaving the admin panel for a page of code.
+let exporting = false;
+document.querySelector('.util-export')?.addEventListener('click', async (e) => {
+  e.preventDefault();
+  if (exporting) return;
+  exporting = true;
+  const link = e.currentTarget;
+  toast('Preparing the Excel file…', { long: true });
+  try {
+    let res;
+    try { res = await fetch(link.href, { credentials: 'same-origin' }); } catch { throw new Error(MSG_OFFLINE); }
+    const type = res.headers.get('Content-Type') || '';
+    if (res.status === 401 || res.status === 403 || (res.ok && !type.includes('spreadsheetml'))) throw new Error(MSG_LOGIN);
+    if (!res.ok) throw new Error(`The export didn't work (error ${res.status}). Please try again in a minute.`);
+    const name = (res.headers.get('Content-Disposition') || '').match(/filename="([^"]+)"/)?.[1] || 'resource-directory.xlsx';
+    const url = URL.createObjectURL(await res.blob());
+    const a = el('a', { href: url, download: name });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    toast('Excel file downloaded.');
+  } catch (err) {
+    toast(err.message, { long: true });
+  } finally {
+    exporting = false;
+  }
+});
 
 window.addEventListener('hashchange', route);
 window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });

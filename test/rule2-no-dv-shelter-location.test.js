@@ -85,6 +85,26 @@ describe('Rule 2: no domestic violence shelter locations', () => {
     expect(res.status).toBe(422);
   });
 
+  it('refuses a location typed in lowercase or worded as a home, in any field', async () => {
+    const t = await token();
+    for (const private_notes of [
+      'safe home is 12 elm street, queensbury',
+      'clients stay at 22 maple ave',
+      'the house is located on Ridge Rd',
+    ]) {
+      const res = await call('/api/admin/listings', { method: 'POST', as: t, body: dv({ private_notes }) });
+      expect(res.status, private_notes).toBe(422);
+      expect((await res.json()).errors.private_notes, private_notes).toBeTruthy();
+    }
+  });
+
+  it('allows DV wording about home addresses that gives no location', async () => {
+    const res = await call('/api/admin/listings', {
+      method: 'POST', as: await token(), body: dv({ description: 'Your home address is kept private through the Address Confidentiality Program. If your home is not safe, the location is confidential. 24 hour court advocacy. Help for 2 family court hearings.' }),
+    });
+    expect(res.status).toBe(201);
+  });
+
   it('still allows ordinary wording like "emergency shelter" and a hotline number', async () => {
     const res = await call('/api/admin/listings', {
       method: 'POST', as: await token(),

@@ -16,6 +16,7 @@ import { decoratePage, sitemap, robots } from './routes/pages.js';
 import { emailWeeklyBackup } from './backup.js';
 import { isPaused } from './db/notice.js';
 import { pausedPage } from './routes/paused.js';
+import { errorPage } from './routes/error-pages.js';
 
 function isAdminPath(path) {
   return path === '/admin' || path.startsWith('/admin/') || path.startsWith('/api/admin/');
@@ -36,8 +37,8 @@ async function route(request, env, url, admin) {
   // The pause page's own style and cleanup script always load.
   const pauseExempt = path === '/robots.txt' || path === '/css/site.css' || path === '/js/paused.js';
   if (!isAdminPath(path) && !pauseExempt && (await isPaused(env))) {
-    if (path.startsWith('/api/')) return json({ error: 'The directory is paused for now. Call 211 for help finding services.', paused: true }, 503, { 'Cache-Control': 'no-store' });
-    if (method !== 'GET' && method !== 'HEAD') return json({ error: 'Not allowed.' }, 405);
+    if (path.startsWith('/api/')) return json({ error: 'The directory is paused for now. Call 211 for help finding services.', paused: true }, 503, { 'Cache-Control': 'no-store', 'X-Site-Paused': '1' });
+    if (method !== 'GET' && method !== 'HEAD') return errorPage(405);
     return pausedPage();
   }
 
@@ -107,9 +108,20 @@ async function route(request, env, url, admin) {
 
   if (path.startsWith('/api/')) return notFound(path);
 
-  if (method !== 'GET' && method !== 'HEAD') return json({ error: 'Not allowed.' }, 405);
+  // A page form sent without its script lands here: say plainly it wasn't sent.
+  if (method !== 'GET' && method !== 'HEAD') return errorPage(405);
 
-  if (path === '/sitemap.xml') return sitemap(env, url);
+  if (path === '/sitemap.xml') {
+    // Kept at Cloudflare for an hour once public, so crawlers don't read every
+    // listing row on each visit.
+    const cache = typeof caches !== 'undefined' && env.SITE_PUBLIC === 'true' && env.PUBLIC_CACHE !== 'off' ? caches.default : null;
+    const key = new Request(new URL('/sitemap.xml', url).toString());
+    const hit = cache ? await cache.match(key) : null;
+    if (hit) return hit;
+    const res = await sitemap(env, url);
+    if (cache) await cache.put(key, res.clone());
+    return res;
+  }
   if (path === '/robots.txt') return robots(url);
 
   // Pages are always fetched whole (no "not changed" replies), so the notice

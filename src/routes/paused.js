@@ -36,6 +36,8 @@ export function pausedPage() {
 </html>`;
   return new Response(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' },
+    // X-Site-Paused tells a visitor's offline copy (public/sw.js) to drop
+    // itself and show this page, even if it was showing a saved copy.
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex', 'X-Site-Paused': '1' },
   });
 }

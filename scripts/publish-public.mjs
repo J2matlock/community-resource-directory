@@ -31,6 +31,15 @@ for (const p of COPY) {
 }
 for (const [from, to] of Object.entries(FROM_TEMPLATE)) cpSync(from, join(target, to));
 
+// Tests for scripts that stay private (for example the local Medicaid plan
+// checks) would fail in the public copy: leave them out.
+for (const name of readdirSync(join(target, 'test'))) {
+  if (!name.endsWith('.js')) continue;
+  const text = readFileSync(join(target, 'test', name), 'utf8');
+  const needs = [...text.matchAll(/from '\.\.\/(scripts\/[\w-]+\.mjs)'/g)].map((m) => m[1]);
+  if (needs.some((f) => !COPY.includes(f))) rmSync(join(target, 'test', name));
+}
+
 // Neutral versions of local-only pieces.
 writeFileSync(join(target, 'src/local/internal-terms.js'), `// Words that mark something as internal to a partner organization (for
 // example a hospital's unit names or staff shorthand). Public listing fields

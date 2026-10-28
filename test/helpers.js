@@ -2,6 +2,7 @@
 // database reset with the made-up sample listings.
 
 import { forgetPauseMemo, forgetNoticeMemo } from '../src/db/notice.js';
+import { forgetNeutralMemo } from '../src/routes/pages.js';
 import { env } from 'cloudflare:test';
 import { vi } from 'vitest';
 import { SignJWT, exportJWK, generateKeyPair } from 'jose';
@@ -58,6 +59,7 @@ export async function call(path, { method = 'GET', body, as = null, origin = ORI
 export async function resetDb() {
   forgetPauseMemo();
   forgetNoticeMemo();
+  forgetNeutralMemo();
   const db = env.DB;
   await db.batch([
     db.prepare('DELETE FROM listing_history'),

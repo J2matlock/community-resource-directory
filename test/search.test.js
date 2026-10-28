@@ -70,10 +70,120 @@ describe('Search', () => {
     expect(engine.search('OFA').notes[0]).toMatch(/Office for the Aging/);
   });
 
-  it('allows small typos only when nothing matches, and says it is unsure', () => {
+  it('understands a small typo in an everyday word, and says what it searched for', () => {
     const r = engine.search('dentst');
+    expect(r.mode).toBe('understood');
+    expect(r.corrected).toBe('dentist');
+    expect(r.results[0].id).toBe('dentist');
+    expect(engine.search('food stampes').results[0].id).toBe('dss');
+  });
+
+  it('allows other small typos only when nothing matches, and says it is unsure', () => {
+    const r = engine.search('smilee');
     expect(r.mode).toBe('unsure');
     expect(r.results[0].id).toBe('dentist');
+  });
+
+  it('never "corrects" a word a listing actually uses', () => {
+    expect(engine.search('hometown').corrected).toBe('');
+  });
+
+  it('never turns a real word into a different one ("pills" is not "bills")', () => {
+    for (const w of ['pills', 'hitting', 'poison', 'trapped', 'fleeing', 'overdue', 'mediation', 'hopeless', 'addition', 'heroine', 'dientes']) {
+      expect(engine.guess(w), w).toBe(w);
+    }
+    expect(engine.guess('stampes')).toBe('stamps');
+    expect(engine.guess('methadon')).toBe('methadone');
+  });
+
+  it('a search in quotes is taken exactly as typed', () => {
+    expect(engine.search('"dentst"').corrected).toBe('');
+  });
+
+  it('a long message still gets the safety handling from words near the end', () => {
+    const r = engine.search('hi i am looking for some help for me and my kids because my husband beat me');
+    expect(r.safety).toBe(true);
+    expect(r.results[0].id).toBe('dv');
+  });
+
+  it('cost and place words never break a safety phrase that shares a word', () => {
+    for (const q of ['not insured and not safe', 'afraid of him need help free of charge']) {
+      const r = engine.search(q);
+      expect(r.safety, q).toBe(true);
+      expect(r.results[0].id, q).toBe('dv');
+    }
+  });
+
+  it('a lone cost word still means its everyday thing ("uninsured" finds clinics)', () => {
+    const r = engine.search('uninsured');
+    expect(r.results.map((l) => l.id)).toContain('clinic');
+    expect(r.lowCost).toBe(true);
+  });
+
+  it('generic words ("benefits") still search when nothing else was typed', () => {
+    const p = globalThis.SADKSearch.create([L('ui', 'Employment', 'Unemployment Benefits Line'), L('x', 'Food', 'Pantry')], words);
+    expect(p.search('benefits').results.map((l) => l.id)).toEqual(['ui']);
+  });
+
+  it('a town is a wish, not a need: nearby help first, nothing hidden', () => {
+    const towns = { Granville: 'Washington', 'Glens Falls': 'Warren' };
+    const p = globalThis.SADKSearch.create([
+      L('far', 'Food', 'Pantry Far', { town: 'Glens Falls', serves_counties: ['Warren'] }),
+      L('near', 'Food', 'Pantry Near', { town: 'Granville', serves_counties: ['Washington'] }),
+      L('doc', 'Medical', 'Granville Doctor', { town: 'Granville', serves_counties: ['Washington'] }),
+    ], words, { towns, counties: ['Warren', 'Washington'] });
+    const r = p.search('food pantry granville');
+    expect(r.results.map((l) => l.id)).toEqual(['near', 'far']);
+    expect(r.places).toEqual(['Granville']);
+    expect(p.search('granville').results.map((l) => l.id)).toEqual(['doc', 'near']);
+  });
+
+  it('cost words move free and low-cost help up without hiding the rest', () => {
+    const p = globalThis.SADKSearch.create([
+      L('paid', 'Dental', 'Alpha Dentist', { cost: ['Insurance'] }),
+      L('free', 'Dental', 'Zeta Dental Clinic', { cost: ['Sliding scale', 'Uninsured OK'] }),
+    ], words);
+    const r = p.search('no insurance dentist');
+    expect(r.results.map((l) => l.id)).toEqual(['free', 'paid']);
+    expect(r.lowCost).toBe(true);
+    expect(p.search('dentist').results[0].id).toBe('paid');
+  });
+
+  it('a child or elder abuse search finds the hotline and APS, not every DV program, and keeps the quick exit', () => {
+    const p = globalThis.SADKSearch.create([
+      L('dv', 'Domestic Violence', 'Partner Abuse Hotline'),
+      L('cps', 'Crisis Help', 'Child Abuse and Maltreatment Hotline'),
+      L('aps', 'Social Services', 'Adult Protective Services (APS)'),
+    ], words);
+    const child = p.search('child abuse');
+    expect(child.results[0].id).toBe('cps');
+    expect(child.safety).toBe(true);
+    expect(p.search('elder abuse').results[0].id).toBe('aps');
+    expect(p.search('he beat me').results[0].id).toBe('dv');
+  });
+
+  it('general help comes before specialists unless the search names the specialty', () => {
+    const p = globalThis.SADKSearch.create([
+      L('ortho', 'Dental', 'Adirondack Orthodontics', { tags: ['dentist', 'orthodontist'] }),
+      L('gen', 'Dental', 'Zeta Family Dentist', { tags: ['dentist'] }),
+    ], words);
+    expect(p.search('dentist').results.map((l) => l.id)).toEqual(['gen', 'ortho']);
+    expect(p.search('orthodontist').results[0].id).toBe('ortho');
+  });
+
+  it('offices outside the area come after local ones on ties', () => {
+    const p = globalThis.SADKSearch.create([
+      L('albany', 'Legal Help', 'Aardvark Legal Aid', { town: 'Albany' }),
+      L('local', 'Legal Help', 'Zeta Legal Aid', { town: 'Glens Falls' }),
+    ], words, { towns: { 'Glens Falls': 'Warren' }, counties: ['Warren'] });
+    expect(p.search('lawyer').results.map((l) => l.id)).toEqual(['local', 'albany']);
+  });
+
+  it('a pasted paragraph stays fast: only the first 12 words are searched', () => {
+    const long = Array.from({ length: 400 }, (_, i) => `zq${i}x`).join(' ');
+    const t0 = Date.now();
+    engine.search(long);
+    expect(Date.now() - t0).toBeLessThan(1000);
   });
 
   it('returns nothing (not random guesses) for unknown words', () => {

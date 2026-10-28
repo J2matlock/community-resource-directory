@@ -45,6 +45,15 @@ describe('Friendly error pages', () => {
     looksLikeErrorPage(await res.text(), 'Page not found');
   });
 
+  it('a page form sent without its script says plainly it was not sent, and keeps nothing', async () => {
+    const res = await call('/request', { method: 'POST', sitePublic: true, body: { organization: 'x', correction: 'y' } });
+    expect(res.status).toBe(405);
+    expect(res.headers.get('Content-Type')).toContain('text/html');
+    const html = await res.text();
+    looksLikeErrorPage(html, 'Not sent');
+    expect(html).toContain('nothing you typed was kept');
+  });
+
   it('a made-up data address still answers JSON', async () => {
     const res = await call('/api/nope', { sitePublic: true });
     expect(res.status).toBe(404);
