@@ -8,12 +8,21 @@
 // it hasn't been edited since the research snapshot (_base_updated_at), so the
 // owner's own edits are never overwritten. --remote changes the LIVE database:
 // only after the owner says yes (CLAUDE.md).
+// Who: an update whose _src starts with "owner" (an answer or change the owner
+// gave) is recorded in the history as "owner via Claude"; anything else is a
+// "research update". A research update never changes a field the owner set
+// last (scripts/owner-edits-lib.mjs): that field is held back and listed so it
+// can go on the call list. If the owner then picks the source's version, send
+// it again with _src "owner approved …". Retirements: "retire" takes ids, or
+// { id, _src } to mark one as the owner's; a research retirement of a listing
+// the owner restored is held back the same way.
 
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { validateListing, isDvListing } from '../src/validate.js';
 import { EDITABLE_FIELDS, todayLocal } from '../src/db/admin.js';
 import { sourcesText } from '../src/lib/listing-rules.js';
+import { OWNER_VIA_CLAUDE, isOwnerSrc, ownerSetFields } from './owner-edits-lib.mjs';
 
 const [file] = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const remote = process.argv.includes('--remote');
@@ -40,20 +49,23 @@ const lists = {
   plans: query('SELECT name FROM medicaid_plans').map((r) => r.name),
 };
 const rows = new Map(query('SELECT * FROM listings').map((r) => [r.id, r]));
-const who = `research update ${new Date().toISOString().slice(0, 10)}`;
+const ownerSet = ownerSetFields(query('SELECT id, listing_id, field, new_value, changed_by, changed_at FROM listing_history'));
+const day = new Date().toISOString().slice(0, 10);
+const whoFor = (src) => (isOwnerSrc(src) ? `${OWNER_VIA_CLAUDE} ${day}` : `research update ${day}`);
 const t = new Date().toISOString();
 
 const sql = [];
-const report = { changed: [], unchanged: [], skippedEdited: [], skippedMissing: [], problems: [] };
+const report = { changed: [], unchanged: [], skippedEdited: [], skippedMissing: [], heldBack: [], problems: [] };
 for (const [id, raw] of Object.entries(updates)) {
   const row = rows.get(id);
   if (!row || row.retired) { report.skippedMissing.push(id); continue; }
   if (remote && raw._base_updated_at && row.updated_at !== raw._base_updated_at) { report.skippedEdited.push(id); continue; }
   const existing = Object.fromEntries(Object.entries(row).map(([k, v]) => [k, JSON_COLUMNS.includes(k) ? JSON.parse(v || '[]') : v]));
   const fields = Object.fromEntries(Object.entries(raw).filter(([k]) => !k.startsWith('_')));
+  const who = whoFor(raw._src);
   // A researched update (it names its sources, not "owner answer…") means the
   // listing was just checked against its sources online.
-  if (!('last_checked_online' in fields) && raw._src && !/^owner/i.test(raw._src)) fields.last_checked_online = todayLocal();
+  if (!('last_checked_online' in fields) && raw._src && !isOwnerSrc(raw._src)) fields.last_checked_online = todayLocal();
   const input = { ...Object.fromEntries(EDITABLE_FIELDS.map((f) => [f, existing[f]])), ...fields };
   const opts = { confirmedAddress: isDvListing(existing) && existing.address ? existing.address : undefined };
   const { value, errors, warnings } = validateListing(input, lists, opts);
@@ -61,7 +73,12 @@ for (const [id, raw] of Object.entries(updates)) {
     report.problems.push(`${id}: ${JSON.stringify(errors)} ${warnings.join('; ')}`);
     continue;
   }
-  const changed = EDITABLE_FIELDS.filter((f) => f in fields && historyValue(f, value[f]) !== historyValue(f, existing[f]));
+  let changed = EDITABLE_FIELDS.filter((f) => f in fields && historyValue(f, value[f]) !== historyValue(f, existing[f]));
+  const mine = isOwnerSrc(raw._src) ? new Map() : ownerSet.get(id) ?? new Map();
+  for (const f of changed.filter((f) => mine.has(f))) {
+    report.heldBack.push(`${id}.${f}: owner set "${mine.get(f).value}" (${mine.get(f).at.slice(0, 10)}); research found "${historyValue(f, value[f])}" (${raw._src ?? 'no source given'})`);
+  }
+  changed = changed.filter((f) => !mine.has(f));
   if (!changed.length) { report.unchanged.push(id); continue; }
   sql.push(`UPDATE listings SET ${changed.map((f) => `${f} = ${q(toDb(f, value[f]))}`).join(', ')}, updated_at = ${q(t)} WHERE id = ${q(id)} AND updated_at = ${q(row.updated_at)};`);
   for (const f of changed) {
@@ -70,10 +87,16 @@ for (const [id, raw] of Object.entries(updates)) {
   report.changed.push(`${id} (${changed.join(', ')})`);
 }
 
-for (const id of retire) {
+for (const item of retire) {
+  const { id, _src } = typeof item === 'string' ? { id: item } : item;
+  const who = whoFor(_src);
   const row = rows.get(id);
   if (!row) { report.skippedMissing.push(id); continue; }
   if (row.retired) { report.unchanged.push(id); continue; }
+  if (!isOwnerSrc(_src) && ownerSet.get(id)?.has('retired')) {
+    report.heldBack.push(`${id}.retired: owner restored it (${ownerSet.get(id).get('retired').at.slice(0, 10)}); research proposed retiring it`);
+    continue;
+  }
   sql.push(`UPDATE listings SET retired = 1, updated_at = ${q(t)} WHERE id = ${q(id)} AND updated_at = ${q(row.updated_at)};`);
   sql.push(`INSERT INTO listing_history (listing_id, field, old_value, new_value, changed_by, changed_at) SELECT ${q(id)}, 'retired', 'no', 'yes', ${q(who)}, ${q(t)} WHERE changes() = 1;`);
   report.changed.push(`${id} (retired)`);
@@ -91,5 +114,9 @@ if (sql.length) {
   wrangler(['d1', 'execute', 'DB', where, ...(remote ? ['--yes'] : []), '--file', sqlFile]);
 }
 console.log(`${remote ? 'Live' : 'Local'}: ${report.changed.length} listings updated, ${report.unchanged.length} already up to date, ${report.skippedEdited.length} skipped (edited since the snapshot), ${report.skippedMissing.length} not found or retired.`);
+if (report.heldBack.length) {
+  console.log(`Held back ${report.heldBack.length} change(s) to fields the owner set (put these on the call list):`);
+  for (const h of report.heldBack) console.log(`  - ${h}`);
+}
 if (report.skippedEdited.length) console.log(`Skipped because they were edited since the snapshot: ${report.skippedEdited.join(', ')}`);
 if (process.argv.includes('--verbose')) for (const c of report.changed) console.log(`  ${c}`);

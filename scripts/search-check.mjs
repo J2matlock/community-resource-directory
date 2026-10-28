@@ -55,7 +55,7 @@ const CASES = [
   ['dentist medicaid', ['Dental']],
   ['dentst', ['Dental']],
   ['toothache', ['Dental']],
-  ['glasses', ['Eye Care', 'Ophthalmology']],
+  ['glasses', ['Optometrists', 'Eye Care', 'Ophthalmology']],
   ['lawyer', ['Legal Help']],
   ['custody', ['Legal Help']],
   ['job', ['Employment']],
@@ -134,7 +134,7 @@ const CASES = [
   ['i need help please my boyfriend and i have been fighting a lot and he hits me', ['Domestic Violence']],
   ['hi i am looking for some help for me and my kids because my husband beat me', ['Domestic Violence']],
   ['sexual exploitation', ['Domestic Violence', 'Crisis Help']],
-  ['glass', ['Eye Care', 'Ophthalmology']],
+  ['glass', ['Optometrists', 'Eye Care', 'Ophthalmology']],
   ['overdue rent', ['Rent, Utility and Emergency Help', 'Housing and Shelter']],
   ['custody mediation', ['Legal Help']],
   ['uninsured', ['Medical', 'Urgent Care'], null, LOW_COST],
@@ -145,8 +145,15 @@ const CASES = [
   ['me pega mi esposo', ['Domestic Violence']],
 ];
 
+// Category names in the everyday-words list must exist on this site; a renamed
+// category silently stops matching its everyday words ("glasses" after
+// "Eye Care" became "Optometrists"). Old names kept for local copies are fine
+// as long as one name of each entry exists.
+const missing = dict.entries.filter((e) => e.categories.length && !e.categories.some((c) => data.categories.includes(c)))
+  .map((e) => `  ✗ words.json entry "${e.match[0]}": none of ${e.categories.join(', ')} is a category here`);
+
 let pass = 0;
-const fails = [];
+const fails = [...missing];
 for (const [phrase, cats, firstCat, each] of CASES) {
   const r = engine.search(phrase);
   const top = r.results.slice(0, 3);
@@ -156,6 +163,6 @@ for (const [phrase, cats, firstCat, each] of CASES) {
   if (ok) pass++;
   else fails.push(`  ✗ "${phrase}" (${r.mode}): ${top.map((l) => `${l.name} [${l.category}]`).join(' | ') || 'no results'}`);
 }
-console.log(`Search check: ${pass} of ${CASES.length} phrases put the right kind of help first.`);
+console.log(`Search check: ${pass} of ${CASES.length} phrases put the right kind of help first.${missing.length ? ` ${missing.length} everyday-words entries name no category on this site.` : ''}`);
 if (fails.length) console.log(fails.join('\n'));
 process.exit(fails.length ? 1 : 0);

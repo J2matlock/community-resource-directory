@@ -242,7 +242,9 @@ export async function addListItem(db, kind, rawName, locked) {
 }
 
 // Renaming updates every listing that uses the old name, with history. Names
-// the site's code or content depends on (`locked`) are refused.
+// the site's code or content depends on (`locked`) are refused. History rows
+// are labeled "(list rename)" so research updates know the owner didn't edit
+// each listing by hand (scripts/owner-edits-lib.mjs).
 export async function renameListItem(db, kind, oldName, rawNew, who, locked = new Set()) {
   const L = LIST_TABLES[kind];
   const { value: newName, error } = validateListName(rawNew);
@@ -260,6 +262,7 @@ export async function renameListItem(db, kind, oldName, rawNew, who, locked = ne
     ? (await db.prepare('SELECT l.id, l.medicaid_plans FROM listings l WHERE EXISTS (SELECT 1 FROM json_each(l.medicaid_plans) j WHERE j.value = ?)').bind(oldName).all()).results
     : (await db.prepare('SELECT id FROM listings WHERE category = ?').bind(oldName).all()).results;
   const t = now();
+  const by = `${who} (list rename)`;
   const stmts = [db.prepare(`INSERT INTO ${L.table} (name) VALUES (?)`).bind(newName)];
   for (const row of affected) {
     if (L.json) {
@@ -267,11 +270,11 @@ export async function renameListItem(db, kind, oldName, rawNew, who, locked = ne
       const after = before.map((p) => (p === oldName ? newName : p));
       stmts.push(db.prepare('UPDATE listings SET medicaid_plans = ?, updated_at = ? WHERE id = ?').bind(JSON.stringify(after), t, row.id));
       stmts.push(db.prepare('INSERT INTO listing_history (listing_id, field, old_value, new_value, changed_by, changed_at) VALUES (?, ?, ?, ?, ?, ?)')
-        .bind(row.id, 'medicaid_plans', before.join(', '), after.join(', '), who, t));
+        .bind(row.id, 'medicaid_plans', before.join(', '), after.join(', '), by, t));
     } else {
       stmts.push(db.prepare('UPDATE listings SET category = ?, updated_at = ? WHERE id = ?').bind(newName, t, row.id));
       stmts.push(db.prepare('INSERT INTO listing_history (listing_id, field, old_value, new_value, changed_by, changed_at) VALUES (?, ?, ?, ?, ?, ?)')
-        .bind(row.id, 'category', oldName, newName, who, t));
+        .bind(row.id, 'category', oldName, newName, by, t));
     }
   }
   stmts.push(db.prepare(`DELETE FROM ${L.table} WHERE name = ?`).bind(oldName));

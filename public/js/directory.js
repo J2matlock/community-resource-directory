@@ -1045,6 +1045,7 @@
       // A disabled button drops keyboard focus; give it back.
       if (document.activeElement === document.body) btn.focus();
       buildHandout(chosen);
+      fitHandout();
       document.body.classList.add('print-handout');
       window.print();
     }
@@ -1075,6 +1076,23 @@
         el('p', {}, 'Scan for these and more: ' + (SITE.domain || location.host))),
       el('p', { class: 'foot' }, 'Can\'t find it? ' + HELP_LINE.charAt(0).toUpperCase() + HELP_LINE.slice(1) + '. A listing is not an endorsement; call ahead to confirm. In crisis: call or text 988, or call 911.'),
     ]);
+  }
+
+  // Long hours or eligibility can push the last line onto a second page,
+  // more so when the phone adds its own header and footer. Measure the
+  // handout at page width and lower the text size a step at a time (11pt to
+  // 9pt) until it fits one Letter page: 11in minus 0.6in margins, minus room
+  // for the browser's header and footer lines.
+  function fitHandout() {
+    var h = $('handout');
+    var limit = 9.4 * 96; // CSS pixels in 9.4 inches
+    var sizes = [11, 10.5, 10, 9.5, 9];
+    h.classList.add('measuring');
+    for (var i = 0; i < sizes.length; i++) {
+      h.style.fontSize = sizes[i] + 'pt';
+      if (h.scrollHeight <= limit) break;
+    }
+    h.classList.remove('measuring');
   }
 
   window.addEventListener('afterprint', function () { document.body.classList.remove('print-handout'); });
