@@ -56,6 +56,11 @@ describe('fields the owner set last', () => {
   it('knows an owner answer from a website source', () => {
     expect(isOwnerSrc('owner answer in data/verification-questions.md (2026-10-10)')).toBe(true);
     expect(isOwnerSrc('Owner approved website version 2026-10-28')).toBe(true);
+    expect(isOwnerSrc('owner (To review, 2026-10-12): keep it')).toBe(true);
+    expect(isOwnerSrc('owner-approved date fix')).toBe(true);
+    expect(isOwnerSrc('owner asked 2026-10-28: new phone')).toBe(true);
+    expect(isOwnerSrc("Owner's Facebook page says Mon 9-4")).toBe(false);
+    expect(isOwnerSrc('ownership records, county site')).toBe(false);
     expect(isOwnerSrc('https://example.org/hours (owner gave this link)')).toBe(false);
     expect(isOwnerSrc(undefined)).toBe(false);
   });

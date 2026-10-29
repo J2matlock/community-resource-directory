@@ -3,7 +3,7 @@
 // plain-language report to data/ (local only, kept out of git).
 //   node scripts/link-check.mjs [--base https://southernadkhelp.org]
 //                               [--out data/link-check-YYYY-MM-DD.md]
-//                               [--only listings|content]
+//                               [--only listings|content] [--no-browser] [--with-me]
 //
 // Where links come from:
 //   listings  every `website` in <base>/api/listings (the public listings feed)
@@ -11,7 +11,7 @@
 //             <base>/content/learn.json, needs.json and help.json
 //
 // How each link is checked (politely: 4 at a time, at most 2 per website, an
-// ordinary browser identity, 15 seconds each): HEAD first, then GET if HEAD is
+// honest identity naming this link checker, 15 seconds each): HEAD first, then GET if HEAD is
 // refused or doesn't come back OK; redirects followed up to 5. Server errors
 // (5xx) and dropped connections get one retry 30 seconds later.
 //
@@ -26,14 +26,26 @@
 //                  browser; most work fine for people.
 //   OK             only counted.
 //
+// Second look in a real browser: every blocked, timed-out or unusual link (and
+// any server error) is opened once more in headless Chromium through
+// scripts/page-text.mjs, one page at a time with a pause between. Links that
+// open fine for the browser count as working ("opened in a real browser");
+// a page-not-found becomes Broken; a different website becomes Moved. A bot
+// check that doesn't clear by itself is left alone and stays Check by hand,
+// and the rest of that website's links are not tried again in the browser.
+// Skipped with --no-browser, or if Chromium isn't installed. With --with-me
+// the browser is a visible window and the owner completes any human check
+// themselves (see scripts/page-text.mjs); the owner needs to be at the computer.
+//
 // It's a report, not a test: it always exits 0 once the report is written.
-// The only network traffic is fetching the public data and the plain HEAD/GET
-// to each link. Nothing is sent anywhere else.
+// The only network traffic is fetching the public data, the plain HEAD/GET
+// to each link, and the browser's page loads. Nothing is sent anywhere else.
 
 import { promises as dns } from 'node:dns';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { findChromium, openReader } from './page-text.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CONCURRENCY = 4;
@@ -42,7 +54,8 @@ const TIMEOUT_MS = 15_000;
 const RETRY_AFTER_MS = 30_000;
 const MAX_REDIRECTS = 5;
 const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36',
+  // Says plainly what it is (owner's choice 2026-10-28: no disguise as a person's browser).
+  'User-Agent': 'Mozilla/5.0 (compatible; southernadkhelp-link-check; +https://southernadkhelp.org)',
   Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
   'Accept-Language': 'en-US,en;q=0.9',
 };
@@ -287,6 +300,48 @@ await new Promise((finish) => {
 });
 if (process.stdout.isTTY) process.stdout.write('\n');
 
+// ---- 2b. Second look in a real browser ----
+const BROWSER_PAUSE_MS = 2_000;
+const secondLook = [...results].filter(([, r]) => ['blocked', 'timeout', 'hand'].includes(r.group) || (r.group === 'broken' && /^Server error/.test(r.reason)));
+let browserOpened = 0;
+let browserNote = '';
+if (process.argv.includes('--no-browser')) browserNote = 'Real-browser second look skipped (--no-browser).';
+else if (!secondLook.length) browserNote = '';
+else if (!findChromium()) browserNote = 'Real-browser second look skipped: Chromium is not installed (see scripts/page-text.mjs).';
+else {
+  console.log(`Opening ${secondLook.length} blocked or slow links in a real browser, one at a time...`);
+  const reader = await openReader({ withMe: process.argv.includes('--with-me') });
+  const challengedHosts = new Set();
+  try {
+    for (const [i, [url, prev]] of secondLook.entries()) {
+      if (process.stdout.isTTY) process.stdout.write(`\r  Browser: ${i + 1} of ${secondLook.length}...`);
+      else if (i && i % 25 === 0) console.log(`  Browser: ${i} of ${secondLook.length}...`);
+      if (challengedHosts.has(hostOf(url))) {
+        results.set(url, { ...prev, reason: `${prev.reason}; a real browser got a bot check on this website, not tried again` });
+        continue;
+      }
+      if (i) await new Promise((r) => setTimeout(r, BROWSER_PAUSE_MS));
+      const b = await reader.read(url);
+      if (b.challenged) challengedHosts.add(hostOf(url));
+      if (b.ok && hostOf(b.finalUrl) !== hostOf(url) && !SHORT_LINKS.has(hostOf(url))) {
+        results.set(url, { group: 'moved', finalUrl: b.finalUrl, reason: 'Now on a different website (seen in a real browser)' });
+      } else if (b.ok) {
+        results.set(url, { group: 'ok', browser: true });
+        browserOpened++;
+      } else if (b.status === 404 || b.status === 410) {
+        results.set(url, { group: 'broken', reason: `Page not found (${b.status}, seen in a real browser)` });
+      } else {
+        const why = b.challenged ? 'a real browser also got a bot check' : b.error === 'timeout' ? 'a real browser also timed out' : `a real browser also failed (${b.error || b.status})`;
+        results.set(url, { ...prev, reason: `${prev.reason}; ${why}` });
+      }
+    }
+  } finally {
+    await reader.close();
+  }
+  if (process.stdout.isTTY) process.stdout.write('\n');
+  browserNote = `${secondLook.length} blocked or slow links got a second look in a real browser: ${browserOpened} opened fine (counted as working).`;
+}
+
 // ---- 3 and 4. Sort and write the report ----
 const seconds = Math.round((Date.now() - started) / 1000);
 const by = { broken: [], moved: [], blocked: [], timeout: [], hand: [], ok: [] };
@@ -304,7 +359,7 @@ const usedOn = (list) => list.map((u) => (u.href ? `[${cell(u.text).replace(/[[\
 const order = (rows) => rows.sort((a, b) => b.used.length - a.used.length || a.url.localeCompare(b.url));
 
 const md = [`# Link check, ${ymd}`, '', ...summary.map((l) => `${l}  `), '',
-  `Run time: ${Math.floor(seconds / 60)} min ${seconds % 60} s. OK links are not listed (${by.ok.length}).`, ''];
+  `Run time: ${Math.floor(seconds / 60)} min ${seconds % 60} s. OK links are not listed (${by.ok.length}).`, ...(browserNote ? [browserNote] : []), ''];
 
 md.push(`## Broken (${by.broken.length})`, '');
 if (by.broken.length) {
@@ -330,6 +385,7 @@ writeFileSync(outPath, md.join('\n'));
 // ---- 5. Console summary ----
 console.log('');
 for (const l of summary) console.log(l);
+if (browserNote) console.log(browserNote);
 console.log(`\nBroken ${by.broken.length} | Moved ${by.moved.length} | Blocked ${by.blocked.length} | Timeout ${by.timeout.length} | Other ${by.hand.length} | OK ${by.ok.length}`);
 console.log(`Run time: ${Math.floor(seconds / 60)} min ${seconds % 60} s`);
 console.log(`Report: ${outPath}`);

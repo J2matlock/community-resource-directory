@@ -15,9 +15,11 @@
 export const OWNER_VIA_CLAUDE = 'owner via Claude';
 export const LIST_RENAME = '(list rename)';
 
-// True when an update's _src says the owner gave the answer ("owner answer…",
-// "owner approved…"), not a website or other source.
-export const isOwnerSrc = (src) => /^owner/i.test(String(src ?? '').trim());
+// True when an update's _src says the owner gave the answer, using one of the
+// labels Claude writes ("owner answer…", "owner approved…", "owner asked…",
+// "owner (To review…)", "owner-provided…"), not a source that merely starts
+// with the word ("Owner's Facebook page says…").
+export const isOwnerSrc = (src) => /^owner(\s*\(|[\s-](answer|approved|asked|request|provided|decision|confirmed)\b)/i.test(String(src ?? '').trim());
 
 export const isOwnerRow = (row) => {
   const by = String(row.changed_by ?? '');

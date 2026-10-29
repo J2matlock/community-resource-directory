@@ -91,6 +91,8 @@ describe('Rule 2: no domestic violence shelter locations', () => {
       'safe home is 12 elm street, queensbury',
       'clients stay at 22 maple ave',
       'the house is located on Ridge Rd',
+      'clients stay at 1092 state route 9',
+      'safe home: 55 county rte 4',
     ]) {
       const res = await call('/api/admin/listings', { method: 'POST', as: t, body: dv({ private_notes }) });
       expect(res.status, private_notes).toBe(422);
@@ -100,7 +102,7 @@ describe('Rule 2: no domestic violence shelter locations', () => {
 
   it('allows DV wording about home addresses that gives no location', async () => {
     const res = await call('/api/admin/listings', {
-      method: 'POST', as: await token(), body: dv({ description: 'Your home address is kept private through the Address Confidentiality Program. If your home is not safe, the location is confidential. 24 hour court advocacy. Help for 2 family court hearings.' }),
+      method: 'POST', as: await token(), body: dv({ description: 'Your home address is kept private through the Address Confidentiality Program. If your home is not safe, the location is confidential. 24 hour court advocacy. Help for 2 family court hearings. Serves 3 counties along route 9.' }),
     });
     expect(res.status).toBe(201);
   });

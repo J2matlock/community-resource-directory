@@ -46,8 +46,11 @@ const HOME_LOCATION = /\b(house|home|residence|apartment)\b[^.\n]{0,30}\b(is|are
 // Lowercase street addresses; "court", "way", "place" and "route" are left out
 // here, since "1 family court" or "3 counties along route 9" are ordinary wording.
 const STREET_ANY_CASE = /\b\d{1,5}\s+([a-z]+\s+){1,3}(st|street|ave|avenue|rd|road|drive|ln|lane|blvd|boulevard|hwy)\b/i;
+// Route addresses in any case ("1092 state route 9", "55 county rte 4"): a house
+// number, then route and a route number. "3 counties along route 9" has no route right after the number.
+const ROUTE_ANY_CASE = /\b\d{1,5}\s+((state|county|us|ny|old)\s+)?(route|rte)\s+\d+/i;
 function dvPlace(text) {
-  return SHELTER_LOCATION.test(text) || STREET_ADDRESS.test(text) || STREET_ANY_CASE.test(text) || HOME_LOCATION.test(text);
+  return SHELTER_LOCATION.test(text) || STREET_ADDRESS.test(text) || STREET_ANY_CASE.test(text) || ROUTE_ANY_CASE.test(text) || HOME_LOCATION.test(text);
 }
 
 export function cleanText(v, max) {

@@ -16,7 +16,7 @@ const COPY = [
   'src', 'public', 'migrations', 'test',
   'scripts/apply-region.mjs', 'scripts/add-live.mjs', 'scripts/update-live.mjs', 'scripts/owner-edits-lib.mjs', 'scripts/owner-edits.mjs', 'scripts/prepare-additions.mjs',
   'scripts/medicaid-providers.mjs', 'scripts/privacy-check.mjs', 'scripts/seed-local.mjs', 'scripts/backup.mjs',
-  'scripts/backup-to-sql.mjs', 'scripts/live-check.mjs', 'scripts/link-check.mjs', 'scripts/search-check.mjs', 'scripts/read-xlsx.mjs', 'scripts/publish-public.mjs',
+  'scripts/backup-to-sql.mjs', 'scripts/live-check.mjs', 'scripts/link-check.mjs', 'scripts/page-text.mjs', 'scripts/search-check.mjs', 'scripts/read-xlsx.mjs', 'scripts/publish-public.mjs',
   'package.json', 'package-lock.json', 'vitest.config.js', '.gitignore', 'data/README.md',
 ];
 const FROM_TEMPLATE = { 'open-source/README.md': 'README.md', 'open-source/LICENSE': 'LICENSE', 'open-source/SETUP.md': 'SETUP.md', 'open-source/wrangler.jsonc': 'wrangler.jsonc' };

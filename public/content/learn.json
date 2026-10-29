@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-11",
+ "updated": "2026-10-28",
  "sections": [
   {
    "title": "Getting started",
@@ -1947,10 +1947,6 @@
       {
        "label": "NY Department of Health: Explanation of the Effect of Trusts on Medicaid Eligibility (OHIP-0119, rev. Feb 2020)",
        "url": "https://www.health.ny.gov/health_care/medicaid/publications/docs/gis/20ma03_att_1.pdf"
-      },
-      {
-       "label": "Broome County Office for Aging: Pooled Supplemental Needs Trusts (March 2024)",
-       "url": "https://broomecountyny.gov/sites/default/files/dept/senior/OFA%20Masters/Pooled%20Supplemental%20Needs%20Trusts%20March%202024.pdf"
       }
      ]
     }
@@ -3158,10 +3154,6 @@
      "keywords": "guardianship guardian article 81 article 17-A 17A surrogate's court power of attorney POA durable power of attorney agent health care proxy health care agent supported decision making SDM incapacity dementia developmental disability intellectual disability turning 18 conservatorship",
      "sources": [
       {
-       "label": "Guide to Adult Guardianship: Article 81 (prepared for NYS Office of Children and Family Services, PDF)",
-       "url": "https://www.broomecountyny.gov/sites/default/files/dept/Guide-to-NY-Article-81-Guardianships.pdf"
-      },
-      {
        "label": "NYS Senate: General Obligations Law section 5-1501B (how a power of attorney must be signed)",
        "url": "https://www.nysenate.gov/legislation/laws/GOB/5-1501B"
       },
@@ -3213,7 +3205,7 @@
      "sources": [
       {
        "label": "NY State Assembly: What the Clean Slate Act does",
-       "url": "https://assembly.ny.gov/cleanslate/?sec=what_it_does"
+       "url": "https://nyassembly.gov/cleanslate/?sec=what_it_does"
       },
       {
        "label": "NY Governor: Governor Hochul signs Clean Slate Act (Nov. 2023)",
@@ -3258,10 +3250,6 @@
       {
        "label": "NYS Archives: Birth, Marriage, and Death Records (local registrars)",
        "url": "https://www.archives.nysed.gov/research/birth-marriage-death-records"
-      },
-      {
-       "label": "Broome County Clerk: Birth, Marriage, and Death Certificates (records kept by city, town or village)",
-       "url": "https://broomecountyny.gov/clerk/vital"
       },
       {
        "label": "Social Security Administration: Replace Social Security card",
@@ -3392,7 +3380,7 @@
       },
       {
        "label": "DC Housing Authority: Beware of housing scam, fake websites and social media posts (Aug. 2024)",
-       "url": "https://www.dchousing.org/wordpress/beware-of-housing-scam-fake-websites-social-media-posts/"
+       "url": "https://www.dchousing.org/newsroom/beware-of-housing-scam-fake-websites-social-media-posts/"
       },
       {
        "label": "NY Attorney General: File a complaint",
@@ -3529,7 +3517,7 @@
       },
       {
        "label": "NYS Assembly: Legislation banning patient brokering signed into law (Aug. 2018)",
-       "url": "https://www.assembly.ny.gov/mem/Linda-B-Rosenthal/story/83452"
+       "url": "https://nyassembly.gov/mem/Linda-B-Rosenthal/story/83452"
       },
       {
        "label": "NYS OASAS: Latest efforts to prevent treatment fraud and illegal patient brokering (news release, Feb. 2018)",
@@ -3633,7 +3621,7 @@
       },
       {
        "label": "NY Office of Mental Health: New York State 988 Suicide & Crisis Lifeline (2026)",
-       "url": "https://988.ny.gov/"
+       "url": "https://omh.ny.gov/omhweb/crisis/988.html"
       },
       {
        "label": "NY Office of Mental Health: Comprehensive Crisis Response System (2026)",
@@ -4026,7 +4014,7 @@
       },
       {
        "label": "NY Office of Mental Health: New York State 988 Suicide & Crisis Lifeline",
-       "url": "https://988.ny.gov/"
+       "url": "https://omh.ny.gov/omhweb/crisis/988.html"
       }
      ],
      "related_categories": [
@@ -4096,8 +4084,8 @@
        "url": "https://www.ecfr.gov/current/title-45/subtitle-B/chapter-XIII/subchapter-B/part-1302/subpart-A/section-1302.12"
       },
       {
-       "label": "NYSED: Family FAQs for Universal Pre-Kindergarten (PDF)",
-       "url": "https://www.nysed.gov/sites/default/files/programs/early-learning/reformated-family-faqs_0.pdf"
+       "label": "NYSED: Prekindergarten in New York State, Family Frequently Asked Questions Answered (PDF)",
+       "url": "https://www.nysed.gov/sites/default/files/programs/early-learning/prekindergarten-in-new-york-state-family-frequently-asked-questions-answered.pdf"
       },
       {
        "label": "NYSED: Universal Prekindergarten for 2026-27 and Beyond (PDF, June 2026)",

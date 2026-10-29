@@ -112,8 +112,9 @@ async function route(request, env, url, admin) {
   if (method !== 'GET' && method !== 'HEAD') return errorPage(405);
 
   if (path === '/sitemap.xml') {
-    // Kept at Cloudflare for an hour once public, so crawlers don't read every
-    // listing row on each visit.
+    // Kept at Cloudflare for a minute once public (like /api/listings), so
+    // crawlers don't read every listing row on each visit, and a retired or
+    // Internal listing leaves the sitemap within a minute.
     const cache = typeof caches !== 'undefined' && env.SITE_PUBLIC === 'true' && env.PUBLIC_CACHE !== 'off' ? caches.default : null;
     const key = new Request(new URL('/sitemap.xml', url).toString());
     const hit = cache ? await cache.match(key) : null;

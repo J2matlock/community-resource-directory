@@ -161,7 +161,7 @@ export async function sitemap(env, url) {
     ...STATIC_PAGES.map(loc),
     ...ids.map((r) => loc(`/listing/${SENSITIVE_CATEGORIES.includes(r.category) ? neutralId(r.id) : r.id}`)),
     '</urlset>', ''].join('\n');
-  return new Response(body, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=3600' } });
+  return new Response(body, { headers: { 'Content-Type': 'application/xml; charset=utf-8', 'Cache-Control': 'public, max-age=60' } });
 }
 
 export function robots(url) {
